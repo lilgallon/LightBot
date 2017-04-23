@@ -12,7 +12,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
-    
+
 #include "Appli.h"
 
 Appli::Appli()
@@ -65,12 +65,12 @@ std::vector<Button> Appli::choseButton()
 
 sf::Vector2i Appli::getMousePos()
 {
-    return m_mousePos = sf::Mouse::getPosition(m_window);
+    return m_mouse = sf::Mouse::getPosition(m_window);
 }
 
 int Appli::getButton()
 {
-    int buttonRect = 99;
+    int buttonRect = IDLE;
 
     for(Button & bouton : choseButton())
     {
@@ -83,7 +83,7 @@ int Appli::getButton()
 }
 
 void Appli::processEvents()
-{
+{    
     sf::Event event;
     while(m_window.pollEvent(event)) {
         switch (event.type) {
@@ -91,8 +91,29 @@ void Appli::processEvents()
             m_running = false;
             break;
         case sf::Event::MouseButtonPressed:
-            mouseButtonReleased();
+            m_mouseInRectId = getButton();
             break;
+        case sf::Event::MouseButtonReleased:
+            if(m_mouseInRectId == getButton())
+            {
+                switch (m_mouseInRectId) {
+                case HOME:
+                    std::cout << "home" << std::endl;
+                    m_gameState = HOME;
+                    break;
+                case CREDITS:
+                    std::cout << "credits" << std::endl;
+                    m_gameState = CREDITS;
+                    break;
+                case LEVEL_SELECTION:
+                    std::cout << "level_selection" << std::endl;
+                    m_gameState = LEVEL_SELECTION;
+                    break;
+                case IDLE:
+                    std::cout << "idle" << std::endl;
+                    break;
+                }
+            }
         default:
             break;
         }
@@ -115,32 +136,3 @@ void Appli::drawScreen()
     }
     m_window.display();
 }
-
-void Appli::mouseButtonReleased()
-{
-    int buttonClicked = getButton();
-    //    sf::Event event;
-    //    while(m_window.pollEvent(event)) {
-    //        if (event.type == sf::Event::MouseButtonReleased)
-    //         {
-    switch (buttonClicked) {
-    case HOME:
-        std::cout << "home" << std::endl;
-        m_gameState = HOME;
-        break;
-    case CREDITS:
-        std::cout << "credits" << std::endl;
-        m_gameState = CREDITS;
-        break;
-    case LEVEL_SELECTION:
-        std::cout << "level_selection" << std::endl;
-        m_gameState = LEVEL_SELECTION;
-        break;
-
-
-    }
-
-}
-
-
-
