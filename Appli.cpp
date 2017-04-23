@@ -17,10 +17,10 @@
 
 Appli::Appli()
 {
-    m_buttonHome.push_back({{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}, {90, 70}, LEVEL_SELECTION}); // Totaly not bobfix
-    m_buttonHome.push_back({{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05}, {150, 50}, CREDITS});
-    m_buttonLevelSelection.push_back({{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, HOME});
-    m_buttonCredits.push_back({{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, HOME});
+    m_buttonsHome.push_back({           LEVEL_SELECTION, {(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70}  , sf::Color::Blue,"Oui1"           }); // Totaly not bobfix
+    m_buttonsHome.push_back({           CREDITS        , {SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50} , sf::Color::Blue, "Go back"        });
+    m_buttonsLevelSelection.push_back({ HOME           , {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}     , {50, 50}  , sf::Color::Red , "Oui2"           });
+    m_buttonsCredits.push_back({        HOME           , {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}     , {50, 50}  , sf::Color::Yellow, "oui3"         });
     m_gameState = HOME;
 }
 
@@ -45,22 +45,22 @@ void Appli::loop()
 
 std::vector<Button> Appli::choseButton()
 {
-    std::vector<Button> button;
+    std::vector<Button> buttons;
 
     if (m_gameState == HOME)
     {
-        button = m_buttonHome;
+        buttons = m_buttonsHome;
     }
     else if (m_gameState == LEVEL_SELECTION)
     {
-        button = m_buttonLevelSelection;
+        buttons = m_buttonsLevelSelection;
     }
     else if (m_gameState == CREDITS)
     {
-        button = m_buttonCredits;
+        buttons = m_buttonsCredits;
     }
 
-    return button;
+    return buttons;
 }
 
 sf::Vector2i Appli::getMousePos()
@@ -128,10 +128,10 @@ void Appli::drawScreen()
     {
         if (bouton.overRect(getMousePos(), bouton.button()))
         {
-            bouton.setColor(sf::Color::Blue);
-        }
+            bouton.setColor(sf::Color::Black);
+        }/*
         else
-            bouton.setColor(sf::Color::Red);
+            bouton.setColor(sf::Color::Red);*/
         bouton.draw_on(m_window);
     }
     m_window.display();
