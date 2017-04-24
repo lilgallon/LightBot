@@ -45,6 +45,7 @@ private:
 
     // Other methods
     bool isOnButton(Button *b);
+    bool isOnCell(Grid* g);
     void changeButtonAppareance(bool onButton, Button* b);
     void changeState(bool onButton, Button* b);
 

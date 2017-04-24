@@ -30,3 +30,4 @@ bool Cell::getLight(){
 sf::Vector2f Cell::getPos(){
     return m_pos;
 }
+

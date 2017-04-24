@@ -165,6 +165,9 @@ void Interface::mouse_moved(){
         for(Button * b : m_buttons_level_selection){
             changeButtonAppareance(isOnButton(b),b);
         }
+
+        // bp de modifs à faire
+        //isOnCell(m_grid);
         break;
     case Utils::State::IN_GAME:
         break;
@@ -201,4 +204,8 @@ void Interface::changeState(bool onButton, Button* b){
 
 bool Interface::isOnButton(Button* b){
     return b->isOverRect(m_mouse);
+}
+
+bool Interface::isOnCell(Grid* g){
+    return g->isOverCell(m_mouse);
 }

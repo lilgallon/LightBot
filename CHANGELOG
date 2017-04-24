@@ -5,7 +5,7 @@
 & : To do
 $ : New bug
 
-## Version 1: ##
+## Version 1: 24/04/17 ##
 + Button class
 + Application class (motehr of Interface)
 + Cell 
@@ -14,5 +14,14 @@ $ : New bug
 + Utils
 $ Apply label to window makes an unknow crash
 
-## Version 2: ##
+## Version 2: 24/04/17 ##
 + Grid working
+
+## Version 3: 24/04/17 ##
++ Cell light color
+
+## Version 4: ../../.. ##
+& Method isOnCell
+	- Change cell light if on the cell
+& Fix bug font
+& Fix button update

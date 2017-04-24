@@ -4,7 +4,7 @@
 #include <math.h>
 
 Grid::Grid(std::vector<Cell*> grid)
-    :m_grid{grid}
+    :m_grid{grid},m_radius{80}
 {
 
 }
@@ -17,69 +17,73 @@ Grid::~Grid(){
 
 void Grid::drawGrid(sf::RenderWindow& window){
     // debug
-    sf::CircleShape center;
-    center.setFillColor(sf::Color::Red);
-    center.setRadius(1);
+    //sf::CircleShape center;
+    //center.setFillColor(sf::Color::Red);
+    //center.setRadius(1);
+
+    // FAUT QQCH QUI CALCULE LE RADIUS EN FONCTION
+    // DE LA TAILLE DE LA GRILLE
+    // ARBITRAIREMENT, JE MET UN RADIUS DE 80!!
+    // m_radius = radius calculé
+    // ...
 
     sf::CircleShape hexa;
-    int radius = 50;
     sf::Vector2f gap = {150,150};
     sf::Vector2f pos;
+    sf::Color color_light(128,128,128,128);
     hexa.setPointCount(6);
     hexa.setFillColor(sf::Color::Transparent);
     hexa.setOutlineColor(sf::Color::Black);
     hexa.setOutlineThickness(2);
-    hexa.setRadius(radius);
     hexa.setRotation(90);
+    hexa.setRadius(m_radius);
     for(Cell* c : m_grid){
 
-        //pos.x = gap.x + c->getPos().x * (radius) + radius * cos(Utils::PI/3));
-        //pos.y = gap.y + c->getPos().y * (radius * sin(Utils::PI/3));
+        if(c->getLight()){
+            hexa.setFillColor(color_light);
+        }else{
+            hexa.setFillColor(sf::Color::Transparent);
+        }
 
         pos = gap;
 
         // Sets the center in the center :)
-        hexa.setOrigin({c->getPos().x+radius,c->getPos().y+radius});
+        hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
 
         if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
-            pos.x += c->getPos().x * (radius + radius * cos(Utils::PI/3.));
+            pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
 
             if(c->getPos().y==0){
-                pos.y -= (radius*sin(Utils::PI/3.));
+                pos.y -= (m_radius*sin(Utils::PI/3.));
             }else{
-                pos.y -= c->getPos().y * (radius*sin(Utils::PI/3.));
+                pos.y -= c->getPos().y * (m_radius*sin(Utils::PI/3.));
             }
-
-        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){   //OK
-            pos.x += c->getPos().x * (radius+radius * cos(Utils::PI/3.));
-            pos.y -= c->getPos().y * 2*(radius*sin(Utils::PI/3.));
-            /*
-            if(c->getPos().y==0){
-                pos.y -= (radius*sin(Utils::PI/3.));
-            }else{
-                pos.y -= c->getPos().y * (radius*sin(Utils::PI/3.));
-            }*/
-
-        }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){       //OK
-            pos.x += c->getPos().x * (radius + radius * cos(Utils::PI/3.));
-            pos.y += c->getPos().y * (radius*sin(Utils::PI/3.));
+        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
+            pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
+            pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+        }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
+            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.));
         }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
-            pos.x += c->getPos().x * (radius + radius * cos(Utils::PI/3.));
-            pos.y += c->getPos().y * 2*(radius*sin(Utils::PI/3.));
+            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
         }
-
-        //std::cout << radius*sin(Utils::PI/3) << std::endl;
-
-
-
-
-        center.setPosition(pos);
-
-        //std::cout << "pos : " + std::to_string(pos.x) + ";" +  std::to_string(pos.y) << std::endl;
+        //center.setPosition(pos);
         hexa.setPosition(pos);
         window.draw(hexa);
-        window.draw(center);
+        //window.draw(center);
     }
+}
+
+bool Grid::isOverCell(sf::Vector2i mouse){
+    bool isOver = false;
+    int i = 0;
+    while(!isOver && i<m_grid.size()){
+        isOver = Utils::abs(mouse.x-m_grid.at(i)->getPos().x)<=m_radius
+              && Utils::abs(mouse.y-m_grid.at(i)->getPos().y)<=m_radius;
+        i++;
+    }
+    return isOver;
 }
 
 void Grid::setGrid(std::vector<Cell*> grid){
