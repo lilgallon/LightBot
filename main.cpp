@@ -15,15 +15,15 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "Appli.h"
+#include "Interface.h"
 
 
 using namespace std;
 
 int main()
 {
-    Appli app;
-    app.loop();
+    Interface game;
+    game.run();
 //    execlp("xreader","xreader", "test.pdf", NULL);
     return 0;
 }

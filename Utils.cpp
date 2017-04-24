@@ -15,8 +15,36 @@
 
 #include "Utils.h"
 
-static float abs(int value){
+float Utils::abs(float value){
     if(value>0)
         return value;
     return -value;
+}
+
+std::string Utils::getTime(){
+    time_t t = time(0); // Time from now (0)
+    struct tm* now = localtime(&t);
+
+    std::string hour,min,sec;
+
+    // reformat
+    if(now->tm_hour>=10){
+        hour = std::to_string(now->tm_hour);
+    }else{
+          hour = "0" + std::to_string(now->tm_hour);
+    }
+
+    if(now->tm_min>=10){
+        min = std::to_string(now->tm_min);
+    }else{
+        min = "0" + std::to_string(now->tm_min);
+    }
+
+    if(now->tm_sec>=10){
+        sec = std::to_string(now->tm_sec);
+    }else{
+        sec = "0" + std::to_string(now->tm_sec);
+    }
+    //delete now; don't delete now otherwise it crashes (wtf)
+    return "[" + hour + ":" + min + ":" + sec + "] ";
 }

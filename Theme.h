@@ -9,10 +9,17 @@ public:
     Theme(int id);
     void setTheme(int id);
 
-    // Rect
+    // Ce serait bien avec de la surcharge, de, selon le theme
+    // soit changer la couleur, soit changer la texture
+
+    // Rect default
     sf::Color getRectDefaultFillColor();
-    sf::Color getRectOutlineColor();
+    sf::Color getRectDefaultOutlineColor();
+    // Rect on cursor
     sf::Color getRectOnRectFillColor();
+    sf::Color getRectOnRectOutlineColor();
+
+
     int getRectOutlineThickness();
 
     // Label

@@ -14,21 +14,29 @@
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Button.h"
+#include "Utils.h"
 #include <iostream>
 
 namespace {
 const std::string FONT = "ressources/Travis_Sans_MS.ttf";
 }
 
-Button::Button(int buttonId, sf::Vector2f position, sf::Vector2f size, Theme *theme)
-    : m_id {buttonId}, m_theme{theme}
+Button::Button(Utils::State stateIfClicked, sf::Vector2f position, sf::Vector2f size, Theme *theme)
+    : m_state{stateIfClicked}, m_theme{theme}
 {
-    initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectOutlineColor());
+    std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
+    initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
+    std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
     initLabel(position,size,theme->getLabelFillColor(),theme->getLabelFont());
+    std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
 Button::~Button(){
     delete m_theme;
+}
+
+Utils::State Button::getState(){
+    return m_state;
 }
 
 Theme* Button::getTheme(){
@@ -39,7 +47,7 @@ void Button::initLabel( sf::Vector2f position, sf::Vector2f size, sf::Color colo
 
     //m_label.setPosition(0,0);
     m_label.setPosition(position);
-    //m_label.setOrigin(size.x/4,size.y-size.y/2.);
+    m_label.setOrigin(size.x/4,size.y-size.y/2.);
     //m_label.setOrigin(0,0);
     m_label.setString("iyc");
     m_label.setColor(color);
@@ -64,12 +72,12 @@ void Button::initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fill
 }
 
 
-bool Button::overRect(sf::Vector2i mousePos, sf::RectangleShape button)
+bool Button::isOverRect(sf::Vector2i mouse)
 {
-    return mousePos.x >= button.getPosition().x - button.getSize().x/2
-            && mousePos.x <= button.getPosition().x + button.getSize().x - button.getSize().x/2
-            && mousePos.y >= button.getPosition().y - button.getSize().y/2
-            && mousePos.y <= button.getPosition().y + button.getSize().y - button.getSize().y/2;
+    return mouse.x >= m_button.getPosition().x - m_button.getSize().x/2
+            && mouse.x <= m_button.getPosition().x + m_button.getSize().x - m_button.getSize().x/2
+            && mouse.y >= m_button.getPosition().y - m_button.getSize().y/2
+            && mouse.y <= m_button.getPosition().y + m_button.getSize().y - m_button.getSize().y/2;
 }
 
 /******** SETTERS **********/
@@ -77,6 +85,11 @@ void Button::setColor(sf::Color color)
 {
     m_button.setFillColor(color);
 }
+
+void Button::setOutlineColor(sf::Color color){
+    m_button.setOutlineColor(color);
+}
+
 void Button::setTexture(sf::Texture *texture){
     m_button.setTexture(texture);
 }
@@ -85,10 +98,6 @@ void Button::setLabel(std::string label){
     m_label.setString(label);
 }
 
-int Button::getId()
-{
-    return m_id;
-}
 
 
 sf::RectangleShape Button::button()
