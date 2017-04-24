@@ -1,0 +1,15 @@
+## DEV CHANGELOG ##
++ : Add
+* : Fix, improved
+- : Removed
+& : To do
+$ : New bug
+
+## Version 1: ##
++ Button class
++ Application class (motehr of Interface)
++ Cell 
++ Grid (Still hexagones calculations to do)
++ Theme
++ Utils
+$ Apply label to window makes an unknow crash
