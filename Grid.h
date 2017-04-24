@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Cell.h"
-#include <algorithm>
 
 class Grid
 {

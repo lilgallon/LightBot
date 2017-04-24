@@ -22,7 +22,7 @@ namespace {
 }
 
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_first_loop{true}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -82,6 +82,22 @@ void Interface::loop()
         break;
     case Utils::State::LEVEL_SELECTION:
         draw_buttons(m_buttons_level_selection);
+
+        if(m_first_loop){
+            // Création grid bob
+            std::vector<Cell*> grid;
+            Cell* c1 = new Cell({0,0},0,true);
+            Cell* c2 = new Cell({1,0},0,true);
+            Cell* c3 = new Cell({1,1},0,false);
+            Cell* c4 = new Cell({0,1},0,false);
+            grid.push_back(c1);
+            grid.push_back(c2);
+            grid.push_back(c3);
+            grid.push_back(c4);
+            m_grid = new Grid(grid);
+        }
+        m_first_loop = false;
+        m_grid->drawGrid(m_window);
         break;
     case Utils::State::IN_GAME:
         break;

@@ -9,7 +9,7 @@
 #include <sys/wait.h>
 
 #include "Utils.h"
-
+#include "Grid.h"
 
 class Interface : public Application
 {
@@ -26,6 +26,9 @@ private:
     std::vector<Button*> m_buttons_credits;
     std::vector<Theme*> m_themes;
     int m_mouseInRectId;
+    bool m_first_loop;
+
+    Grid* m_grid;
 
     // ELements liés à la boucle de jeu
     void loop()  override;

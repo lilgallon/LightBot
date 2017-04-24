@@ -47,7 +47,7 @@ void Button::initLabel( sf::Vector2f position, sf::Vector2f size, sf::Color colo
 
     //m_label.setPosition(0,0);
     m_label.setPosition(position);
-    m_label.setOrigin(size.x/4,size.y-size.y/2.);
+    m_label.setOrigin(size.x/4.,size.y-size.y/2.);
     //m_label.setOrigin(0,0);
     m_label.setString("iyc");
     m_label.setColor(color);
