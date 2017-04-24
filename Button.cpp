@@ -17,68 +17,50 @@
 #include <iostream>
 
 namespace {
-const std::string FONT = "ressources/coffee-teademo-Regular.ttf";
+const std::string FONT = "ressources/Travis_Sans_MS.ttf";
 }
 
-Button::Button(int id, sf::Vector2f position, sf::Vector2f size, sf::Texture *texture)
-    : m_id {id}
+Button::Button(int buttonId, sf::Vector2f position, sf::Vector2f size, Theme *theme)
+    : m_id {buttonId}, m_theme{theme}
 {
-    //                             the color will be ignored
-    initButton(position,size,texture,sf::Color::White);
-    initLabel(position,size,"");
+    initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectOutlineColor());
+    initLabel(position,size,theme->getLabelFillColor(),theme->getLabelFont());
 }
 
-Button::Button(int id, sf::Vector2f position, sf::Vector2f size, sf::Color color)
-    : m_id {id}
-{
-    initButton(position,size,nullptr,color);
-    initLabel(position,size,"");
+Button::~Button(){
+    delete m_theme;
 }
 
-Button::Button(int id, sf::Vector2f position, sf::Vector2f size, sf::Texture *texture, std::string label)
-    : m_id {id}
-{
-    //                             the color will be ignored
-    initButton(position,size,texture,sf::Color::White);
-    initLabel(position,size,label);
+Theme* Button::getTheme(){
+    return m_theme;
 }
 
-Button::Button(int id, sf::Vector2f position, sf::Vector2f size, sf::Color color, std::string label)
-    : m_id {id}
-{
-    initButton(position,size,nullptr,color);
-    initLabel(position,size,label);
+void Button::initLabel( sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Font font){
+
+    //m_label.setPosition(0,0);
+    m_label.setPosition(position);
+    //m_label.setOrigin(size.x/4,size.y-size.y/2.);
+    //m_label.setOrigin(0,0);
+    m_label.setString("iyc");
+    m_label.setColor(color);
+    //m_label.setFont(font);
+    //m_label.setFont();
+    m_label.setCharacterSize(20);
+
 }
 
-void Button::initLabel( sf::Vector2f position, sf::Vector2f size, std::string label){
-    // A TRADUIRE EVIDEMMENT HEIN
-    // On vérifie si la police existe, dans ce cas, on affiche
-    // le texte. Autrement on indique que la police n'existe pas
-    // et on ne charge pas celle-ci pour continuer l'execution
-    if (! m_font.loadFromFile(FONT)) {
-        //throw "Police "+POLICE+" manquante";
-        std::cout << "Font not found, please verify \""
-                     + FONT + "\"" << std::endl;
-        std::cout << "The font will be ignored." << std::endl;
-    }else{
-        m_label.setPosition(position);
-        m_label.setOrigin(size.x/4,size.y-size.y/2.);
-        m_label.setString(label);
-        m_label.setColor(sf::Color::Green);
-        m_label.setFont(m_font);
-        m_label.setCharacterSize(20);
-    }
-}
-
-void Button::initButton(sf::Vector2f position, sf::Vector2f size, sf::Texture *texture, sf::Color color){
+void Button::initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fillColor, int outline, sf::Color outlineColor){
     m_button.setPosition(position);
     m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
     m_button.setSize(size);
-    if(texture==nullptr){
-        m_button.setFillColor(color);
-    }else{
-        m_button.setTexture(texture);
-    }
+
+    m_button.setFillColor(fillColor);
+    m_button.setOutlineThickness(outline);
+    m_button.setOutlineColor(outlineColor);
+
+
+
+    //m_button.setTexture(texture);
 }
 
 
@@ -100,7 +82,7 @@ void Button::setTexture(sf::Texture *texture){
 }
 
 void Button::setLabel(std::string label){
-
+    m_label.setString(label);
 }
 
 int Button::getId()

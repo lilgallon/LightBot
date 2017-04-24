@@ -6,7 +6,8 @@ CONFIG -= qt
 SOURCES += main.cpp \
     Appli.cpp \
     Button.cpp \
-    Utils.cpp
+    Utils.cpp \
+    Theme.cpp
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
 LIBS           += -lsfml-graphics -lsfml-window -lsfml-system
@@ -14,4 +15,5 @@ LIBS           += -lsfml-graphics -lsfml-window -lsfml-system
 HEADERS += \
     Appli.h \
     Button.h \
-    Utils.h
+    Utils.h \
+    Theme.h

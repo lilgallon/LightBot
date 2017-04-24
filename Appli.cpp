@@ -17,11 +17,36 @@
 
 Appli::Appli()
 {
-    m_buttonsHome.push_back({           LEVEL_SELECTION, {(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70}  , sf::Color::Blue,"Oui1"           }); // Totaly not bobfix
-    m_buttonsHome.push_back({           CREDITS        , {SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50} , sf::Color::Blue, "Go back"        });
-    m_buttonsLevelSelection.push_back({ HOME           , {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}     , {50, 50}  , sf::Color::Red , "Oui2"           });
-    m_buttonsCredits.push_back({        HOME           , {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}     , {50, 50}  , sf::Color::Yellow, "oui3"         });
+    Theme *defaultTheme = new Theme(1);
+    m_themes.push_back(defaultTheme);
+
+    Button* home1 = new Button(LEVEL_SELECTION, {(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme);
+    Button* home2 = new Button(CREDITS        , {SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme);
+    m_buttonsHome.push_back(home1);
+    m_buttonsHome.push_back(home2);
+
+    Button* levelSelection1 = new Button(HOME, {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
+    m_buttonsLevelSelection.push_back(levelSelection1);
+
+    Button* credits1 = new Button(HOME, {(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
+    m_buttonsCredits.push_back(credits1);
+
     m_gameState = HOME;
+}
+
+Appli::~Appli(){
+    for(Button* b : m_buttonsHome){
+        delete b;
+    }
+    for(Button* b : m_buttonsCredits){
+        delete b;
+    }
+    for(Button* b : m_buttonsLevelSelection){
+        delete b;
+    }
+    for(Theme* t : m_themes){
+        delete t;
+    }
 }
 
 /**
@@ -34,7 +59,7 @@ void Appli::loop()
                     "Light Bot",
                     sf::Style::Close
                     );
-    m_window.setFramerateLimit(20);
+    m_window.setFramerateLimit(60);
 
     m_running = true;
     while (m_running) {
@@ -43,9 +68,9 @@ void Appli::loop()
     }
 }
 
-std::vector<Button> Appli::choseButton()
+std::vector<Button*> Appli::choseButton()
 {
-    std::vector<Button> buttons;
+    std::vector<Button*> buttons;
 
     if (m_gameState == HOME)
     {
@@ -72,11 +97,11 @@ int Appli::getButton()
 {
     int buttonRect = IDLE;
 
-    for(Button & bouton : choseButton())
+    for(Button * bouton : choseButton())
     {
-        if(bouton.overRect(getMousePos(), bouton.button()))
+        if(bouton->overRect(getMousePos(), bouton->button()))
         {
-            buttonRect = bouton.getId();
+            buttonRect = bouton->getId();
         }
     }
     return buttonRect;
@@ -124,15 +149,15 @@ void Appli::drawScreen()
 {
     m_window.clear(sf::Color::White);
 
-    for(Button & bouton : choseButton())
+    for(Button * button : choseButton())
     {
-        if (bouton.overRect(getMousePos(), bouton.button()))
+        if (button->overRect(getMousePos(), button->button()))
         {
-            bouton.setColor(sf::Color::Black);
-        }/*
+            button->setColor(button->getTheme()->getRectOnRectFillColor());
+        }
         else
-            bouton.setColor(sf::Color::Red);*/
-        bouton.draw_on(m_window);
+            button->setColor(button->getTheme()->getRectDefaultFillColor());
+        button->draw_on(m_window);
     }
     m_window.display();
 }

@@ -12,6 +12,7 @@ class Appli
 {
 public:
     Appli();
+    ~Appli();
     void loop();
 private:
     const unsigned int SCREEN_WIDTH = 800;
@@ -20,14 +21,15 @@ private:
     enum{ HOME, CREDITS, LEVEL_SELECTION, IN_GAME, LEVEL_EDITOR, END_GAME, IDLE} m_gameState;
 
     sf::Vector2i m_mouse;
-    std::vector<Button> m_buttonsHome;
-    std::vector<Button> m_buttonsLevelSelection;
-    std::vector<Button> m_buttonsCredits;
+    std::vector<Button*> m_buttonsHome;
+    std::vector<Button*> m_buttonsLevelSelection;
+    std::vector<Button*> m_buttonsCredits;
+    std::vector<Theme*> m_themes;
     sf::RenderWindow m_window;
     bool m_running;
     int m_mouseInRectId;
 
-    std::vector<Button> choseButton();
+    std::vector<Button*> choseButton();
     sf::Vector2i getMousePos();
     int getButton();
     void processEvents();
