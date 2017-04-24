@@ -25,3 +25,4 @@ $ Apply label to window makes an unknow crash
 	- Change cell light if on the cell
 & Fix bug font
 & Fix button update
+& Add outputs when loading things
