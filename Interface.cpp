@@ -48,6 +48,7 @@ Interface::Interface()
 }
 
 Interface::~Interface(){
+
     for(Button* b : m_buttons_home){
         delete b;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;

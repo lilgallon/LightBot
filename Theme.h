@@ -25,11 +25,13 @@ public:
     // Label
     std::string getLabelText();
     sf::Color getLabelFillColor();
-    sf::Font getLabelFont();
+    sf::Text getLabel();
 
 private:
     // Attributes
     int m_id;
+    sf::Font m_font;
+    sf::Text m_text;
 };
 
 #endif // THEME_H

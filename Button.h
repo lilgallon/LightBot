@@ -14,7 +14,7 @@ public:
     void setColor(sf::Color color);
     void setOutlineColor(sf::Color color);
     void setTexture(sf::Texture *texture);
-    void setLabel(std::string label);
+    void setLabelText(std::string label);
     Theme* getTheme();
     Utils::State getState();
 
@@ -23,11 +23,11 @@ public:
 
 private:
     void initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fillColor, int outline, sf::Color outlineColor);
-    void initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Font font);
+    void initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Text text);
 
     sf::RectangleShape m_button;
     sf::Text m_label;
-    Theme * m_theme;
+    Theme* m_theme;
     Utils::State m_state;
 };
 

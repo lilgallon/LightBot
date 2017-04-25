@@ -20,7 +20,12 @@ $ Apply label to window makes an unknow crash
 ## Version 3: 24/04/17 ##
 + Cell light color
 
-## Version 4: ../../.. ##
+## Version 4: 25/04/17 ##
+* Font fix
+* Button update fix
+$ Memomry (deleting buttons - check issues)
+
+## Version 5: ../../.. ##
 & Method isOnCell
 	- Change cell light if on the cell
 & Fix bug font

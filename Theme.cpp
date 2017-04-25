@@ -143,11 +143,10 @@ sf::Color Theme::getLabelFillColor(){
     return color;
 }
 
-sf::Font Theme::getLabelFont(){
+sf::Text Theme::getLabel(){
     // Variables
     std::string fontPath = "ressources/";
     std::string fontName = "";
-    sf::Font font;
 
     // Selection of the font
     switch(m_id){
@@ -160,7 +159,7 @@ sf::Font Theme::getLabelFont(){
     }
 
     // Font load
-    if (!font.loadFromFile(fontPath+fontName)) {
+    if (!m_font.loadFromFile(fontPath+fontName)) {
         //throw "Police "+POLICE+" manquante";
         std::cout << Utils::getTime() + "[Theme-ERROR]: Could not load the font" << std::endl;
         std::cout << Utils::getTime() + "[Theme-FIX]: Check \""
@@ -169,5 +168,7 @@ sf::Font Theme::getLabelFont(){
     }else{
         std::cout << Utils::getTime() + "[Theme-INFO]: Font loaded" << std::endl;
     }
-    return font;
+
+    m_text.setFont(m_font);
+    return m_text;
 }

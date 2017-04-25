@@ -27,7 +27,7 @@ Button::Button(Utils::State stateIfClicked, sf::Vector2f position, sf::Vector2f 
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    initLabel(position,size,theme->getLabelFillColor(),theme->getLabelFont());
+    initLabel(position,size,theme->getLabelFillColor(),theme->getLabel());
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
@@ -43,16 +43,13 @@ Theme* Button::getTheme(){
     return m_theme;
 }
 
-void Button::initLabel( sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Font font){
+void Button::initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Text text){
 
-    //m_label.setPosition(0,0);
+    m_label = text;     // FONT FIX!!
+
     m_label.setPosition(position);
     m_label.setOrigin(size.x/4.,size.y-size.y/2.);
-    //m_label.setOrigin(0,0);
-    m_label.setString("iyc");
     m_label.setColor(color);
-    //m_label.setFont(font);
-    //m_label.setFont();
     m_label.setCharacterSize(20);
 
 }
@@ -94,11 +91,9 @@ void Button::setTexture(sf::Texture *texture){
     m_button.setTexture(texture);
 }
 
-void Button::setLabel(std::string label){
+void Button::setLabelText(std::string label){
     m_label.setString(label);
 }
-
-
 
 sf::RectangleShape Button::button()
 {
