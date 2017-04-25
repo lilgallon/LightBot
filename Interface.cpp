@@ -125,16 +125,19 @@ void Interface::mouse_button_pressed(){
     case Utils::State::HOME:
         for(Button * b : m_buttons_home){
             changeState(isOnButton(b),b);
+            changeButtonAppareance(false,b);
         }
         break;
     case Utils::State::CREDITS:
         for(Button * b : m_buttons_credits){
             changeState(isOnButton(b),b);
+            changeButtonAppareance(false,b);
         }
         break;
     case Utils::State::LEVEL_SELECTION:
         for(Button * b : m_buttons_level_selection){
             changeState(isOnButton(b),b);
+            changeButtonAppareance(false,b);
         }
         break;
     case Utils::State::IN_GAME:
@@ -167,8 +170,6 @@ void Interface::mouse_moved(){
             changeButtonAppareance(isOnButton(b),b);
         }
 
-        // bp de modifs à faire
-        //isOnCell(m_grid);
         break;
     case Utils::State::IN_GAME:
         break;
@@ -199,6 +200,7 @@ void Interface::changeButtonAppareance(bool onButton, Button* b){
 
 void Interface::changeState(bool onButton, Button* b){
     if(onButton){
+       std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
         m_state = b->getState();
     }
 }

@@ -22,15 +22,11 @@ $ Apply label to window makes an unknow crash
 
 ## Version 4: 25/04/17 ##
 * Font fix
-* Button update fix
 $ Memomry (deleting buttons - check issues)
 
 ## Version 5: 25/04/17 ##
 * Memory cleaning fix
 
-## Version 6: ../../.. ##
-& Method isOnCell
-	- Change cell light if on the cell
-& Fix bug font
-& Fix button update
-& Add outputs when loading things
+## Version 6: 25/04/17 ##
+* Button update fix
+* Output added
