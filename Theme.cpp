@@ -22,7 +22,11 @@ namespace {
     const int LAST_ID = 1;
 }
 
-Theme::Theme(int id)
+/************************************************
+*         CONSTRUCTORS / DESTRUCTORS            *
+*************************************************/
+
+Theme::Theme(const int &id)
     :m_id{id}
 {
     std::cout << Utils::getTime() + "[Theme-INFO]: Loading the theme..." << std::endl;
@@ -33,7 +37,11 @@ Theme::Theme(int id)
     }
 }
 
-void Theme::setTheme(int id){
+/************************************************
+*                SETTERS                        *
+*************************************************/
+// Sets the theme : All the getters will be influenced by the theme selected (m_id)
+void Theme::setTheme(const int &id){
     if(m_id<FIRST_ID || m_id>LAST_ID){
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID - Failed to set the theme" << std::endl;
         std::cout << Utils::getTime() + "[Theme-FIX]: Theme set to default" << std::endl;
@@ -43,8 +51,11 @@ void Theme::setTheme(int id){
     }
 }
 
-
-sf::Color Theme::getRectDefaultFillColor(){
+/************************************************
+*                GETTERS                         *
+*************************************************/
+// Default rect color
+sf::Color Theme::getRectDefaultFillColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
@@ -57,8 +68,8 @@ sf::Color Theme::getRectDefaultFillColor(){
     }
     return color;
 }
-
-sf::Color Theme::getRectOnRectFillColor(){
+// Mouse on rect color
+sf::Color Theme::getRectOnRectFillColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
@@ -71,8 +82,8 @@ sf::Color Theme::getRectOnRectFillColor(){
     }
     return color;
 }
-
-sf::Color Theme::getRectDefaultOutlineColor(){
+// Default outline color
+sf::Color Theme::getRectDefaultOutlineColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
@@ -85,8 +96,8 @@ sf::Color Theme::getRectDefaultOutlineColor(){
     }
     return color;
 }
-
-sf::Color Theme::getRectOnRectOutlineColor(){
+// Mouse on rect outline color
+sf::Color Theme::getRectOnRectOutlineColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
@@ -99,8 +110,8 @@ sf::Color Theme::getRectOnRectOutlineColor(){
     }
     return color;
 }
-
-int Theme::getRectOutlineThickness(){
+// Default rect outline thickness
+int Theme::getRectOutlineThickness() const{
     // To prevent any crash if we are in  default case
     int thickness = 0;
     switch(m_id){
@@ -113,23 +124,8 @@ int Theme::getRectOutlineThickness(){
     }
     return thickness;
 }
-/* USELESS TO CHANGE THE TEXT IN THE THEME
-std::string Theme::getLabelText(){
-    // To prevent any crash if we are in  default case
-    std::string text = "";
-    switch(m_id){
-    case 1:
-        text = 3;
-        break;
-    default:
-        std::cout << "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
-        break;
-    }
-    return thickness;
-}
-*/
-
-sf::Color Theme::getLabelFillColor(){
+// Default label color
+sf::Color Theme::getLabelFillColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
@@ -142,7 +138,9 @@ sf::Color Theme::getLabelFillColor(){
     }
     return color;
 }
-
+// Default label font (trickshots the SFML bug with fonts
+// -> here, the font is loaded in a text, and not directly
+// is a font variable which caused an unknown bug
 sf::Text Theme::getLabel(){
     // Variables
     std::string fontPath = "ressources/";

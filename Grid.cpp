@@ -1,31 +1,79 @@
+//    This file is part of LightBot.
+//
+//    LightBot is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    LightBot is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "Grid.h"
 #include "Utils.h"
 #include <iostream>
 #include <math.h>
 
+// TODO
+// FAUT QQCH QUI CALCULE LE RADIUS EN FONCTION
+// DE LA TAILLE DE LA GRILLE
+// ARBITRAIREMENT, JE MET UN RADIUS DE 80!!
+// m_radius = radius calculé
+// ...
+
+/************************************************
+*         CONSTRUCTORS / DESTRUCTORS            *
+*************************************************/
 Grid::Grid(std::vector<Cell*> grid)
     :m_grid{grid},m_radius{80}
 {
-
 }
-
 Grid::~Grid(){
     for(Cell* c : m_grid){
         delete c;
     }
 }
 
+/************************************************
+*                   SETTER                      *
+*************************************************/
+void Grid::setGrid(std::vector<Cell*> grid){
+    m_grid = grid;
+}
+
+/************************************************
+*                   GETTERS                      *
+*************************************************/
+// NOT CHECKED - It returns true if the mouse is on a cell
+bool Grid::isOverCell(sf::Vector2i mouse){
+    bool isOver = false;
+    unsigned int i = 0;
+    while(!isOver && i<m_grid.size()){
+        isOver = Utils::abs(mouse.x-m_grid.at(i)->getPos().x)<=m_radius
+              && Utils::abs(mouse.y-m_grid.at(i)->getPos().y)<=m_radius;
+        i++;
+    }
+    return isOver;
+}
+// Returns the grid
+std::vector<Cell*> Grid::getGrid(){
+    return m_grid;
+}
+
+/************************************************
+*                   OTHERS                    *
+*************************************************/
+// Draws the grid
 void Grid::drawGrid(sf::RenderWindow& window){
     // debug
     //sf::CircleShape center;
     //center.setFillColor(sf::Color::Red);
     //center.setRadius(1);
 
-    // FAUT QQCH QUI CALCULE LE RADIUS EN FONCTION
-    // DE LA TAILLE DE LA GRILLE
-    // ARBITRAIREMENT, JE MET UN RADIUS DE 80!!
-    // m_radius = radius calculé
-    // ...
 
     sf::CircleShape hexa;
     sf::Vector2f gap = {150,150};
@@ -73,23 +121,4 @@ void Grid::drawGrid(sf::RenderWindow& window){
         window.draw(hexa);
         //window.draw(center);
     }
-}
-
-bool Grid::isOverCell(sf::Vector2i mouse){
-    bool isOver = false;
-    int i = 0;
-    while(!isOver && i<m_grid.size()){
-        isOver = Utils::abs(mouse.x-m_grid.at(i)->getPos().x)<=m_radius
-              && Utils::abs(mouse.y-m_grid.at(i)->getPos().y)<=m_radius;
-        i++;
-    }
-    return isOver;
-}
-
-void Grid::setGrid(std::vector<Cell*> grid){
-    m_grid = grid;
-}
-
-std::vector<Cell*> Grid::getGrid(){
-    return m_grid;
 }

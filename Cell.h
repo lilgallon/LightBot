@@ -5,22 +5,26 @@
 
 class Cell
 {
-private:
-    int m_height;
-    bool m_light;
-    sf::Vector2f m_pos;
 
 public:
-    Cell(sf::Vector2i pos, int height, bool light);
+    /** CONSTRUCTORS / DESCTRUCTORS **/
+    Cell(const sf::Vector2f &pos, const int &height, const bool &light);
+    ~Cell() = default;
 
-    void setHeight(int height);
-    void setLight(bool light);
-    void setPos(sf::Vector2f pos);
+    /** SETTERS **/
+    void setHeight(const int &height);
+    void setLight(const bool &light);
+    void setPos(const sf::Vector2f &pos);
 
-    int getHeight();
-    bool getLight();
-    sf::Vector2f getPos();
+    /** GETTERS**/
+    int getHeight() const;
+    bool getLight() const;
+    sf::Vector2f getPos() const;
 
+private:
+    sf::Vector2f m_pos;
+    int m_height;
+    bool m_light;
 };
 
 #endif // CELL_H

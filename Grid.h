@@ -7,17 +7,24 @@
 
 class Grid
 {
-private:
-    std::vector<Cell*> m_grid;
-    int m_radius;
 public:
+    /** CONSTRUCTORS / DESTRUCTORS **/
     Grid(std::vector<Cell *> grid);
     ~Grid();
 
-    void drawGrid(sf::RenderWindow& window);
+    /** SETTER **/
     void setGrid(std::vector<Cell*> grid);
+
+    /** GETTERS **/
     std::vector<Cell*> getGrid();
     bool isOverCell(sf::Vector2i mouse);
+
+    /** OTHERS **/
+    void drawGrid(sf::RenderWindow& window);
+
+private:
+    std::vector<Cell*> m_grid;
+    int m_radius;
 };
 
 #endif // GRID_H

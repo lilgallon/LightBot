@@ -27,7 +27,7 @@ std::string Utils::getTime(){
 
     std::string hour,min,sec;
 
-    // reformat
+    // reformat -> get 10:02:05 instead of 10:2:5 for exemple
     if(now->tm_hour>=10){
         hour = std::to_string(now->tm_hour);
     }else{

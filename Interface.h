@@ -14,40 +14,41 @@
 class Interface : public Application
 {
 public:
+    /** Constructors / Desctructors **/
     Interface();
     ~Interface();
 private:
 
-    //enum class State { HOME, CREDITS, LEVEL_SELECTION, IN_GAME, LEVEL_EDITOR, END_GAME, IDLE} m_state;
-    Utils::State m_state;
+    /** Attributes **/
 
+    // Game state
+    Utils::State m_state;
+    // Buttons
     std::vector<Button*> m_buttons_home;
     std::vector<Button*> m_buttons_level_selection;
     std::vector<Button*> m_buttons_credits;
     std::vector<Theme*> m_themes;
-    int m_mouseInRectId;
+    // Loop controller
     bool m_first_loop;
-
+    // Grid (level)
+    // TODO
+    // make a method / class that loads a level and put it in m_grid
     Grid* m_grid;
 
-    // ELements liés à la boucle de jeu
-    void loop()  override;
-
+    /** Methods **/
     // Interactions w/ user
     void mouse_button_pressed()                              override;
     void mouse_button_released()                             override;
     void mouse_moved          ()                             override;
     //void key_pressed (const sf::Event::KeyEvent & /*event*/) override;
-
     // Interfaces
     void draw_buttons(std::vector<Button*> buttons);
-    void draw_screen();
-
     // Other methods
-    bool isOnButton(Button *b);
-    bool isOnCell(Grid* g);
-    void changeButtonAppareance(bool onButton, Button* b);
-    void changeState(bool onButton, Button* b);
+    bool isOnButton(Button *b) const;
+    bool isOnCell(Grid* g) const;
+    void changeButtonAppareance(const bool &onButton, Button* b);
+    void changeState(const bool &onButton, Button* b);
+    void loop()  override;
 
 };
 

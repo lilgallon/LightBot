@@ -21,6 +21,10 @@ namespace {
     const unsigned int SCREEN_HEIGHT = 600;
 }
 
+/************************************************
+*         CONSTRUCTORS / DESTRUCTORS            *
+*************************************************/
+// It initializes the buttons, the initial game state
 Interface::Interface()
     :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_first_loop{true}
 {
@@ -46,7 +50,7 @@ Interface::Interface()
 
     m_state = Utils::State::HOME;
 }
-
+// It deletes the pointers taht are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
 
     for(Button* b : m_buttons_home){
@@ -67,10 +71,10 @@ Interface::~Interface(){
     }
 }
 
-/**
- * Interface::run()
- * ouverture de la fenêtre et boucle d'interaction
- */
+/************************************************
+*               LOOP                            *
+*************************************************/
+// It draws things to the screen according to the game state
 void Interface::loop()
 {
     m_window.clear(sf::Color::White);
@@ -114,12 +118,10 @@ void Interface::loop()
     m_window.display();
 }
 
-void Interface::draw_buttons(std::vector<Button*> buttons){
-    for(Button *b : buttons){
-        b->draw_on(m_window);
-    }
-}
-
+/************************************************
+*               PLAYER INTERACTIONS             *
+*************************************************/
+// Make things when the player clicks his mouse
 void Interface::mouse_button_pressed(){
     switch (m_state) {
     case Utils::State::HOME:
@@ -152,7 +154,28 @@ void Interface::mouse_button_pressed(){
         break;
     }
 }
-
+// Make things when the player releases his mouse
+void Interface::mouse_button_released(){
+    switch (m_state) {
+    case Utils::State::HOME:
+        break;
+    case Utils::State::CREDITS:
+        break;
+    case Utils::State::LEVEL_SELECTION:
+        break;
+    case Utils::State::IN_GAME:
+        break;
+    case Utils::State::LEVEL_EDITOR:
+        break;
+    case Utils::State::END_GAME:
+        break;
+    case Utils::State::IDLE:
+        break;
+    default:
+        break;
+    }
+}
+// Make things when the player moves his mouse
 void Interface::mouse_moved(){
     switch (m_state) {
     case Utils::State::HOME:
@@ -183,12 +206,20 @@ void Interface::mouse_moved(){
         break;
     }
 }
+// Make things when the player uses his keyboard
+//void Interface::key_pressed (const sf::Event::KeyEvent & /*event*/);
 
-void Interface::mouse_button_released(){
-
+/************************************************
+*        DRAWING / UPDATE METHODS                *
+*************************************************/
+// It draws the buttons of the actual game state
+void Interface::draw_buttons(std::vector<Button*> buttons){
+    for(Button *b : buttons){
+        b->draw_on(m_window);
+    }
 }
-
-void Interface::changeButtonAppareance(bool onButton, Button* b){
+// It changes a button appareace according to the mouse position
+void Interface::changeButtonAppareance(const bool &onButton, Button* b){
     if(onButton){
         b->setColor(b->getTheme()->getRectOnRectFillColor());
         b->setOutlineColor(b->getTheme()->getRectOnRectOutlineColor());
@@ -197,18 +228,24 @@ void Interface::changeButtonAppareance(bool onButton, Button* b){
         b->setOutlineColor(b->getTheme()->getRectDefaultOutlineColor());
     }
 }
-
-void Interface::changeState(bool onButton, Button* b){
+// It changes the gamestate according to the button selected
+void Interface::changeState(const bool &onButton, Button* b){
     if(onButton){
        std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
         m_state = b->getState();
     }
 }
 
-bool Interface::isOnButton(Button* b){
+/************************************************
+*                UTILITY METHODS                *
+*************************************************/
+// Takes a button and calls the button's method to check
+// if the mouse if over it
+bool Interface::isOnButton(Button* b) const{
     return b->isOverRect(m_mouse);
 }
-
-bool Interface::isOnCell(Grid* g){
+// Takes a cell and calls the cell's method to check
+// if the mouse if over it
+bool Interface::isOnCell(Grid* g) const{
     return g->isOverCell(m_mouse);
 }
