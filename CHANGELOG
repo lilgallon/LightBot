@@ -25,6 +25,9 @@ $ Apply label to window makes an unknow crash
 * Button update fix
 $ Memomry (deleting buttons - check issues)
 
+## Version 5: 25/04/17 ##
+* Memory cleaning fix
+
 ## Version 5: ../../.. ##
 & Method isOnCell
 	- Change cell light if on the cell

@@ -30,10 +30,11 @@ Button::Button(Utils::State stateIfClicked, sf::Vector2f position, sf::Vector2f 
     initLabel(position,size,theme->getLabelFillColor(),theme->getLabel());
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
-
+/*
 Button::~Button(){
     delete m_theme;
 }
+*/
 
 Utils::State Button::getState(){
     return m_state;

@@ -19,7 +19,7 @@ public:
     Utils::State getState();
 
     Button(Utils::State stateIfClicked,sf::Vector2f position, sf::Vector2f size, Theme* theme);
-    ~Button();
+    //~Button();
 
 private:
     void initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fillColor, int outline, sf::Color outlineColor);
