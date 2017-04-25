@@ -28,7 +28,7 @@ $ Memomry (deleting buttons - check issues)
 ## Version 5: 25/04/17 ##
 * Memory cleaning fix
 
-## Version 5: ../../.. ##
+## Version 6: ../../.. ##
 & Method isOnCell
 	- Change cell light if on the cell
 & Fix bug font
