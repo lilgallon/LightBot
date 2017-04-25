@@ -36,3 +36,8 @@ $ Memomry (deleting buttons - check issues)
 * Cleaned the entiere code
 * Commented the entiere code
 * Fixed warnings
+
+## Version 8: 25/04/17 ##
+* Label added in the Theme
++ Background methods added
+* Theme improved (label placement & appareance)

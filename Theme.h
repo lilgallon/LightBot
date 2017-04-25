@@ -27,7 +27,8 @@ public:
     sf::Color getRectOnRectOutlineColor() const;
     // Label
     std::string getLabelText() const;
-    sf::Color getLabelFillColor() const;
+    sf::Color getLabelDefaultFillColor() const;
+    sf::Color getLabelOnRectFillColor() const;
     // Not constant since it modifies m_font and m_text
     sf::Text getLabel();
 

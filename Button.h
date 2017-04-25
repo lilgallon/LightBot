@@ -25,6 +25,7 @@ public:
     void setOutlineColor(const sf::Color &color);
     void setTexture(sf::Texture *texture);
     void setLabelText(const std::string &label);
+    void setLabelColor(const sf::Color &color);
 
     /** OTHERS **/
     void draw_on(sf::RenderWindow &window) const;

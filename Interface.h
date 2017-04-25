@@ -34,6 +34,9 @@ private:
     // TODO
     // make a method / class that loads a level and put it in m_grid
     Grid* m_grid;
+    // Texute
+    sf::Texture m_texture;
+    sf::Sprite m_sprite;
 
     /** Methods **/
     // Interactions w/ user
@@ -43,12 +46,15 @@ private:
     //void key_pressed (const sf::Event::KeyEvent & /*event*/) override;
     // Interfaces
     void draw_buttons(std::vector<Button*> buttons);
+    void draw_background();
+
     // Other methods
     bool isOnButton(Button *b) const;
     bool isOnCell(Grid* g) const;
     void changeButtonAppareance(const bool &onButton, Button* b);
     void changeState(const bool &onButton, Button* b);
     void loop()  override;
+    void loadBackground();
 
 };
 

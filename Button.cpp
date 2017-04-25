@@ -31,7 +31,7 @@ Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position,
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    initLabel(position,size,theme->getLabelFillColor(),theme->getLabel());
+    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel());
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 // Constructor for an action button
@@ -41,7 +41,7 @@ Button::Button(int action,sf::Vector2f position, sf::Vector2f size, Theme* theme
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    initLabel(position,size,theme->getLabelFillColor(),theme->getLabel());
+    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel());
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 // Init the label inside a constructor
@@ -49,8 +49,10 @@ void Button::initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color
 
     m_label = text;     // FONT FIX!!
 
+    // TODO
+    // Améliorer pour prendre en compte la taille du texte pour mieux positionner le label
+    m_label.setOrigin(size.x/4.5,size.y/4.);
     m_label.setPosition(position);
-    m_label.setOrigin(size.x/4.,size.y-size.y/2.);
     m_label.setColor(color);
     m_label.setCharacterSize(20);
 
@@ -110,6 +112,9 @@ void Button::setTexture(sf::Texture *texture){
 // Sets the text of the rectangle
 void Button::setLabelText(const std::string &label){
     m_label.setString(label);
+}
+void Button::setLabelColor(const sf::Color &color){
+    m_label.setColor(color);
 }
 
 /************************************************

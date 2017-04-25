@@ -60,7 +60,7 @@ sf::Color Theme::getRectDefaultFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Black;
+        color = sf::Color(128,128,128);
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -74,7 +74,7 @@ sf::Color Theme::getRectOnRectFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::White;
+        color = sf::Color::Yellow;
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -88,7 +88,7 @@ sf::Color Theme::getRectDefaultOutlineColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Blue;
+        color = sf::Color::Yellow;
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -102,7 +102,7 @@ sf::Color Theme::getRectOnRectOutlineColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Red;
+        color = sf::Color(128,128,128);
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -125,12 +125,25 @@ int Theme::getRectOutlineThickness() const{
     return thickness;
 }
 // Default label color
-sf::Color Theme::getLabelFillColor() const{
+sf::Color Theme::getLabelDefaultFillColor() const{
     // To prevent any crash if we are in default case
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Green;
+        color = sf::Color::Yellow;
+        break;
+    default:
+        std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
+        break;
+    }
+    return color;
+}
+sf::Color Theme::getLabelOnRectFillColor() const{
+    // To prevent any crash if we are in default case
+    sf::Color color = sf::Color::Red;
+    switch(m_id){
+    case 1:
+        color = sf::Color(128,128,128);
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -143,7 +156,7 @@ sf::Color Theme::getLabelFillColor() const{
 // is a font variable which caused an unknown bug
 sf::Text Theme::getLabel(){
     // Variables
-    std::string fontPath = "ressources/";
+    std::string fontPath = "ressources/fonts/";
     std::string fontName = "";
 
     // Selection of the font

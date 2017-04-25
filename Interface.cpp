@@ -19,6 +19,9 @@
 namespace {
     const unsigned int SCREEN_WIDTH = 800;
     const unsigned int SCREEN_HEIGHT = 600;
+
+    const std::string RES_PATH = "ressources/";
+    const std::string IMG_PATH = "images/";
 }
 
 /************************************************
@@ -38,14 +41,18 @@ Interface::Interface()
     m_themes.push_back(defaultTheme);
 
     Button* home1 = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme);
+    home1->setLabelText("Play");
     Button* home2 = new Button(Utils::State::CREDITS,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme);
+    home2->setLabelText("Credits");
     m_buttons_home.push_back(home1);
     m_buttons_home.push_back(home2);
 
     Button* levelSelection1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
+    levelSelection1->setLabelText("<-");
     m_buttons_level_selection.push_back(levelSelection1);
 
     Button* credits1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
+    credits1->setLabelText("<-");
     m_buttons_credits.push_back(credits1);
 
     m_state = Utils::State::HOME;
@@ -78,12 +85,21 @@ Interface::~Interface(){
 void Interface::loop()
 {
     m_window.clear(sf::Color::White);
+    draw_background();
+    if(m_first_loop){
+        loadBackground();
+    }
     switch(m_state){
     case Utils::State::HOME:
+        // TODO
+        // Faire autre chose que le m_first_loop ??
+        m_first_loop = false;
+
         draw_buttons(m_buttons_home);
         break;
     case Utils::State::CREDITS:
         draw_buttons(m_buttons_credits);
+        m_first_loop = false;
         break;
     case Utils::State::LEVEL_SELECTION:
         draw_buttons(m_buttons_level_selection);
@@ -101,16 +117,20 @@ void Interface::loop()
             grid.push_back(c4);
             m_grid = new Grid(grid);
         }
-        m_first_loop = false;
         m_grid->drawGrid(m_window);
+        m_first_loop = false;
         break;
     case Utils::State::IN_GAME:
+        m_first_loop = false;
         break;
     case Utils::State::LEVEL_EDITOR:
+        m_first_loop = false;
         break;
     case Utils::State::END_GAME:
+        m_first_loop = false;
         break;
     case Utils::State::IDLE:
+        m_first_loop = false;
         break;
     default:
         break;
@@ -218,20 +238,27 @@ void Interface::draw_buttons(std::vector<Button*> buttons){
         b->draw_on(m_window);
     }
 }
+void Interface::draw_background(){
+    m_window.draw(m_sprite);
+}
+
 // It changes a button appareace according to the mouse position
 void Interface::changeButtonAppareance(const bool &onButton, Button* b){
     if(onButton){
         b->setColor(b->getTheme()->getRectOnRectFillColor());
         b->setOutlineColor(b->getTheme()->getRectOnRectOutlineColor());
+        b->setLabelColor(b->getTheme()->getLabelOnRectFillColor());
     }else{
         b->setColor(b->getTheme()->getRectDefaultFillColor());
         b->setOutlineColor(b->getTheme()->getRectDefaultOutlineColor());
+        b->setLabelColor(b->getTheme()->getLabelDefaultFillColor());
     }
 }
 // It changes the gamestate according to the button selected
 void Interface::changeState(const bool &onButton, Button* b){
     if(onButton){
        std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
+        m_first_loop = true;
         m_state = b->getState();
     }
 }
@@ -248,4 +275,42 @@ bool Interface::isOnButton(Button* b) const{
 // if the mouse if over it
 bool Interface::isOnCell(Grid* g) const{
     return g->isOverCell(m_mouse);
+}
+// Load the background according to the game state
+void Interface::loadBackground(){
+    std::string image;
+    switch (m_state) {
+    case Utils::State::HOME:
+        image = "lightbot-main.png";
+        break;
+    case Utils::State::CREDITS:
+        image = "default.png";
+        break;
+    case Utils::State::LEVEL_SELECTION:
+        image = "default.png";
+        break;
+    case Utils::State::IN_GAME:
+        image = "default.png";
+        break;
+    case Utils::State::LEVEL_EDITOR:
+        image = "default.png";
+        break;
+    case Utils::State::END_GAME:
+        image = "default.png";
+        break;
+    case Utils::State::IDLE:
+        image = "default.png";
+        break;
+    default:
+        break;
+    }
+    if(!m_texture.loadFromFile(RES_PATH+IMG_PATH+image)){
+        std::cout << Utils::getTime() + "[Texture-ERROR]: Could not load the background" << std::endl;
+        std::cout << Utils::getTime() + "[Textur-FIX]: Check \""
+                     + RES_PATH + IMG_PATH + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Textur-FIX]: The texture will be ignored." << std::endl;
+    }else{
+        m_sprite.setTexture(m_texture);
+        m_sprite.setPosition(0,0);
+    }
 }
