@@ -30,3 +30,9 @@ $ Memomry (deleting buttons - check issues)
 ## Version 6: 25/04/17 ##
 * Button update fix
 * Output added
+
+## Version 7: 25/04/17 ##
+* Button class ready for the actions
+* Cleaned the entiere code
+* Commented the entiere code
+* Fixed warnings
