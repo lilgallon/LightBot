@@ -25,40 +25,47 @@ const std::string FONT = "ressources/Travis_Sans_MS.ttf";
 *                CONSTRUCTORS                   *
 *************************************************/
 // Constructor for a state button
-Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme)
+Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
     : m_state{stateIfClicked}, m_action{-1}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel());
+    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel(),text);
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 // Constructor for an action button
-Button::Button(int action,sf::Vector2f position, sf::Vector2f size, Theme* theme)
+Button::Button(int action,sf::Vector2f position, sf::Vector2f size, Theme* theme, const std::string &text)
     :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel());
+    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel(), text);
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 // Init the label inside a constructor
-void Button::initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Text text){
+void Button::initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text){
 
-    m_label = text;     // FONT FIX!!
+    //m_label = font;     // FONT FIX!!
+
+    // marche aussi finalement
+    const sf::Font* font1 = font.getFont();
+    m_label.setFont(*font1);
+    //
 
     // TODO
     // Améliorer pour prendre en compte la taille du texte pour mieux positionner le label
+    m_label.setString(text);
     m_label.setOrigin(size.x/4.5,size.y/4.);
     m_label.setPosition(position);
+
     m_label.setColor(color);
     m_label.setCharacterSize(20);
 
 }
 // Init the button insaide a constructor
-void Button::initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fillColor, int outline, sf::Color outlineColor){
+void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &fillColor, const int &outline, const sf::Color &outlineColor){
     m_button.setPosition(position);
     m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
     m_button.setSize(size);
@@ -91,6 +98,10 @@ bool Button::isOverRect(const sf::Vector2i &mouse) const
             && mouse.x <= m_button.getPosition().x + m_button.getSize().x - m_button.getSize().x/2
             && mouse.y >= m_button.getPosition().y - m_button.getSize().y/2
             && mouse.y <= m_button.getPosition().y + m_button.getSize().y - m_button.getSize().y/2;
+}
+
+std::string Button::getLabelText() const{
+    return m_label.getString();
 }
 
 /************************************************

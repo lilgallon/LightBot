@@ -20,7 +20,7 @@ namespace {
     const unsigned int SCREEN_WIDTH = 800;
     const unsigned int SCREEN_HEIGHT = 600;
 
-    const std::string RES_PATH = "ressources/";
+    const std::string RES_PATH = "resources/";
     const std::string IMG_PATH = "images/";
 }
 
@@ -29,7 +29,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_first_loop{true}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -40,22 +40,20 @@ Interface::Interface()
     Theme *defaultTheme = new Theme(1);
     m_themes.push_back(defaultTheme);
 
-    Button* home1 = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme);
-    home1->setLabelText("Play");
-    Button* home2 = new Button(Utils::State::CREDITS,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme);
-    home2->setLabelText("Credits");
+    Button* home1 = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme, "Play");
+    //home1->setLabelText("Play");
+    Button* home2 = new Button(Utils::State::CREDITS,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "Credits");
+    //home2->setLabelText("Credits");
     m_buttons_home.push_back(home1);
     m_buttons_home.push_back(home2);
 
-    Button* levelSelection1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
-    levelSelection1->setLabelText("<-");
+    Button* levelSelection1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
+    //levelSelection1->setLabelText("<-");
     m_buttons_level_selection.push_back(levelSelection1);
 
-    Button* credits1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme);
-    credits1->setLabelText("<-");
+    Button* credits1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
+    //credits1->setLabelText("<-");
     m_buttons_credits.push_back(credits1);
-
-    m_state = Utils::State::HOME;
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
@@ -92,8 +90,12 @@ void Interface::loop()
     switch(m_state){
     case Utils::State::HOME:
         // TODO
-        // Faire autre chose que le m_first_loop ??
+        // Faire autre chose que le m_first_loop ?? --->  init()
         m_first_loop = false;
+        // TODO
+        // Fix pb avec les labels
+        m_buttons_home[0]->setLabelText(m_buttons_home[0]->getLabelText());
+        m_buttons_home[1]->setLabelText(m_buttons_home[1]->getLabelText());
 
         draw_buttons(m_buttons_home);
         break;
@@ -117,6 +119,7 @@ void Interface::loop()
             grid.push_back(c4);
             m_grid = new Grid(grid);
         }
+
         m_grid->drawGrid(m_window);
         m_first_loop = false;
         break;
@@ -212,7 +215,6 @@ void Interface::mouse_moved(){
         for(Button * b : m_buttons_level_selection){
             changeButtonAppareance(isOnButton(b),b);
         }
-
         break;
     case Utils::State::IN_GAME:
         break;

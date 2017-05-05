@@ -22,6 +22,9 @@ public:
     /** OTHERS **/
     void drawGrid(sf::RenderWindow& window);
 
+    /** FILE STREAM **/
+    void loadLevel(int level_id);
+
 private:
     std::vector<Cell*> m_grid;
     int m_radius;

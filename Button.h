@@ -9,8 +9,8 @@ class Button
 {
 public:
     /** CONSTRUCTORS / DESCTRUCTORS **/
-    Button(const Utils::State &stateIfClicked,const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme);
-    Button(int action,sf::Vector2f position, sf::Vector2f size, Theme* theme);
+    Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text);
+    Button(int action, sf::Vector2f position, sf::Vector2f size, Theme* theme, const std::string &text);
     ~Button() = default;
 
     /** GETTERS **/
@@ -19,6 +19,7 @@ public:
     Theme* getTheme() const;
     Utils::State getState() const;
     int getAction() const;
+    std::string getLabelText() const;
 
     /** SETTERS **/
     void setColor(const sf::Color &color);
@@ -31,8 +32,8 @@ public:
     void draw_on(sf::RenderWindow &window) const;
 
 private:
-    void initButton(sf::Vector2f position, sf::Vector2f size, sf::Color fillColor, int outline, sf::Color outlineColor);
-    void initLabel(sf::Vector2f position, sf::Vector2f size, sf::Color color, sf::Text text);
+    void initButton(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &fillColor, const int &outline, const sf::Color &outlineColor);
+    void initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text);
 
     const Utils::State m_state;
     const int m_action;

@@ -156,13 +156,13 @@ sf::Color Theme::getLabelOnRectFillColor() const{
 // is a font variable which caused an unknown bug
 sf::Text Theme::getLabel(){
     // Variables
-    std::string fontPath = "ressources/fonts/";
+    std::string fontPath = "resources/fonts/";
     std::string fontName = "";
 
     // Selection of the font
     switch(m_id){
     case 1:
-        fontName = "Ubuntu-L.ttf";
+        fontName = "coolvetica.ttf";
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
