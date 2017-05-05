@@ -34,7 +34,7 @@ private:
     // TODO
     // make a method / class that loads a level and put it in m_grid
     Grid* m_grid;
-    // Texute
+    // Texure
     sf::Texture m_texture;
     sf::Sprite m_sprite;
 

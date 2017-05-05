@@ -9,11 +9,12 @@ class Grid
 {
 public:
     /** CONSTRUCTORS / DESTRUCTORS **/
-    Grid(std::vector<Cell *> grid);
+    Grid(std::vector<Cell *> cells);
+    Grid();
     ~Grid();
 
     /** SETTER **/
-    void setGrid(std::vector<Cell*> grid);
+    void setGrid(std::vector<Cell*> cells);
 
     /** GETTERS **/
     std::vector<Cell*> getGrid();
@@ -26,8 +27,10 @@ public:
     void loadLevel(int level_id);
 
 private:
-    std::vector<Cell*> m_grid;
+    std::vector<Cell*> m_cells;
     int m_radius;
+    // Error handler
+    bool m_error_drawing;
 };
 
 #endif // GRID_H

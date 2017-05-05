@@ -9,6 +9,7 @@ class Cell
 public:
     /** CONSTRUCTORS / DESCTRUCTORS **/
     Cell(const sf::Vector2f &pos, const int &height, const bool &light);
+    Cell() = default;
     ~Cell() = default;
 
     /** SETTERS **/

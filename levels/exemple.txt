@@ -1,0 +1,2 @@
+FILE NAME WHATEVER YOU WANT
+pos_x;pos_y;height(0 to x);light(0=false,1=true)

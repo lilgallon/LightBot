@@ -29,7 +29,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_grid{new Grid()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -54,6 +54,7 @@ Interface::Interface()
     Button* credits1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
     //credits1->setLabelText("<-");
     m_buttons_credits.push_back(credits1);
+
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
@@ -107,17 +108,10 @@ void Interface::loop()
         draw_buttons(m_buttons_level_selection);
 
         if(m_first_loop){
-            // Création grid bob
-            std::vector<Cell*> grid;
-            Cell* c1 = new Cell({0,0},0,true);
-            Cell* c2 = new Cell({1,0},0,true);
-            Cell* c3 = new Cell({1,1},0,false);
-            Cell* c4 = new Cell({0,1},0,false);
-            grid.push_back(c1);
-            grid.push_back(c2);
-            grid.push_back(c3);
-            grid.push_back(c4);
-            m_grid = new Grid(grid);
+            // TODO
+            // init plutot non?
+            // loadLevel doesn't cause a crash when loading a inexistant level
+            m_grid->loadLevel(1);
         }
 
         m_grid->drawGrid(m_window);

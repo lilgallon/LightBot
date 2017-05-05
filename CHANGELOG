@@ -46,3 +46,19 @@ $ Memomry (deleting buttons - check issues)
 * Button's constructor now takes its label
 * New font fix (it was a pointer / reference problem)
 * Changed ressources to resources
+
+## Version 10 : 05/05/17 ##
++ loadLevel : it loads a level from a file 
+	- it doesn't cause a crash if the level does not exist)
+	- it overrides the precedent level if there was one
+	- levels ready for next updates
+* Fixed grid conception problems (some crashes)
+
+#TODO:
+(code ready in grid.cpp)
+* If the file loads properly, check if the values are okay:
+- correct fields (4 fields with 1 in the header..)
+- pos x & y not too big
+- light >1 show warning in console
+- height >=0
+
