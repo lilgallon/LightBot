@@ -41,3 +41,8 @@ $ Memomry (deleting buttons - check issues)
 * Label added in the Theme
 + Background methods added
 * Theme improved (label placement & appareance)
+
+## Version 9 : 05/05/17 ##
+* Button's constructor now takes its label
+* New font fix (it was a pointer / reference problem)
+* Changed ressources to resources
