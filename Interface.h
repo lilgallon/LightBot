@@ -31,6 +31,7 @@ private:
     // Loop controller
     bool m_first_loop;
     // Grid (level)
+    int m_selected_level;
     // TODO
     // make a method / class that loads a level and put it in m_grid
     Grid* m_grid;

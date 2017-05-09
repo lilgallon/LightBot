@@ -27,6 +27,7 @@ namespace{
     const int POS_Y_INDEX = 1;
     const int HEIGHT_INDEX = 2;
     const int LIGHT_INDEX = 3;
+    const sf::Vector2f GAP = {150,150};
 }
 
 // TODO
@@ -40,15 +41,38 @@ namespace{
 *         CONSTRUCTORS / DESTRUCTORS            *
 *************************************************/
 Grid::Grid(std::vector<Cell*> cells)
-    :m_cells{cells},m_radius{80},m_error_drawing{false}
+    :m_cells{cells},m_radius{80},m_error_drawing{false},m_over_cell{nullptr}
 {
-
+    initLabel();
 }
 Grid::Grid()
-    :m_radius{80},m_error_drawing{false}
+    :m_radius{80},m_error_drawing{false},m_over_cell{nullptr}
 {
+    initLabel();
+}
+
+void Grid::initLabel(){
+    std::string fontPath = "resources/fonts/";
+    std::string fontName = "coolvetica.ttf";
+
+    // Font load
+    if (!m_font.loadFromFile(fontPath+fontName)) {
+        //throw "Police "+POLICE+" manquante";
+        std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""
+                     + fontPath+fontName + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: The font will be ignored." << std::endl;
+        m_text.setFont(m_font);
+    }else{
+        std::cout << Utils::getTime() + "[Grid-INFO]: Font loaded" << std::endl;
+    }
+
+    m_text.setFont(m_font);
+    m_text.setColor(sf::Color::Black);
+    m_text.setCharacterSize(20);
 
 }
+
 Grid::~Grid(){
     for(Cell* c : m_cells){
         delete c;
@@ -68,14 +92,55 @@ void Grid::setGrid(std::vector<Cell*> cells){
 // TODO
 // NOT CHECKED - It returns true if the mouse is on a cell
 bool Grid::isOverCell(sf::Vector2i mouse){
+
+    for(Cell* c : m_cells){
+        c->setLight(false);
+    }
+
     bool isOver = false;
     unsigned int i = 0;
     while(!isOver && i<m_cells.size()){
-        isOver = Utils::abs(mouse.x-m_cells.at(i)->getPos().x)<=m_radius
-              && Utils::abs(mouse.y-m_cells.at(i)->getPos().y)<=m_radius;
+
+        sf::Vector2f pos = GAP;
+
+        if((int)m_cells.at(i)->getPos().x%2!=0 && (int)m_cells.at(i)->getPos().y%2==0){     // OK
+            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
+
+            if(m_cells.at(i)->getPos().y==0){
+                pos.y -= (m_radius*sin(Utils::PI/3.));
+            }else{
+                pos.y -= m_cells.at(i)->getPos().y * (m_radius*sin(Utils::PI/3.));
+            }
+        }else if((int)m_cells.at(i)->getPos().x%2==0 && (int)m_cells.at(i)->getPos().y%2==0){
+            pos.x += m_cells.at(i)->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
+            pos.y -= m_cells.at(i)->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+        }else if((int)m_cells.at(i)->getPos().x%2!=0 && (int)m_cells.at(i)->getPos().y%2!=0){
+            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += m_cells.at(i)->getPos().y * (m_radius*sin(Utils::PI/3.));
+        }else if((int)m_cells.at(i)->getPos().x%2==0 && (int)m_cells.at(i)->getPos().y%2!=0){
+            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += m_cells.at(i)->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+        }
+
+
+        isOver = Utils::abs(mouse.x-pos.x)<=m_radius
+              && Utils::abs(mouse.y-pos.y)<=m_radius;
         i++;
     }
+    i --;
+    if(isOver){
+        m_cells.at(i)->setLight(true);
+        m_over_cell = m_cells.at(i);
+    }else if(m_over_cell){
+        m_over_cell = nullptr;
+    }
+
     return isOver;
+}
+
+Cell *Grid::getOverCell() const
+{
+    return m_over_cell;
 }
 // Returns the grid
 std::vector<Cell*> Grid::getGrid(){
@@ -106,13 +171,6 @@ void Grid::loadLevel(int level_id){
         std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + std::to_string(level_id)
                   << std::endl;
     }else{
-        // Delete the precedent grid if there was one before
-        /*
-        for(Cell* c : m_cells){
-            delete c;
-        }*/
-
-
         // The first line corresponds to the level name
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Reading the level"
                   << std::endl;
@@ -159,6 +217,8 @@ void Grid::loadLevel(int level_id){
             Cell* c = new Cell(pos,height,light);
             cells.push_back(c);
         }
+        // Resizing because f.eof() make an extra loop
+        cells.resize(cells.size()-1);
         // Erase the precedent grid to put the new one
         this->setGrid(cells);
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Level loaded"
@@ -166,47 +226,43 @@ void Grid::loadLevel(int level_id){
     }
 
     f.close();
+}
 
+void Grid::saveLevel(int level_id, std::string level_name){
+    std::fstream f;
+    std::string file = LEVELS_PATH + std::to_string(level_id) + ".txt";
 
+    std::fstream f_test;
 
-
-    /*
-    try{
-
-    }catch(Exception e){
-
-    }
-    */
-    /*
-    void remplirFichier( string fichier )
+    // Tries to open the file
+    f_test.open(LEVELS_PATH + std::to_string(level_id) + ".txt", std::ios::in);
+    if( !f_test.fail() )
     {
-        fstream f;
+        std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + std::to_string(level_id) + " already exists."
+                  << std::endl;
+        std::cout << Utils::getTime() + "[Level Saver-FIX]: The level id#" + std::to_string(level_id) + " will not be saved."
+                  << std::endl;
+    }else{
 
-        f.open(fichier.c_str(), ios::out);
+        f.open(file.c_str(), std::ios::out);
         if( f.fail() )
         {
-            cerr << "ouverture en ecriture impossible" << endl;
-         //   exit(EXIT_FAILURE);
+            std::cout << Utils::getTime() + "[Level Saver-ERROR]: Could not save the level id #" + std::to_string(level_id)
+                      << std::endl;
+        }else{
+            // Header
+            f << level_name;
+            for(Cell* c : m_cells){
+                f << "\n";
+                f << c->getPos().x << ";" << c->getPos().y << ";" << c->getHeight() << ";" << std::to_string(c->getLight());
+            }
+            std::cout << Utils::getTime() + "[Level Saver-INFO]: Level id #" + std::to_string(level_id) + " has been saved."
+                      << std::endl;
         }
-        for( int i=0 ; i<10 ; i++ )
-            f << i << " ";
-        f.close();
     }
+    f_test.close();
+    f.close();
 
-    void ajoutFichier(string fichier){
-
-        fstream f;
-        f.open(fichier.c_str(), ios::out|ios::app);
-        if( f.fail() )
-        {
-            cerr << "ouverture en ecriture impossible" << endl;
-          //  exit(EXIT_FAILURE);
-        }
-        for( int i=10 ; i<20 ; i++ )
-            f << i << " ";
-        f.close();
-    }
-    */
 }
 
 /************************************************
@@ -229,7 +285,6 @@ void Grid::drawGrid(sf::RenderWindow& window){
     }else if(!m_cells.empty()){
         m_error_drawing = false;
         sf::CircleShape hexa;
-        sf::Vector2f gap = {150,150};
         sf::Vector2f pos;
         sf::Color color_light(128,128,128,128);
         hexa.setPointCount(6);
@@ -240,13 +295,15 @@ void Grid::drawGrid(sf::RenderWindow& window){
         hexa.setRadius(m_radius);
         for(Cell* c : m_cells){
 
+            // HEXAGONES
+
             if(c->getLight()){
                 hexa.setFillColor(color_light);
             }else{
                 hexa.setFillColor(sf::Color::Transparent);
             }
 
-            pos = gap;
+            pos = GAP;
 
             // Sets the center in the center :)
             hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
@@ -269,11 +326,17 @@ void Grid::drawGrid(sf::RenderWindow& window){
                 pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
                 pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
             }
-            //center.setPosition(pos);
 
             hexa.setPosition(pos);
+
+            // TEXT
+            std::string label = std::to_string((int)c->getPos().x) + ";" + std::to_string((int)c->getPos().y);
+
+            m_text.setString(label);
+            m_text.setPosition({pos.x-10,pos.y-m_radius/2});
+
+            window.draw(m_text);
             window.draw(hexa);
-            //window.draw(center);
         }
     }
 

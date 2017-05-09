@@ -26,6 +26,7 @@ private:
     sf::Vector2f m_pos;
     int m_height;
     bool m_light;
+
 };
 
 #endif // CELL_H

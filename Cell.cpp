@@ -21,7 +21,6 @@
 Cell::Cell(const sf::Vector2f &pos, const int &height, const bool &light)
     :m_pos{pos}, m_height{height}, m_light{light}
 {
-
 }
 
 /************************************************
@@ -39,6 +38,7 @@ void Cell::setLight(const bool &light){
 void Cell::setPos(const sf::Vector2f &pos){
     m_pos = pos;
 }
+
 
 /************************************************
 *                   GETTERS                     *

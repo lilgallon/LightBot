@@ -54,6 +54,10 @@ $ Memomry (deleting buttons - check issues)
 	- levels ready for next updates
 * Fixed grid conception problems (some crashes)
 
+## Version 11 : 09/05/17 ##
++ saveLevel()  
++ level selection working                  
+
 #TODO:
 (code ready in grid.cpp)
 * If the file loads properly, check if the values are okay:

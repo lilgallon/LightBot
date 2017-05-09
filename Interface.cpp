@@ -29,7 +29,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_grid{new Grid()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_grid{new Grid()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -112,6 +112,7 @@ void Interface::loop()
             // init plutot non?
             // loadLevel doesn't cause a crash when loading a inexistant level
             m_grid->loadLevel(1);
+            m_grid->saveLevel(99,"testage");
         }
 
         m_grid->drawGrid(m_window);
@@ -157,6 +158,19 @@ void Interface::mouse_button_pressed(){
         for(Button * b : m_buttons_level_selection){
             changeState(isOnButton(b),b);
             changeButtonAppareance(false,b);
+        }
+        if(m_grid->isOverCell(m_mouse)){
+            // If the mouse is over a cell and the user clicked on it
+            // then he has selected the level
+            // now we have to get the level that he choose
+            // REMINDER: the level id is built on this template : "xy"
+            std::string s;
+            s = std::to_string((int)m_grid->getOverCell()->getPos().x)
+                    + std::to_string((int)m_grid->getOverCell()->getPos().y);
+            m_selected_level = atoi(s.c_str());
+            std::cout << Utils::getTime() + "[Game-INFO]: Level id #" + s + " selected" << std::endl;
+            // TODO
+            // CHANGE LEVEL WITH THE SELECTED ID
         }
         break;
     case Utils::State::IN_GAME:
@@ -209,6 +223,8 @@ void Interface::mouse_moved(){
         for(Button * b : m_buttons_level_selection){
             changeButtonAppareance(isOnButton(b),b);
         }
+        // Changes the level grid according to the mouse (level selection)
+        m_grid->isOverCell(m_mouse);
         break;
     case Utils::State::IN_GAME:
         break;

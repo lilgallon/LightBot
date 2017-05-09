@@ -49,7 +49,7 @@ std::string Utils::getTime(){
     return "[" + hour + ":" + min + ":" + sec + "] ";
 }
 
-std::vector<std::__cxx11::string> Utils::split(const std::string &str, const std::string &delim)
+std::vector<std::string> Utils::split(const std::string &str, const std::string &delim)
 {
     std::vector<std::string> tokens;
     size_t prev = 0, pos = 0;
