@@ -10,7 +10,7 @@ class Button
 public:
     /** CONSTRUCTORS / DESCTRUCTORS **/
     Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text);
-    Button(int action, sf::Vector2f position, sf::Vector2f size, Theme* theme, const std::string &text);
+    Button(const Utils::Action &action, const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text);
     ~Button() = default;
 
     /** GETTERS **/
@@ -18,7 +18,7 @@ public:
     sf::RectangleShape getButton() const;
     Theme* getTheme() const;
     Utils::State getState() const;
-    int getAction() const;
+    Utils::Action getAction() const;
     std::string getLabelText() const;
 
     /** SETTERS **/
@@ -36,7 +36,7 @@ private:
     void initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text);
 
     const Utils::State m_state;
-    const int m_action;
+    const Utils::Action m_action;
     Theme* m_theme;
 
     sf::RectangleShape m_button;

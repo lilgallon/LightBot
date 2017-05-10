@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include <exception>
 
 namespace{
     const std::string LEVELS_PATH = "levels/";
@@ -150,14 +151,14 @@ std::vector<Cell*> Grid::getGrid(){
 /**************************************************
  *                 FILE STREAM
  * ************************************************/
-void Grid::loadLevel(int level_id){
+void Grid::loadLevel(std::string level_id){
 
     std::fstream f;
     std::string line;
     std::string level_name;
     std::vector<std::string> sub_string;
 
-    std::vector<Cell*> cells;
+    //std::vector<Cell*> cells;
 
     sf::Vector2f pos;
     int light;
@@ -165,12 +166,28 @@ void Grid::loadLevel(int level_id){
 
 
     // Tries to open the file
-    f.open(LEVELS_PATH + std::to_string(level_id) + ".txt", std::ios::in);
+    f.open(LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( f.fail() )
     {
-        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + std::to_string(level_id)
+        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + level_id
                   << std::endl;
     }else{
+
+        if(!m_cells.empty()){
+            for(Cell* c : m_cells){
+                delete c;
+                std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting a cell"
+                          << std::endl;
+            }
+            std::cout << Utils::getTime() + "[Level Loader-INFO]: Clearing a cell"
+                      << std::endl;
+            m_cells.clear();
+
+            std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting last level"
+                      << std::endl;
+        }
+
+
         // The first line corresponds to the level name
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Reading the level"
                   << std::endl;
@@ -197,6 +214,7 @@ void Grid::loadLevel(int level_id){
             height = atoi(sub_string[HEIGHT_INDEX].c_str());
             light = (bool)atoi(sub_string[LIGHT_INDEX].c_str());
 
+
             /** CHECKER **
             // TODO
             if(pos.x>max){
@@ -213,14 +231,22 @@ void Grid::loadLevel(int level_id){
             }       ***/
 
 
-            // Definition of the new cell
-            Cell* c = new Cell(pos,height,light);
-            cells.push_back(c);
+            // Definition of the new cell, if this is not the end of the file
+            // prevent an extra loop
+            if(!f.eof()){
+                Cell* c = new Cell(pos,height,light);
+                m_cells.push_back(c);
+
+            }
+
+
         }
         // Resizing because f.eof() make an extra loop
-        cells.resize(cells.size()-1);
+        //delete m_cells.at(m_cells.size()-1);
+        //m_cells.resize(m_cells.size()-1);
+        //m_cells.erase(m_cells.end()-1);
         // Erase the precedent grid to put the new one
-        this->setGrid(cells);
+        //this->setGrid(cells);
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Level loaded"
                   << std::endl;
     }
@@ -228,26 +254,26 @@ void Grid::loadLevel(int level_id){
     f.close();
 }
 
-void Grid::saveLevel(int level_id, std::string level_name){
+void Grid::saveLevel(std::string level_id, std::string level_name){
     std::fstream f;
-    std::string file = LEVELS_PATH + std::to_string(level_id) + ".txt";
+    std::string file = LEVELS_PATH + level_id + ".txt";
 
     std::fstream f_test;
 
     // Tries to open the file
-    f_test.open(LEVELS_PATH + std::to_string(level_id) + ".txt", std::ios::in);
+    f_test.open(LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( !f_test.fail() )
     {
-        std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + std::to_string(level_id) + " already exists."
+        std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + level_id + " already exists."
                   << std::endl;
-        std::cout << Utils::getTime() + "[Level Saver-FIX]: The level id#" + std::to_string(level_id) + " will not be saved."
+        std::cout << Utils::getTime() + "[Level Saver-FIX]: The level id#" + level_id + " will not be saved."
                   << std::endl;
     }else{
 
         f.open(file.c_str(), std::ios::out);
         if( f.fail() )
         {
-            std::cout << Utils::getTime() + "[Level Saver-ERROR]: Could not save the level id #" + std::to_string(level_id)
+            std::cout << Utils::getTime() + "[Level Saver-ERROR]: Could not save the level id #" + level_id
                       << std::endl;
         }else{
             // Header
@@ -256,7 +282,7 @@ void Grid::saveLevel(int level_id, std::string level_name){
                 f << "\n";
                 f << c->getPos().x << ";" << c->getPos().y << ";" << c->getHeight() << ";" << std::to_string(c->getLight());
             }
-            std::cout << Utils::getTime() + "[Level Saver-INFO]: Level id #" + std::to_string(level_id) + " has been saved."
+            std::cout << Utils::getTime() + "[Level Saver-INFO]: Level id #" + level_id + " has been saved."
                       << std::endl;
         }
     }
@@ -311,11 +337,13 @@ void Grid::drawGrid(sf::RenderWindow& window){
             if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
                 pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
 
+
                 if(c->getPos().y==0){
                     pos.y -= (m_radius*sin(Utils::PI/3.));
                 }else{
-                    pos.y -= c->getPos().y * (m_radius*sin(Utils::PI/3.));
+                    pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
                 }
+
             }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
                 pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
                 pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));

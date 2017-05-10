@@ -56,7 +56,13 @@ $ Memomry (deleting buttons - check issues)
 
 ## Version 11 : 09/05/17 ##
 + saveLevel()  
-+ level selection working                  
++ level selection working
+
+## Version 12 : 10/05/17 ##
+* Changed level id from int to string (problem 00 != 0)
+* Fixed showGrid algorithm
+* Fixed memory loose
+                  
 
 #TODO:
 (code ready in grid.cpp)
@@ -65,4 +71,7 @@ $ Memomry (deleting buttons - check issues)
 - pos x & y not too big
 - light >1 show warning in console
 - height >=0
+* Method in interface that is called only on changing game state ( inits things -> remove m_frist_loop)
+* Catch / exceptions handler when a line of a level is fuckedup
+* GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
 

@@ -25,8 +25,8 @@ public:
     void drawGrid(sf::RenderWindow& window);
 
     /** FILE STREAM **/
-    void loadLevel(int level_id);
-    void saveLevel(int level_id, std::string level_name);
+    void loadLevel(std::string level_id);
+    void saveLevel(std::string level_id, std::string level_name);
 
 private:
     /** INIT **/

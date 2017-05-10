@@ -22,6 +22,8 @@ namespace {
 
     const std::string RES_PATH = "resources/";
     const std::string IMG_PATH = "images/";
+
+    const sf::Vector2f ACTION_BUTTON_SIZE = {30,30};
 }
 
 /************************************************
@@ -55,6 +57,24 @@ Interface::Interface()
     //credits1->setLabelText("<-");
     m_buttons_credits.push_back(credits1);
 
+
+    // TODO --> add a parameter with the texture
+    Button* in_game1 = new Button(Utils::Action::FORWARD,{20+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"F");
+    Button* in_game2 = new Button(Utils::Action::JUMP,{20+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"J");
+    Button* in_game3 = new Button(Utils::Action::LIGHT,{20+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"L");
+    Button* in_game4 = new Button(Utils::Action::PROG_P1,{20+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"P1");
+    Button* in_game5 = new Button(Utils::Action::PROG_P2,{20+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"P2");
+    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{20+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"TCW");
+    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{20+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
+
+    m_buttons_in_game.push_back(in_game1);
+    m_buttons_in_game.push_back(in_game2);
+    m_buttons_in_game.push_back(in_game3);
+    m_buttons_in_game.push_back(in_game4);
+    m_buttons_in_game.push_back(in_game5);
+    m_buttons_in_game.push_back(in_game6);
+    m_buttons_in_game.push_back(in_game7);
+
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
@@ -71,10 +91,15 @@ Interface::~Interface(){
         delete b;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;
     }
+    for(Button* b : m_buttons_in_game){
+        delete b;
+        std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;
+    }
     for(Theme* t : m_themes){
         delete t;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a theme" << std::endl;
     }
+    delete m_grid;
 }
 
 /************************************************
@@ -92,7 +117,6 @@ void Interface::loop()
     case Utils::State::HOME:
         // TODO
         // Faire autre chose que le m_first_loop ?? --->  init()
-        m_first_loop = false;
         // TODO
         // Fix pb avec les labels
         m_buttons_home[0]->setLabelText(m_buttons_home[0]->getLabelText());
@@ -102,7 +126,6 @@ void Interface::loop()
         break;
     case Utils::State::CREDITS:
         draw_buttons(m_buttons_credits);
-        m_first_loop = false;
         break;
     case Utils::State::LEVEL_SELECTION:
         draw_buttons(m_buttons_level_selection);
@@ -111,28 +134,34 @@ void Interface::loop()
             // TODO
             // init plutot non?
             // loadLevel doesn't cause a crash when loading a inexistant level
-            m_grid->loadLevel(1);
-            m_grid->saveLevel(99,"testage");
+            m_grid->loadLevel("1");
+            m_grid->saveLevel("99","testage");
         }
 
         m_grid->drawGrid(m_window);
-        m_first_loop = false;
         break;
     case Utils::State::IN_GAME:
-        m_first_loop = false;
+        draw_buttons(m_buttons_in_game);
+
+        if(m_first_loop){
+            // Load the selected level
+            m_grid->loadLevel(m_selected_level);
+            //m_grid->saveLevel("test","debug");
+        }
+        m_grid->drawGrid(m_window);
         break;
     case Utils::State::LEVEL_EDITOR:
-        m_first_loop = false;
         break;
     case Utils::State::END_GAME:
-        m_first_loop = false;
         break;
     case Utils::State::IDLE:
-        m_first_loop = false;
+
         break;
     default:
         break;
     }
+
+    m_first_loop = false;
     m_window.display();
 }
 
@@ -144,36 +173,31 @@ void Interface::mouse_button_pressed(){
     switch (m_state) {
     case Utils::State::HOME:
         for(Button * b : m_buttons_home){
-            changeState(isOnButton(b),b);
+            buttonChangeState(isOnButton(b),b);
             changeButtonAppareance(false,b);
         }
         break;
     case Utils::State::CREDITS:
         for(Button * b : m_buttons_credits){
-            changeState(isOnButton(b),b);
+            buttonChangeState(isOnButton(b),b);
             changeButtonAppareance(false,b);
         }
         break;
     case Utils::State::LEVEL_SELECTION:
         for(Button * b : m_buttons_level_selection){
-            changeState(isOnButton(b),b);
+            buttonChangeState(isOnButton(b),b);
             changeButtonAppareance(false,b);
         }
         if(m_grid->isOverCell(m_mouse)){
-            // If the mouse is over a cell and the user clicked on it
-            // then he has selected the level
-            // now we have to get the level that he choose
-            // REMINDER: the level id is built on this template : "xy"
-            std::string s;
-            s = std::to_string((int)m_grid->getOverCell()->getPos().x)
-                    + std::to_string((int)m_grid->getOverCell()->getPos().y);
-            m_selected_level = atoi(s.c_str());
-            std::cout << Utils::getTime() + "[Game-INFO]: Level id #" + s + " selected" << std::endl;
-            // TODO
-            // CHANGE LEVEL WITH THE SELECTED ID
+
+            changeSelectedCell();
+            changeGameState(Utils::State::IN_GAME);
         }
         break;
     case Utils::State::IN_GAME:
+        for(Button * b : m_buttons_in_game){
+            changeButtonAppareance(false,b);
+        }
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -267,11 +291,9 @@ void Interface::changeButtonAppareance(const bool &onButton, Button* b){
     }
 }
 // It changes the gamestate according to the button selected
-void Interface::changeState(const bool &onButton, Button* b){
+void Interface::buttonChangeState(const bool &onButton, Button* b){
     if(onButton){
-       std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
-        m_first_loop = true;
-        m_state = b->getState();
+        changeGameState(b->getState());
     }
 }
 
@@ -325,4 +347,24 @@ void Interface::loadBackground(){
         m_sprite.setTexture(m_texture);
         m_sprite.setPosition(0,0);
     }
+}
+
+void Interface::changeSelectedCell()
+{
+    // If the mouse is over a cell and the user clicked on it
+    // then he has selected the level
+    // now we have to get the level that he choose
+    // REMINDER: the level id is built on this template : "xy"
+    std::string s;
+    s = std::to_string((int)m_grid->getOverCell()->getPos().x)
+            + std::to_string((int)m_grid->getOverCell()->getPos().y);
+    m_selected_level = s;//atoi(s.c_str());
+    std::cout << Utils::getTime() + "[Game-INFO]: Level id #" + s + " selected" << std::endl;
+}
+
+void Interface::changeGameState(const Utils::State &s)
+{
+    std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
+    m_state = s;
+    m_first_loop = true;
 }

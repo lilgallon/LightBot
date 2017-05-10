@@ -26,7 +26,7 @@ const std::string FONT = "ressources/Travis_Sans_MS.ttf";
 *************************************************/
 // Constructor for a state button
 Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
-    : m_state{stateIfClicked}, m_action{-1}, m_theme{theme}
+    : m_state{stateIfClicked}, m_action{Utils::Action::NONE}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -35,7 +35,7 @@ Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position,
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 // Constructor for an action button
-Button::Button(int action,sf::Vector2f position, sf::Vector2f size, Theme* theme, const std::string &text)
+Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text)
     :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
@@ -84,7 +84,7 @@ Utils::State Button::getState() const{
     return m_state;
 }
 // Gets the action designed by the button
-int Button::getAction() const{
+Utils::Action Button::getAction() const{
     return m_action;
 }
 // Gets the theme of the button (usefull for onMouse / default colors)
