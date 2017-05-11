@@ -13,13 +13,17 @@ public:
     Button(const Utils::Action &action, const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text);
     ~Button() = default;
 
+    /** CONSTRUCTOR BY COPY **/
+    Button(const Button &b);
+
     /** GETTERS **/
     bool isOverRect(const sf::Vector2i &mouse) const;
-    sf::RectangleShape getButton() const;
     Theme* getTheme() const;
     Utils::State getState() const;
     Utils::Action getAction() const;
     std::string getLabelText() const;
+    sf::Text getLabel() const;
+    sf::RectangleShape getButton() const;
 
     /** SETTERS **/
     void setColor(const sf::Color &color);
@@ -27,6 +31,7 @@ public:
     void setTexture(sf::Texture *texture);
     void setLabelText(const std::string &label);
     void setLabelColor(const sf::Color &color);
+    void setPosition(const sf::Vector2f &pos);
 
     /** OTHERS **/
     void draw_on(sf::RenderWindow &window) const;

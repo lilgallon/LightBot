@@ -62,6 +62,12 @@ $ Memomry (deleting buttons - check issues)
 * Changed level id from int to string (problem 00 != 0)
 * Fixed showGrid algorithm
 * Fixed memory loose
+
+## Version 13 : ../../.. ##
+* Fixed labels (bob fix)
++ Added an attribute for the mouse status : m_pressing_mouse (application.h)
++ Constructor by copy for button to move it: draw_button_at(..)
++ Rectangle moving
                   
 
 #TODO:
@@ -74,4 +80,5 @@ $ Memomry (deleting buttons - check issues)
 * Method in interface that is called only on changing game state ( inits things -> remove m_frist_loop)
 * Catch / exceptions handler when a line of a level is fuckedup
 * GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
-
+* FR TO ENGLISH IN APPLICATION;H
+* Changer l'algo oNCell()

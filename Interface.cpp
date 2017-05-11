@@ -31,7 +31,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_grid{new Grid()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -117,10 +117,6 @@ void Interface::loop()
     case Utils::State::HOME:
         // TODO
         // Faire autre chose que le m_first_loop ?? --->  init()
-        // TODO
-        // Fix pb avec les labels
-        m_buttons_home[0]->setLabelText(m_buttons_home[0]->getLabelText());
-        m_buttons_home[1]->setLabelText(m_buttons_home[1]->getLabelText());
 
         draw_buttons(m_buttons_home);
         break;
@@ -149,6 +145,7 @@ void Interface::loop()
             //m_grid->saveLevel("test","debug");
         }
         m_grid->drawGrid(m_window);
+
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -162,7 +159,7 @@ void Interface::loop()
     }
 
     m_first_loop = false;
-    m_window.display();
+
 }
 
 /************************************************
@@ -170,6 +167,7 @@ void Interface::loop()
 *************************************************/
 // Make things when the player clicks his mouse
 void Interface::mouse_button_pressed(){
+
     switch (m_state) {
     case Utils::State::HOME:
         for(Button * b : m_buttons_home){
@@ -198,6 +196,8 @@ void Interface::mouse_button_pressed(){
         for(Button * b : m_buttons_in_game){
             changeButtonAppareance(false,b);
         }
+        // Get the selected button to move it later
+        m_selected_button = getSelectedButton();
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -229,6 +229,7 @@ void Interface::mouse_button_released(){
     default:
         break;
     }
+    m_selected_button = nullptr;
 }
 // Make things when the player moves his mouse
 void Interface::mouse_moved(){
@@ -251,6 +252,34 @@ void Interface::mouse_moved(){
         m_grid->isOverCell(m_mouse);
         break;
     case Utils::State::IN_GAME:
+        for(Button * b : m_buttons_in_game){
+            changeButtonAppareance(isOnButton(b),b);
+        }
+        break;
+    case Utils::State::LEVEL_EDITOR:
+        break;
+    case Utils::State::END_GAME:
+        break;
+    case Utils::State::IDLE:
+        break;
+    default:
+        break;
+    }
+}
+
+void Interface::mouse_pressing()
+{
+    switch (m_state) {
+    case Utils::State::HOME:
+        break;
+    case Utils::State::CREDITS:
+        break;
+    case Utils::State::LEVEL_SELECTION:
+        break;
+    case Utils::State::IN_GAME:
+        if(m_selected_button!=nullptr){
+            draw_button_at(*m_selected_button,m_mouse);
+        }
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -271,8 +300,25 @@ void Interface::mouse_moved(){
 // It draws the buttons of the actual game state
 void Interface::draw_buttons(std::vector<Button*> buttons){
     for(Button *b : buttons){
+        // TODO
+        // Fix pb avec les labels
+        b->setLabelText(b->getLabelText());
         b->draw_on(m_window);
     }
+}
+
+void Interface::draw_button_at(const Button &button, sf::Vector2i pos)
+{
+    // TODO
+    // FINIR
+    Button b = Button(button);
+    b.setPosition({(float)pos.x,(float)pos.y});
+    //std::cout << b.getButton().getFillColor().r << "," << b.getButton().getFillColor().g << "," << b.getButton().getFillColor().b << std::endl;
+    //std::cout << std::to_string(b.getButton().getSize().x) << std::endl;
+    std::cout << std::to_string(b.getButton().getPosition().x) << std::endl;
+    b.draw_on(m_window);
+
+    //m_window.draw(b.getButton());
 }
 void Interface::draw_background(){
     m_window.draw(m_sprite);
@@ -367,4 +413,19 @@ void Interface::changeGameState(const Utils::State &s)
     std::cout << Utils::getTime() + "[Game State-INFO]: Changing the game state." << std::endl;
     m_state = s;
     m_first_loop = true;
+}
+
+Button* Interface::getSelectedButton()
+{
+    unsigned int i = 0;
+
+    while(i<m_buttons_in_game.size() && m_selected_button==nullptr){
+        if(isOnButton(m_buttons_in_game.at(i))){
+            m_selected_button = m_buttons_in_game.at(i);
+            std::cout << Utils::getTime() + "[Game State-INFO]: Button selected." << std::endl;
+        }
+        i ++;
+    }
+
+    return m_selected_button;
 }

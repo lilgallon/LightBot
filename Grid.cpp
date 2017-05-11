@@ -104,23 +104,27 @@ bool Grid::isOverCell(sf::Vector2i mouse){
 
         sf::Vector2f pos = GAP;
 
-        if((int)m_cells.at(i)->getPos().x%2!=0 && (int)m_cells.at(i)->getPos().y%2==0){     // OK
-            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
+        Cell* c = m_cells.at(i);
 
-            if(m_cells.at(i)->getPos().y==0){
+        if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
+            pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
+
+
+            if(c->getPos().y==0){
                 pos.y -= (m_radius*sin(Utils::PI/3.));
             }else{
-                pos.y -= m_cells.at(i)->getPos().y * (m_radius*sin(Utils::PI/3.));
+                pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
             }
-        }else if((int)m_cells.at(i)->getPos().x%2==0 && (int)m_cells.at(i)->getPos().y%2==0){
-            pos.x += m_cells.at(i)->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
-            pos.y -= m_cells.at(i)->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
-        }else if((int)m_cells.at(i)->getPos().x%2!=0 && (int)m_cells.at(i)->getPos().y%2!=0){
-            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-            pos.y += m_cells.at(i)->getPos().y * (m_radius*sin(Utils::PI/3.));
-        }else if((int)m_cells.at(i)->getPos().x%2==0 && (int)m_cells.at(i)->getPos().y%2!=0){
-            pos.x += m_cells.at(i)->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-            pos.y += m_cells.at(i)->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+
+        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
+            pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
+            pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+        }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
+            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.));
+        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
+            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+            pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
         }
 
 

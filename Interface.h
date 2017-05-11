@@ -31,8 +31,9 @@ private:
     std::vector<Theme*> m_themes;
     // Loop controller
     bool m_first_loop;
-    // Grid (level)
+    // Selection "tools"
     std::string m_selected_level;
+    Button* m_selected_button;
     // TODO
     // make a method / class that loads a level and put it in m_grid
     Grid* m_grid;
@@ -45,9 +46,11 @@ private:
     void mouse_button_pressed()                              override;
     void mouse_button_released()                             override;
     void mouse_moved          ()                             override;
+    void mouse_pressing        ()                            override;
     //void key_pressed (const sf::Event::KeyEvent & /*event*/) override;
     // Interfaces
     void draw_buttons(std::vector<Button*> buttons);
+    void draw_button_at(const Button &button, sf::Vector2i pos);
     void draw_background();
 
     // Other methods
@@ -61,6 +64,8 @@ private:
 
     void buttonChangeState(const bool &onButton, Button* b);
     void changeGameState(const Utils::State &s);
+
+    Button* getSelectedButton();
 
 };
 

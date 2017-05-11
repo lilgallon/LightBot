@@ -25,6 +25,9 @@ public:
     static float module(const  sf::Vector2i  & v);
     static float distance(const  sf::Vector2i  & p1, const  sf::Vector2i  & p2 );
 
+    // Interaction indicator (true if the mouse is being pressed)
+    bool m_pressing_mouse;
+
 protected:
     /*
      * les variables accessibles par les sous-classes
@@ -46,6 +49,7 @@ protected:
     virtual void mouse_button_pressed ()                 {}
     virtual void mouse_button_released()                 {}
     virtual void mouse_moved          ()                 {}
+    virtual void mouse_pressing       ()                 {}
 
     virtual void key_pressed (const sf::Event::KeyEvent & /*event*/) {}
 

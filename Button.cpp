@@ -44,6 +44,11 @@ Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vec
     initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel(), text);
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
+
+Button::Button(const Button &b)
+    :m_state{b.getState()}, m_action {b.getAction()}, m_theme {b.getTheme()}, m_button{b.getButton()}, m_label {b.getLabel()}
+{
+}
 // Init the label inside a constructor
 void Button::initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text){
 
@@ -104,6 +109,14 @@ std::string Button::getLabelText() const{
     return m_label.getString();
 }
 
+sf::Text Button::getLabel() const{
+    return m_label;
+}
+
+sf::RectangleShape Button::getButton() const{
+    return m_button;
+}
+
 /************************************************
 *                   SETTERS                     *
 *************************************************/
@@ -126,6 +139,11 @@ void Button::setLabelText(const std::string &label){
 }
 void Button::setLabelColor(const sf::Color &color){
     m_label.setColor(color);
+}
+
+void Button::setPosition(const sf::Vector2f &pos)
+{
+    m_button.setPosition(pos);
 }
 
 /************************************************

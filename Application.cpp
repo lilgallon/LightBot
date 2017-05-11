@@ -3,7 +3,7 @@
 
 Application::Application(unsigned int w, unsigned int h,
                      const std::wstring & title )
-    : m_window { {w, h}, title}
+    : m_pressing_mouse{false}, m_window { {w, h}, title}
 {
 }
 
@@ -20,6 +20,10 @@ void Application::run()
     while (m_running) {  // voir
         process_events();
         loop();
+        if(m_pressing_mouse){
+            mouse_pressing();
+        }
+        m_window.display();
     }
 }
 
@@ -44,10 +48,12 @@ void Application::process_events()
             break;
         case sf::Event::MouseButtonPressed :
             // bouton = event.mouseButton.button;
+            m_pressing_mouse = true;
             set_mouse_coord(event.mouseButton.x, event.mouseButton.y);
             mouse_button_pressed();
             break;
         case sf::Event::MouseButtonReleased :   
+            m_pressing_mouse = false;
             // bouton = event.mouseButton.button;
             set_mouse_coord(event.mouseButton.x, event.mouseButton.y);
             mouse_button_released();
