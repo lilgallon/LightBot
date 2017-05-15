@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     Grid.cpp \
     Cell.cpp \
     Interface.cpp \
-    Application.cpp
+    Application.cpp \
+    ProgramBox.cpp
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
 LIBS           += -lsfml-graphics -lsfml-window -lsfml-system
@@ -22,4 +23,5 @@ HEADERS += \
     Grid.h \
     Cell.h \
     Interface.h \
-    Application.h
+    Application.h \
+    ProgramBox.h

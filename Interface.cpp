@@ -20,10 +20,7 @@ namespace {
     const unsigned int SCREEN_WIDTH = 800;
     const unsigned int SCREEN_HEIGHT = 600;
 
-    const std::string RES_PATH = "resources/";
-    const std::string IMG_PATH = "images/";
-
-    const sf::Vector2f ACTION_BUTTON_SIZE = {30,30};
+    const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
 }
 
 /************************************************
@@ -59,13 +56,13 @@ Interface::Interface()
 
 
     // TODO --> add a parameter with the texture
-    Button* in_game1 = new Button(Utils::Action::FORWARD,{20+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"F");
-    Button* in_game2 = new Button(Utils::Action::JUMP,{20+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"J");
-    Button* in_game3 = new Button(Utils::Action::LIGHT,{20+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"L");
-    Button* in_game4 = new Button(Utils::Action::PROG_P1,{20+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"P1");
-    Button* in_game5 = new Button(Utils::Action::PROG_P2,{20+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"P2");
-    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{20+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"TCW");
-    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{20+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
+    Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"F");
+    Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"J");
+    Button* in_game3 = new Button(Utils::Action::LIGHT,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"L");
+    Button* in_game4 = new Button(Utils::Action::PROG_P1,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"P1");
+    Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"P2");
+    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCW");
+    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
 
     m_buttons_in_game.push_back(in_game1);
     m_buttons_in_game.push_back(in_game2);
@@ -313,13 +310,10 @@ void Interface::draw_button_at(const Button &button, sf::Vector2i pos)
     // FINIR
     Button b = Button(button);
     b.setPosition({(float)pos.x,(float)pos.y});
-    //std::cout << b.getButton().getFillColor().r << "," << b.getButton().getFillColor().g << "," << b.getButton().getFillColor().b << std::endl;
-    //std::cout << std::to_string(b.getButton().getSize().x) << std::endl;
-    std::cout << std::to_string(b.getButton().getPosition().x) << std::endl;
+    b.setLabelText(b.getLabelText());
     b.draw_on(m_window);
-
-    //m_window.draw(b.getButton());
 }
+
 void Interface::draw_background(){
     m_window.draw(m_sprite);
 }
@@ -384,10 +378,10 @@ void Interface::loadBackground(){
     default:
         break;
     }
-    if(!m_texture.loadFromFile(RES_PATH+IMG_PATH+image)){
+    if(!m_texture.loadFromFile(Utils::IMG_PATH+image)){
         std::cout << Utils::getTime() + "[Texture-ERROR]: Could not load the background" << std::endl;
         std::cout << Utils::getTime() + "[Textur-FIX]: Check \""
-                     + RES_PATH + IMG_PATH + "\"" << std::endl;
+                     + Utils::IMG_PATH + "\"" << std::endl;
         std::cout << Utils::getTime() + "[Textur-FIX]: The texture will be ignored." << std::endl;
     }else{
         m_sprite.setTexture(m_texture);

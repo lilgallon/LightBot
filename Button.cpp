@@ -17,9 +17,6 @@
 #include "Utils.h"
 #include <iostream>
 
-namespace {
-const std::string FONT = "ressources/Travis_Sans_MS.ttf";
-}
 
 /************************************************
 *                CONSTRUCTORS                   *

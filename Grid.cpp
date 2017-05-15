@@ -23,7 +23,6 @@
 #include <exception>
 
 namespace{
-    const std::string LEVELS_PATH = "levels/";
     const int POS_X_INDEX = 0;
     const int POS_Y_INDEX = 1;
     const int HEIGHT_INDEX = 2;
@@ -170,7 +169,7 @@ void Grid::loadLevel(std::string level_id){
 
 
     // Tries to open the file
-    f.open(LEVELS_PATH + level_id + ".txt", std::ios::in);
+    f.open(Utils::LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( f.fail() )
     {
         std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + level_id
@@ -260,12 +259,12 @@ void Grid::loadLevel(std::string level_id){
 
 void Grid::saveLevel(std::string level_id, std::string level_name){
     std::fstream f;
-    std::string file = LEVELS_PATH + level_id + ".txt";
+    std::string file = Utils::LEVELS_PATH + level_id + ".txt";
 
     std::fstream f_test;
 
     // Tries to open the file
-    f_test.open(LEVELS_PATH + level_id + ".txt", std::ios::in);
+    f_test.open(Utils::LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( !f_test.fail() )
     {
         std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + level_id + " already exists."

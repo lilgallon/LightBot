@@ -15,6 +15,10 @@
 
 #include "Utils.h"
 
+const std::string Utils::FONT_PATH = "resources/fonts/";
+const std::string Utils::IMG_PATH = "resources/images/";
+const std::string Utils::LEVELS_PATH = "levels/";
+
 float Utils::abs(float value){
     if(value>0)
         return value;

@@ -63,11 +63,12 @@ $ Memomry (deleting buttons - check issues)
 * Fixed showGrid algorithm
 * Fixed memory loose
 
-## Version 13 : ../../.. ##
+## Version 13 : 15/05/17 ##
 * Fixed labels (bob fix)
 + Added an attribute for the mouse status : m_pressing_mouse (application.h)
 + Constructor by copy for button to move it: draw_button_at(..)
 + Rectangle moving
++ Added programbox
                   
 
 #TODO:
