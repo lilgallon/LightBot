@@ -10,6 +10,7 @@
 
 #include "Utils.h"
 #include "Grid.h"
+#include "ProgramBox.h"
 
 class Interface : public Application
 {
@@ -29,6 +30,8 @@ private:
     std::vector<Button*> m_buttons_credits;
     std::vector<Button*> m_buttons_in_game;
     std::vector<Theme*> m_themes;
+    std::vector<ProgramBox*> m_program_boxes;
+    std::map<Utils::Action, sf::Texture*> m_textures;
     // Loop controller
     bool m_first_loop;
     // Selection "tools"
@@ -42,6 +45,9 @@ private:
     sf::Sprite m_sprite;
 
     /** Methods **/
+    // Called in the constructor
+    void initActionTextures();
+
     // Interactions w/ user
     void mouse_button_pressed()                              override;
     void mouse_button_released()                             override;
@@ -50,6 +56,7 @@ private:
     //void key_pressed (const sf::Event::KeyEvent & /*event*/) override;
     // Interfaces
     void draw_buttons(std::vector<Button*> buttons);
+    void draw_prgm_boxes(std::vector<ProgramBox*> boxes);
     void draw_button_at(const Button &button, sf::Vector2i pos);
     void draw_background();
 
@@ -66,6 +73,7 @@ private:
     void changeGameState(const Utils::State &s);
 
     Button* getSelectedButton();
+
 
 };
 

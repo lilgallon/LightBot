@@ -69,7 +69,10 @@ $ Memomry (deleting buttons - check issues)
 + Constructor by copy for button to move it: draw_button_at(..)
 + Rectangle moving
 + Added programbox
-                  
+
+# Version 14 : 16/05/17 ##
++ Implementation des programboxes (non fini)
++ Ajout des textures des boutons
 
 #TODO:
 (code ready in grid.cpp)

@@ -26,6 +26,8 @@ public:
     void deleteAction(const unsigned int &row);
     void clearActions();
 
+    bool overBox(sf::Vector2i pos) const;
+
     std::vector<Button *> getActions() const;
 
     // Graphic

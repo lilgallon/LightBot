@@ -17,10 +17,13 @@
 #include "Utils.h"
 
 namespace {
-    const unsigned int SCREEN_WIDTH = 800;
-    const unsigned int SCREEN_HEIGHT = 600;
+    const unsigned int SCREEN_WIDTH = 1280;
+    const unsigned int SCREEN_HEIGHT = 720;
 
     const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
+
+    const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {415,200};
+    const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,10};
 }
 
 /************************************************
@@ -55,6 +58,8 @@ Interface::Interface()
     m_buttons_credits.push_back(credits1);
 
 
+    initActionTextures();
+    /*
     // TODO --> add a parameter with the texture
     Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"F");
     Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"J");
@@ -63,6 +68,16 @@ Interface::Interface()
     Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"P2");
     Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCW");
     Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
+    */
+
+    Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::FORWARD));
+    Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::JUMP));
+    Button* in_game3 = new Button(Utils::Action::LIGHT,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::LIGHT));
+    Button* in_game4 = new Button(Utils::Action::PROG_P1,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::PROG_P1));
+    Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::PROG_P2));
+    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::TURN_CLOCKWISE));
+    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::TURN_COUNTERCLOCK));
+
 
     m_buttons_in_game.push_back(in_game1);
     m_buttons_in_game.push_back(in_game2);
@@ -71,6 +86,11 @@ Interface::Interface()
     m_buttons_in_game.push_back(in_game5);
     m_buttons_in_game.push_back(in_game6);
     m_buttons_in_game.push_back(in_game7);
+
+
+    ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color::Transparent,sf::Color::Black,2,"Main");
+
+    m_program_boxes.push_back(prgm_main);
 
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
@@ -96,7 +116,57 @@ Interface::~Interface(){
         delete t;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a theme" << std::endl;
     }
+    for(ProgramBox* p : m_program_boxes){
+        delete p;
+    }
     delete m_grid;
+}
+
+void Interface::initActionTextures()
+{
+    Utils::Action a;
+    for(int i = 0; i < 7; i ++){
+
+        if(i==0){a=Utils::Action::FORWARD;}else if(i==1){a=Utils::Action::JUMP;}else if(i==2){a=Utils::Action::LIGHT;}
+        else if(i==3){a=Utils::Action::TURN_CLOCKWISE;}else if(i==4){a=Utils::Action::TURN_COUNTERCLOCK;}else if(i==5){a=Utils::Action::PROG_P1;}
+        else if(i==6){a=Utils::Action::PROG_P2;}
+        std::string image = "";
+        sf::Texture* texture = new sf::Texture();
+        switch (a) {
+        case Utils::Action::FORWARD:
+            image = "forward.png";
+            break;
+        case Utils::Action::JUMP:
+            image = "jump.png";
+            break;
+        case Utils::Action::LIGHT:
+            image = "light.png";
+            break;
+        case Utils::Action::TURN_CLOCKWISE:
+            image = "clockwise.png";
+            break;
+        case Utils::Action::TURN_COUNTERCLOCK:
+            image = "counterclock.png";
+            break;
+        case Utils::Action::PROG_P1:
+            image = "p1.png";
+            break;
+        case Utils::Action::PROG_P2:
+            image = "p2.png";
+            break;
+        default:
+            break;
+        }
+        if(!texture->loadFromFile(Utils::IMG_PATH+image)){
+            std::cout << Utils::getTime() + "[TextureAction-ERROR]: Could not load the background" << std::endl;
+            std::cout << Utils::getTime() + "[TextureAction-FIX]: Check \""
+                         + Utils::IMG_PATH + "\"" << std::endl;
+            std::cout << Utils::getTime() + "[TextureAction-FIX]: The texture will be ignored." << std::endl;
+        }
+        m_textures.insert({a,texture});
+    }
+
+
 }
 
 /************************************************
@@ -141,7 +211,9 @@ void Interface::loop()
             m_grid->loadLevel(m_selected_level);
             //m_grid->saveLevel("test","debug");
         }
+
         m_grid->drawGrid(m_window);
+        draw_prgm_boxes(m_program_boxes);
 
         break;
     case Utils::State::LEVEL_EDITOR:
@@ -216,6 +288,19 @@ void Interface::mouse_button_released(){
     case Utils::State::LEVEL_SELECTION:
         break;
     case Utils::State::IN_GAME:
+        if(m_selected_button!=nullptr){
+            bool found = false;
+            int i =0;
+            while(!found && i <m_program_boxes.size()){
+                if(m_program_boxes.at(i)->overBox(m_mouse)){
+                    m_program_boxes.at(i)->addAction(m_selected_button);
+                    m_selected_button = nullptr;
+                    found = true;
+                }else{
+                    i ++;
+                }
+            }
+        }
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -304,6 +389,12 @@ void Interface::draw_buttons(std::vector<Button*> buttons){
     }
 }
 
+void Interface::draw_prgm_boxes(std::vector<ProgramBox*> boxes){
+    for(ProgramBox* b : boxes){
+        b->drawProgBox(m_window);
+    }
+}
+
 void Interface::draw_button_at(const Button &button, sf::Vector2i pos)
 {
     // TODO
@@ -320,6 +411,7 @@ void Interface::draw_background(){
 
 // It changes a button appareace according to the mouse position
 void Interface::changeButtonAppareance(const bool &onButton, Button* b){
+    // Check if it is a action button. If so, it does not apply any theme
     if(onButton){
         b->setColor(b->getTheme()->getRectOnRectFillColor());
         b->setOutlineColor(b->getTheme()->getRectOnRectOutlineColor());
@@ -329,6 +421,7 @@ void Interface::changeButtonAppareance(const bool &onButton, Button* b){
         b->setOutlineColor(b->getTheme()->getRectDefaultOutlineColor());
         b->setLabelColor(b->getTheme()->getLabelDefaultFillColor());
     }
+
 }
 // It changes the gamestate according to the button selected
 void Interface::buttonChangeState(const bool &onButton, Button* b){

@@ -42,6 +42,16 @@ Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vec
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
+Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme, sf::Texture* texture)
+    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_texture{texture}
+{
+    std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
+    initButton(position,size, theme, texture);
+    std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
+    //std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
+}
+
+
 Button::Button(const Button &b)
     :m_state{b.getState()}, m_action {b.getAction()}, m_theme {b.getTheme()}, m_button{b.getButton()}, m_label {b.getLabel()}
 {
@@ -76,6 +86,17 @@ void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, 
     m_button.setOutlineThickness(outline);
     m_button.setOutlineColor(outlineColor);
     //m_button.setTexture(texture);
+}
+
+void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, sf::Texture* texture){
+    m_button.setPosition(position);
+    m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
+    m_button.setSize(size);
+
+    m_button.setFillColor(theme->getRectDefaultFillColor());
+    m_button.setOutlineThickness(theme->getRectOutlineThickness());
+    m_button.setOutlineColor(theme->getRectDefaultOutlineColor());
+    m_button.setTexture(texture);
 }
 
 /************************************************
@@ -151,4 +172,5 @@ void Button::draw_on(sf::RenderWindow &window) const
 {
     window.draw(m_button);
     window.draw(m_label);
+
 }

@@ -17,7 +17,7 @@
 #include <iostream>
 
 namespace{
-    const std::string FONT_NAME = "resources/fonts/";
+    const std::string FONT_NAME = "coolvetica.ttf";
 }
 
 ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_thickness, std::string prog_name)
@@ -55,11 +55,28 @@ ProgramBox::~ProgramBox()
 
 void ProgramBox::addAction(Button* button)
 {
-    m_actions.push_back(button);
+    // Création copie pointeur
+    // TODO
+    // ..
+
+    // TODO : CALCUL DE LA NOUVELLE POS DU BOUTTON
+    // finir..
+
+    sf::Vector2f new_size = {40,40};
+    sf::Vector2f actions_gap = {10,10};
+    sf::Vector2f new_pos = {m_rect.getPosition().x+30+(m_actions.size()*(new_size.x+actions_gap.x)),m_rect.getPosition().y+30};
+
+    Button* copied_button = new Button(button->getAction(),new_pos,new_size,button->getTheme(),button->getLabelText());
+
+    m_actions.push_back(copied_button);
 }
 
 void ProgramBox::addAction(Button* action, const unsigned int &row)
 {
+    // Création copie pointeur
+    // TODO
+    // ..
+
     m_actions.resize(m_actions.size()+1);
     for(unsigned int i=m_actions.size() ; i>row ; i++){
         m_actions.at(i)=m_actions.at(i-1);
@@ -98,6 +115,14 @@ void ProgramBox::clearActions()
     m_actions.clear();
 }
 
+bool ProgramBox::overBox(sf::Vector2i pos) const
+{
+    return pos.x >= m_rect.getPosition().x
+            && pos.x <= m_rect.getPosition().x + m_rect.getSize().x
+            && pos.y >= m_rect.getPosition().y
+            && pos.y <= m_rect.getPosition().y + m_rect.getSize().y;
+}
+
 std::vector<Button*> ProgramBox::getActions() const
 {
     return m_actions;
@@ -105,5 +130,8 @@ std::vector<Button*> ProgramBox::getActions() const
 
 void ProgramBox::drawProgBox(sf::RenderWindow &window)
 {
+    for(Button *b : m_actions){
+        b->draw_on(window);
+    }
     window.draw(m_rect);
 }
