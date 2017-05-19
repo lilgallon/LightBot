@@ -4,17 +4,19 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Cell.h"
+#include "Robot.h"
 
 class Grid
 {
 public:
     /** CONSTRUCTORS / DESTRUCTORS **/
-    Grid(std::vector<Cell *> cells);
+    Grid(std::vector<Cell *> cells,  Robot* robot);
     Grid();
     ~Grid();
 
     /** SETTER **/
     void setGrid(std::vector<Cell*> cells);
+    void setRobot(Robot* robot);
 
     /** GETTERS **/
     std::vector<Cell*> getGrid();
@@ -31,8 +33,11 @@ public:
 private:
     /** INIT **/
     void initLabel();
+    void initRobot(const std::__cxx11::string &line);
+    //void calculatePosition(Cell* c, sf::Vector2f &pos);
 
     std::vector<Cell*> m_cells;
+    Robot* m_robot;
     int m_radius;
     // Error handler
     bool m_error_drawing;

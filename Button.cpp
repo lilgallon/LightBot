@@ -23,7 +23,7 @@
 *************************************************/
 // Constructor for a state button
 Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
-    : m_state{stateIfClicked}, m_action{Utils::Action::NONE}, m_theme{theme}
+    : m_state{stateIfClicked}, m_action{Utils::Action::NONE}, m_theme{theme}, m_utility{-1}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -31,9 +31,21 @@ Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position,
     initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel(),text);
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
+
+// Constructor for a button that will start a certain function
+Button::Button(const int &utility, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
+    : m_state{Utils::State::IDLE}, m_action{Utils::Action::NONE}, m_theme{theme}, m_utility{utility}
+{
+    std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
+    initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
+    std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
+    initLabel(position,size,theme->getLabelDefaultFillColor(),theme->getLabel(),text);
+    std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
+}
+
 // Constructor for an action button
 Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text)
-    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}
+    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -42,20 +54,23 @@ Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vec
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
-Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme, sf::Texture* texture)
-    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_texture{texture}
+Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme)
+    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
-    initButton(position,size, theme, texture);
+    initButton(position,size, theme, action);
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
     //std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
-
+/*
 Button::Button(const Button &b)
     :m_state{b.getState()}, m_action {b.getAction()}, m_theme {b.getTheme()}, m_button{b.getButton()}, m_label {b.getLabel()}
 {
-}
+    m_texture = b.getTexture();
+    m_button.setTexture(&m_texture);
+}*/
+
 // Init the label inside a constructor
 void Button::initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text){
 
@@ -88,7 +103,7 @@ void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, 
     //m_button.setTexture(texture);
 }
 
-void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, sf::Texture* texture){
+void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, Utils::Action a){
     m_button.setPosition(position);
     m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
     m_button.setSize(size);
@@ -96,8 +111,46 @@ void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, 
     m_button.setFillColor(theme->getRectDefaultFillColor());
     m_button.setOutlineThickness(theme->getRectOutlineThickness());
     m_button.setOutlineColor(theme->getRectDefaultOutlineColor());
-    m_button.setTexture(texture);
+
+    //m_texture = new sf::Texture();
+
+    std::string image = "";
+    switch (a) {
+    case Utils::Action::FORWARD:
+        image = "forward.png";
+        break;
+    case Utils::Action::JUMP:
+        image = "jump.png";
+        break;
+    case Utils::Action::LIGHT:
+        image = "light.png";
+        break;
+    case Utils::Action::TURN_CLOCKWISE:
+        image = "clockwise.png";
+        break;
+    case Utils::Action::TURN_COUNTERCLOCK:
+        image = "counterclock.png";
+        break;
+    case Utils::Action::PROG_P1:
+        image = "p1.png";
+        break;
+    case Utils::Action::PROG_P2:
+        image = "p2.png";
+        break;
+    default:
+        break;
+    }
+    if(!m_texture.loadFromFile(Utils::IMG_PATH+image)){
+        std::cout << Utils::getTime() + "[TextureAction-ERROR]: Could not load the background" << std::endl;
+        std::cout << Utils::getTime() + "[TextureAction-FIX]: Check \""
+                     + Utils::IMG_PATH + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[TextureAction-FIX]: The texture will be ignored." << std::endl;
+    }else{
+        m_button.setTexture(&m_texture);
+        std::cout << Utils::getTime() + "[ButtonTexture-INFO]: The texture of the button has been loaded." << std::endl;
+    }
 }
+
 
 /************************************************
 *                   GETTERS                     *
@@ -133,6 +186,16 @@ sf::Text Button::getLabel() const{
 
 sf::RectangleShape Button::getButton() const{
     return m_button;
+}
+
+sf::Texture Button::getTexture() const
+{
+    return m_texture;
+}
+
+int Button::getUtility() const
+{
+    return m_utility;
 }
 
 /************************************************

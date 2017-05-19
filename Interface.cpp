@@ -31,7 +31,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -41,6 +41,8 @@ Interface::Interface()
 
     Theme *defaultTheme = new Theme(1);
     m_themes.push_back(defaultTheme);
+    Theme *actionTheme = new Theme(2);
+    m_themes.push_back(actionTheme);
 
     Button* home1 = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme, "Play");
     //home1->setLabelText("Play");
@@ -57,8 +59,6 @@ Interface::Interface()
     //credits1->setLabelText("<-");
     m_buttons_credits.push_back(credits1);
 
-
-    initActionTextures();
     /*
     // TODO --> add a parameter with the texture
     Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"F");
@@ -70,14 +70,15 @@ Interface::Interface()
     Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
     */
 
-    Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::FORWARD));
-    Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::JUMP));
-    Button* in_game3 = new Button(Utils::Action::LIGHT,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::LIGHT));
-    Button* in_game4 = new Button(Utils::Action::PROG_P1,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::PROG_P1));
-    Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::PROG_P2));
-    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::TURN_CLOCKWISE));
-    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,m_textures.at(Utils::Action::TURN_COUNTERCLOCK));
+    Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game3 = new Button(Utils::Action::LIGHT,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game4 = new Button(Utils::Action::PROG_P1,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
 
+    Button* run_prgm = new Button(1,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "RUN");
 
     m_buttons_in_game.push_back(in_game1);
     m_buttons_in_game.push_back(in_game2);
@@ -87,10 +88,17 @@ Interface::Interface()
     m_buttons_in_game.push_back(in_game6);
     m_buttons_in_game.push_back(in_game7);
 
+    m_buttons_in_game.push_back(run_prgm);
+
 
     ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color::Transparent,sf::Color::Black,2,"Main");
 
     m_program_boxes.push_back(prgm_main);
+
+    // The grid needs a robot before puttin a grid on it
+    // because loading a level (a grid) will use the robot
+    // instance
+    m_grid->setRobot(m_robot);
 
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
@@ -115,58 +123,12 @@ Interface::~Interface(){
     for(Theme* t : m_themes){
         delete t;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a theme" << std::endl;
-    }
+    }/*
     for(ProgramBox* p : m_program_boxes){
         delete p;
-    }
+    }*/
     delete m_grid;
-}
-
-void Interface::initActionTextures()
-{
-    Utils::Action a;
-    for(int i = 0; i < 7; i ++){
-
-        if(i==0){a=Utils::Action::FORWARD;}else if(i==1){a=Utils::Action::JUMP;}else if(i==2){a=Utils::Action::LIGHT;}
-        else if(i==3){a=Utils::Action::TURN_CLOCKWISE;}else if(i==4){a=Utils::Action::TURN_COUNTERCLOCK;}else if(i==5){a=Utils::Action::PROG_P1;}
-        else if(i==6){a=Utils::Action::PROG_P2;}
-        std::string image = "";
-        sf::Texture* texture = new sf::Texture();
-        switch (a) {
-        case Utils::Action::FORWARD:
-            image = "forward.png";
-            break;
-        case Utils::Action::JUMP:
-            image = "jump.png";
-            break;
-        case Utils::Action::LIGHT:
-            image = "light.png";
-            break;
-        case Utils::Action::TURN_CLOCKWISE:
-            image = "clockwise.png";
-            break;
-        case Utils::Action::TURN_COUNTERCLOCK:
-            image = "counterclock.png";
-            break;
-        case Utils::Action::PROG_P1:
-            image = "p1.png";
-            break;
-        case Utils::Action::PROG_P2:
-            image = "p2.png";
-            break;
-        default:
-            break;
-        }
-        if(!texture->loadFromFile(Utils::IMG_PATH+image)){
-            std::cout << Utils::getTime() + "[TextureAction-ERROR]: Could not load the background" << std::endl;
-            std::cout << Utils::getTime() + "[TextureAction-FIX]: Check \""
-                         + Utils::IMG_PATH + "\"" << std::endl;
-            std::cout << Utils::getTime() + "[TextureAction-FIX]: The texture will be ignored." << std::endl;
-        }
-        m_textures.insert({a,texture});
-    }
-
-
+    delete m_robot;
 }
 
 /************************************************
@@ -198,7 +160,7 @@ void Interface::loop()
             // init plutot non?
             // loadLevel doesn't cause a crash when loading a inexistant level
             m_grid->loadLevel("1");
-            m_grid->saveLevel("99","testage");
+            //m_grid->saveLevel("99","testage");
         }
 
         m_grid->drawGrid(m_window);
@@ -264,7 +226,13 @@ void Interface::mouse_button_pressed(){
     case Utils::State::IN_GAME:
         for(Button * b : m_buttons_in_game){
             changeButtonAppareance(false,b);
+            if(b->isOverRect(m_mouse) && b->getUtility()==1){
+                ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_robot,m_grid);
+                prog->runProgram();
+                delete prog;
+            }
         }
+
         // Get the selected button to move it later
         m_selected_button = getSelectedButton();
         break;
@@ -290,7 +258,7 @@ void Interface::mouse_button_released(){
     case Utils::State::IN_GAME:
         if(m_selected_button!=nullptr){
             bool found = false;
-            int i =0;
+            unsigned int i =0;
             while(!found && i <m_program_boxes.size()){
                 if(m_program_boxes.at(i)->overBox(m_mouse)){
                     m_program_boxes.at(i)->addAction(m_selected_button);
@@ -360,7 +328,9 @@ void Interface::mouse_pressing()
         break;
     case Utils::State::IN_GAME:
         if(m_selected_button!=nullptr){
-            draw_button_at(*m_selected_button,m_mouse);
+            if(m_selected_button->getAction()!=Utils::Action::NONE){
+                draw_button_at(*m_selected_button,m_mouse);
+            }
         }
         break;
     case Utils::State::LEVEL_EDITOR:
@@ -383,7 +353,7 @@ void Interface::mouse_pressing()
 void Interface::draw_buttons(std::vector<Button*> buttons){
     for(Button *b : buttons){
         // TODO
-        // Fix pb avec les labels
+        // Fix pb avec les label
         b->setLabelText(b->getLabelText());
         b->draw_on(m_window);
     }

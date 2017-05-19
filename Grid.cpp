@@ -25,6 +25,7 @@
 namespace{
     const int POS_X_INDEX = 0;
     const int POS_Y_INDEX = 1;
+    const int POS_ORIENTATION_INDEX = 1;
     const int HEIGHT_INDEX = 2;
     const int LIGHT_INDEX = 3;
     const sf::Vector2f GAP = {150,150};
@@ -40,8 +41,8 @@ namespace{
 /************************************************
 *         CONSTRUCTORS / DESTRUCTORS            *
 *************************************************/
-Grid::Grid(std::vector<Cell*> cells)
-    :m_cells{cells},m_radius{80},m_error_drawing{false},m_over_cell{nullptr}
+Grid::Grid(std::vector<Cell*> cells, Robot *robot)
+    :m_cells{cells}, m_robot{robot}, m_radius{80},m_error_drawing{false},m_over_cell{nullptr}
 {
     initLabel();
 }
@@ -73,6 +74,65 @@ void Grid::initLabel(){
 
 }
 
+void Grid::initRobot(const std::string &line)
+{
+    std::vector<std::string> sub_string = Utils::split(line,";");
+
+
+    m_robot->setPos({atof(sub_string[POS_X_INDEX].c_str()),atof(sub_string[POS_Y_INDEX].c_str())});
+
+    int orientation = atof(sub_string[POS_ORIENTATION_INDEX].c_str());
+    switch (orientation) {
+    case 1:
+            m_robot->setOrientation(Utils::Orientation::DOWN);
+        break;
+    case 2:
+            m_robot->setOrientation(Utils::Orientation::DOWN_LEFT);
+        break;
+    case 3:
+            m_robot->setOrientation(Utils::Orientation::DOWN_RIGHT);
+        break;
+    case 4:
+            m_robot->setOrientation(Utils::Orientation::UP);
+        break;
+    case 5:
+            m_robot->setOrientation(Utils::Orientation::UP_LEFT);
+        break;
+    case 6:
+            m_robot->setOrientation(Utils::Orientation::UP_RIGHT);
+        break;
+    default:
+        std::cout << Utils::getTime() + "[Grid-ERROR]: Orientation " + std::to_string(orientation) + " is invalid." << std::endl;
+        m_robot->setOrientation(Utils::Orientation::DOWN);
+        std::cout << Utils::getTime() + "[Grid-FIX]: The robot orientation has been set to DOWN" << std::endl;
+        break;
+    }
+
+    std::cout << "#### ROBOT POS : " + std::to_string(m_robot->getPos().x) + " ; " + std::to_string(m_robot->getPos().y) << std::endl;
+    std::cout << "#### ROBOT ORIENTATION : " + std::to_string(orientation) << std::endl;
+}
+/*
+void Grid::calculatePosition(Cell *c, sf::Vector2f &pos)
+{
+    if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
+        pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
+        if(c->getPos().y==0){
+            pos.y -= (m_radius*sin(Utils::PI/3.));
+        }else{
+            pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
+        }
+    }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
+        pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
+        pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+    }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
+        pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+        pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.));
+    }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
+        pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
+        pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
+    }
+}*/
+
 Grid::~Grid(){
     for(Cell* c : m_cells){
         delete c;
@@ -84,6 +144,11 @@ Grid::~Grid(){
 *************************************************/
 void Grid::setGrid(std::vector<Cell*> cells){
     m_cells = cells;
+}
+
+void Grid::setRobot(Robot *robot)
+{
+    m_robot = robot;
 }
 
 /************************************************
@@ -195,6 +260,12 @@ void Grid::loadLevel(std::string level_id){
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Reading the level"
                   << std::endl;
         f >> level_name;
+
+        // ROBOT
+        std::string robot_line;
+        f >> robot_line;
+        initRobot(robot_line);
+
         while( !f.eof() )
         {
             // Gets the line
@@ -252,6 +323,7 @@ void Grid::loadLevel(std::string level_id){
         //this->setGrid(cells);
         std::cout << Utils::getTime() + "[Level Loader-INFO]: Level loaded"
                   << std::endl;
+        std::cout << "##### " + std::to_string(m_cells.size()) << std::endl;
     }
 
     f.close();
@@ -322,6 +394,14 @@ void Grid::drawGrid(sf::RenderWindow& window){
         hexa.setOutlineThickness(2);
         hexa.setRotation(90);
         hexa.setRadius(m_radius);
+
+        sf::CircleShape robot_shape;
+        robot_shape.setFillColor(sf::Color::Red);
+        // TODO : magic number m_radius/10 -> changer et mettre
+        // en namespace ou qqch
+        robot_shape.setRadius(m_radius/10);
+
+
         for(Cell* c : m_cells){
 
             // HEXAGONES
@@ -336,17 +416,22 @@ void Grid::drawGrid(sf::RenderWindow& window){
 
             // Sets the center in the center :)
             hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
+            robot_shape.setOrigin({m_robot->getPos().x+m_radius/10,m_robot->getPos().y+m_radius/10});
+            bool robot_is_there = false;
+            if(c->getPos().x==m_robot->getPos().x
+                    && c->getPos().y == m_robot->getPos().y){
+                robot_is_there = true;
+            }
+
+
 
             if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
                 pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
-
-
                 if(c->getPos().y==0){
                     pos.y -= (m_radius*sin(Utils::PI/3.));
                 }else{
                     pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
                 }
-
             }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
                 pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
                 pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
@@ -358,6 +443,7 @@ void Grid::drawGrid(sf::RenderWindow& window){
                 pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
             }
 
+
             hexa.setPosition(pos);
 
             // TEXT
@@ -368,6 +454,10 @@ void Grid::drawGrid(sf::RenderWindow& window){
 
             window.draw(m_text);
             window.draw(hexa);
+            if(robot_is_there){
+                robot_shape.setPosition(pos);
+                 window.draw(robot_shape);
+            }
         }
     }
 

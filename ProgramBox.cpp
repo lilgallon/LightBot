@@ -18,6 +18,8 @@
 
 namespace{
     const std::string FONT_NAME = "coolvetica.ttf";
+    const sf::Vector2f ACTION_SIZE = {50,50};
+    const sf::Vector2f ACTION_GAP = {2,2};
 }
 
 ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_thickness, std::string prog_name)
@@ -55,20 +57,12 @@ ProgramBox::~ProgramBox()
 
 void ProgramBox::addAction(Button* button)
 {
-    // Création copie pointeur
-    // TODO
-    // ..
+    sf::Vector2f new_pos = calculateNewPosition();
 
-    // TODO : CALCUL DE LA NOUVELLE POS DU BOUTTON
-    // finir..
-
-    sf::Vector2f new_size = {40,40};
-    sf::Vector2f actions_gap = {10,10};
-    sf::Vector2f new_pos = {m_rect.getPosition().x+30+(m_actions.size()*(new_size.x+actions_gap.x)),m_rect.getPosition().y+30};
-
-    Button* copied_button = new Button(button->getAction(),new_pos,new_size,button->getTheme(),button->getLabelText());
-
-    m_actions.push_back(copied_button);
+    if(new_pos.x!=-1){
+        Button* copied_button = new Button(button->getAction(),new_pos,ACTION_SIZE,button->getTheme());
+        m_actions.push_back(copied_button);
+    }
 }
 
 void ProgramBox::addAction(Button* action, const unsigned int &row)
@@ -113,6 +107,63 @@ void ProgramBox::clearActions()
         std::cout << Utils::getTime() + "[Program Box-INFO]: Deleted a button from the program box \"" /*+ m_text.getString() +  "\"" */<< std::endl;
     }
     m_actions.clear();
+}
+
+sf::Vector2f ProgramBox::calculateNewPosition() const
+{
+    float box_pos_x = m_rect.getPosition().x;
+    float box_pos_y = m_rect.getPosition().y;
+
+    float box_width = m_rect.getSize().x;
+    float box_height = m_rect.getSize().y;
+
+    float action_width = ACTION_SIZE.x;
+    float action_heigth = ACTION_SIZE.y;
+
+    float gap_between_actions_width = ACTION_GAP.x;
+    float gap_between_actions_height = ACTION_GAP.y;
+
+    float number_of_actions = m_actions.size();
+
+    float max_actions_on_line = box_width/(gap_between_actions_width+action_width);
+    float max_lines = box_height/(gap_between_actions_height+action_heigth);
+
+    //float line = 1;
+    std::cout << std::to_string(max_lines) << std::endl;
+
+    sf::Vector2f new_position = {-1,-1};
+
+    float number_of_actions_of_line = number_of_actions;
+    float line = 1;
+    bool found = false;
+
+    // It gets the line where it is possible to add an action
+    while(line<=max_lines && !found){
+        if(max_actions_on_line<=number_of_actions_of_line){
+            number_of_actions_of_line -= max_actions_on_line;
+            line ++;
+        }else{
+            found = true;
+        }
+    }
+
+    if(!found){
+        // ON SAIT QUE YA PLUS DE PLACE
+         std::cout << Utils::getTime() + "[Program Box-INFO]: No place found for the action" << std::endl;
+    }else{
+        new_position.x = box_pos_x + number_of_actions_of_line*(action_width + gap_between_actions_width);
+        if(line==1){
+            // If it is the first line, we doesn't apply the Y gap
+            new_position.y = box_pos_y + gap_between_actions_height;
+        }else{
+            new_position.y = box_pos_y + ((line-1)*(action_heigth+gap_between_actions_height));
+        }
+        // Correct alignement (due to button origin in center)
+        new_position.x += action_width/2;
+        new_position.y += action_heigth/2;
+    }
+
+    return new_position;
 }
 
 bool ProgramBox::overBox(sf::Vector2i pos) const

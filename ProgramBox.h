@@ -26,6 +26,9 @@ public:
     void deleteAction(const unsigned int &row);
     void clearActions();
 
+    // POsition helper
+    sf::Vector2f calculateNewPosition() const;
+
     bool overBox(sf::Vector2i pos) const;
 
     std::vector<Button *> getActions() const;

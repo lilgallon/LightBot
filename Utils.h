@@ -17,6 +17,8 @@ public:
     enum class State { HOME, CREDITS, LEVEL_SELECTION, IN_GAME, LEVEL_EDITOR, END_GAME, IDLE };
     // Action class of action, used un other classes
     enum class Action { FORWARD, TURN_CLOCKWISE, TURN_COUNTERCLOCK, LIGHT, JUMP, PROG_P1, PROG_P2, NONE};
+    // Orientation of the robot
+    enum class Orientation { UP, DOWN, UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT, NONE};
     // Type prog
     enum class TypeProg {MAIN, P1, P2};
 

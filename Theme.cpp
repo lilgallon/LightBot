@@ -19,7 +19,7 @@
 
 namespace {
     const int FIRST_ID = 1;
-    const int LAST_ID = 1;
+    const int LAST_ID = 2;
 }
 
 /************************************************
@@ -62,6 +62,9 @@ sf::Color Theme::getRectDefaultFillColor() const{
     case 1:
         color = sf::Color(128,128,128);
         break;
+    case 2:
+        color = sf::Color(255,255,255);
+        break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
         break;
@@ -75,6 +78,9 @@ sf::Color Theme::getRectOnRectFillColor() const{
     switch(m_id){
     case 1:
         color = sf::Color::Yellow;
+        break;
+    case 2:
+        color = sf::Color(255,255,255,200);
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -90,6 +96,9 @@ sf::Color Theme::getRectDefaultOutlineColor() const{
     case 1:
         color = sf::Color::Yellow;
         break;
+    case 2:
+        color = sf::Color::Transparent;
+        break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
         break;
@@ -103,6 +112,9 @@ sf::Color Theme::getRectOnRectOutlineColor() const{
     switch(m_id){
     case 1:
         color = sf::Color(128,128,128);
+        break;
+    case 2:
+        color = sf::Color::Transparent;
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
@@ -118,6 +130,9 @@ int Theme::getRectOutlineThickness() const{
     case 1:
         thickness = 3;
         break;
+    case 2:
+        thickness = 1;
+        break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
         break;
@@ -132,6 +147,9 @@ sf::Color Theme::getLabelDefaultFillColor() const{
     case 1:
         color = sf::Color::Yellow;
         break;
+    case 2:
+        color = sf::Color::Transparent;
+        break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;
         break;
@@ -144,6 +162,9 @@ sf::Color Theme::getLabelOnRectFillColor() const{
     switch(m_id){
     case 1:
         color = sf::Color(128,128,128);
+        break;
+    case 2:
+        color = sf::Color::Transparent;
         break;
     default:
         std::cout << Utils::getTime() + "[Theme-ERROR]: Invalid theme ID from the class" << std::endl;

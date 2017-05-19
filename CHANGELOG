@@ -72,7 +72,14 @@ $ Memomry (deleting buttons - check issues)
 
 # Version 14 : 16/05/17 ##
 + Implementation des programboxes (non fini)
+
+## Version 15: 19/15/17 ##
 + Ajout des textures des boutons
++ Ajout du robot
++ Ajout de program handler
+* Fix textures
++ et plein d'autres choses..........
+
 
 #TODO:
 (code ready in grid.cpp)
@@ -86,3 +93,8 @@ $ Memomry (deleting buttons - check issues)
 * GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
 * FR TO ENGLISH IN APPLICATION;H
 * Changer l'algo oNCell()
+
+* Finir runProgram();
+* Fix save level (ajout du robot)
++ interaction avec les boutons des progam box
++ ajout program box rang donné

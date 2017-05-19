@@ -11,6 +11,8 @@
 #include "Utils.h"
 #include "Grid.h"
 #include "ProgramBox.h"
+#include "Robot.h"
+#include "ProgramHandler.h"
 
 class Interface : public Application
 {
@@ -31,7 +33,6 @@ private:
     std::vector<Button*> m_buttons_in_game;
     std::vector<Theme*> m_themes;
     std::vector<ProgramBox*> m_program_boxes;
-    std::map<Utils::Action, sf::Texture*> m_textures;
     // Loop controller
     bool m_first_loop;
     // Selection "tools"
@@ -44,9 +45,10 @@ private:
     sf::Texture m_texture;
     sf::Sprite m_sprite;
 
+    // RObot!!
+    Robot* m_robot;
+
     /** Methods **/
-    // Called in the constructor
-    void initActionTextures();
 
     // Interactions w/ user
     void mouse_button_pressed()                              override;

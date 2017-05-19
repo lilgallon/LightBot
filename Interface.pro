@@ -11,7 +11,9 @@ SOURCES += main.cpp \
     Cell.cpp \
     Interface.cpp \
     Application.cpp \
-    ProgramBox.cpp
+    ProgramBox.cpp \
+    ProgramHandler.cpp \
+    Robot.cpp
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
 LIBS           += -lsfml-graphics -lsfml-window -lsfml-system
@@ -24,4 +26,6 @@ HEADERS += \
     Cell.h \
     Interface.h \
     Application.h \
-    ProgramBox.h
+    ProgramBox.h \
+    ProgramHandler.h \
+    Robot.h
