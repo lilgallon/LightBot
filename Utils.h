@@ -30,6 +30,10 @@ public:
     // Splits a string into a container
     static std::vector<std::string> split(const std::string& str, const std::string& delim);
 
+    // Change easily the orientation
+    static Orientation turn_clockwise(Orientation actual_orientation);
+    static Orientation turn_counterclock(Orientation actual_orientation);
+
 private:
     Utils() = default;
 };

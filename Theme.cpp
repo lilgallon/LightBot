@@ -60,7 +60,7 @@ sf::Color Theme::getRectDefaultFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color(128,128,128);
+        color = sf::Color(174,184,198);
         break;
     case 2:
         color = sf::Color(255,255,255);
@@ -77,7 +77,7 @@ sf::Color Theme::getRectOnRectFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Yellow;
+        color = sf::Color(61,75,87);
         break;
     case 2:
         color = sf::Color(255,255,255,200);
@@ -94,7 +94,7 @@ sf::Color Theme::getRectDefaultOutlineColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Yellow;
+        color = sf::Color(61,75,87);
         break;
     case 2:
         color = sf::Color::Transparent;
@@ -111,7 +111,7 @@ sf::Color Theme::getRectOnRectOutlineColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color(128,128,128);
+        color = sf::Color(174,184,198);
         break;
     case 2:
         color = sf::Color::Transparent;
@@ -145,7 +145,7 @@ sf::Color Theme::getLabelDefaultFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color::Yellow;
+        color = sf::Color(61,75,87);
         break;
     case 2:
         color = sf::Color::Transparent;
@@ -161,7 +161,7 @@ sf::Color Theme::getLabelOnRectFillColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color(128,128,128);
+        color = sf::Color(174,184,198);
         break;
     case 2:
         color = sf::Color::Transparent;

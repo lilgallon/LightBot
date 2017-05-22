@@ -11,8 +11,8 @@ public:
     /** CONSTRUCTORS / DESCTRUCTORS **/
     Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text);
     Button(const int &utility, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text);
-    Button(const Utils::Action &action, const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text);
-    Button(const Utils::Action &action, const sf::Vector2f &position, sf::Vector2f size, Theme* theme);
+    Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text);
+    Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme);
     ~Button() = default;
 
     /** CONSTRUCTOR BY COPY **/
@@ -47,8 +47,8 @@ private:
 
     const Utils::State m_state;
     const Utils::Action m_action;
-    int m_utility;
     Theme* m_theme;
+    int m_utility;
 
     sf::Texture m_texture;
 

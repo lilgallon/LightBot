@@ -18,7 +18,7 @@
 
 namespace{
     const std::string FONT_NAME = "coolvetica.ttf";
-    const sf::Vector2f ACTION_SIZE = {50,50};
+    const sf::Vector2f ACTION_SIZE = {70,70};
     const sf::Vector2f ACTION_GAP = {2,2};
 }
 
@@ -74,10 +74,18 @@ void ProgramBox::addAction(Button* action, const unsigned int &row)
     // ..
 
     m_actions.resize(m_actions.size()+1);
-    for(unsigned int i=m_actions.size() ; i>row ; i++){
+    for(unsigned int i=m_actions.size()-1 ; i>row ; i--){
         m_actions.at(i)=m_actions.at(i-1);
     }
     m_actions.at(row) = action;
+
+
+    std::vector<Button*> temp_container = m_actions;
+    m_actions.clear();
+
+    for(Button* b : temp_container){
+        addAction(b);
+    }
 
 
 
@@ -98,6 +106,12 @@ void ProgramBox::deleteAction(const unsigned int &row)
             m_actions.at(i)=m_actions.at(i+1);
         }
         m_actions.resize(m_actions.size()-1);
+    }
+
+    std::vector<Button*> temp_container = m_actions;
+    m_actions.clear();
+    for(Button* b : temp_container){
+        addAction(b);
     }
 }
 
@@ -181,11 +195,16 @@ std::vector<Button*> ProgramBox::getActions() const
     return m_actions;
 }
 
+std::string ProgramBox::getName() const
+{
+    return m_text.getString();
+}
+
 void ProgramBox::drawProgBox(sf::RenderWindow &window)
 {
+    window.draw(m_rect);
     for(Button *b : m_actions){
         b->draw_on(window);
     }
-    window.draw(m_rect);
     window.draw(m_text);
 }

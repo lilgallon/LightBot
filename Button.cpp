@@ -44,7 +44,7 @@ Button::Button(const int &utility, const sf::Vector2f &position, const sf::Vecto
 }
 
 // Constructor for an action button
-Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme, const std::string &text)
+Button::Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text)
     :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
@@ -54,7 +54,7 @@ Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vec
     std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
 
-Button::Button(const Utils::Action &action,const sf::Vector2f &position, sf::Vector2f size, Theme* theme)
+Button::Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme)
     :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
@@ -84,11 +84,15 @@ void Button::initLabel(const sf::Vector2f &position, const sf::Vector2f &size, c
     // TODO
     // Améliorer pour prendre en compte la taille du texte pour mieux positionner le label
     m_label.setString(text);
-    m_label.setOrigin(size.x/4.5,size.y/4.);
+    m_label.setOrigin(size.x/3.5,size.y/4.);
+    //m_label.setPosition({position.x+size.x/2,position.y+size.y/2});
+    //m_label.setPosition(position);
+
+    //m_label.setOrigin({m_label.getLocalBounds().width/2-5,m_label.getLocalBounds().height/2});
     m_label.setPosition(position);
 
     m_label.setColor(color);
-    m_label.setCharacterSize(20);
+m_label.setCharacterSize(20);
 
 }
 // Init the button insaide a constructor

@@ -32,6 +32,7 @@ public:
     bool overBox(sf::Vector2i pos) const;
 
     std::vector<Button *> getActions() const;
+    std::string getName() const;
 
     // Graphic
     void drawProgBox(sf::RenderWindow &window);

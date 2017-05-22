@@ -1,4 +1,4 @@
-FILE NAME WHATEVER YOU WANT
+FILE NAME WHATEVER YOU WANT (no space)
 robot_pos_x;robot_pos_y;robot_orientation
 pos_x;pos_y;height(0 to x);light(0=false,1=true)
 

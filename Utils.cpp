@@ -68,3 +68,59 @@ std::vector<std::string> Utils::split(const std::string &str, const std::string 
     while(pos < str.length() && prev < str.length());
     return tokens;
 }
+
+Utils::Orientation Utils::turn_clockwise(Utils::Orientation actual_orientation)
+{
+    Orientation final_orientation = Orientation::NONE;
+    switch (actual_orientation) {
+    case Orientation::DOWN:
+        final_orientation=Orientation::DOWN_LEFT;
+        break;
+    case Orientation::DOWN_LEFT:
+        final_orientation=Orientation::UP_LEFT;
+        break;
+    case Orientation::DOWN_RIGHT:
+        final_orientation=Orientation::DOWN;
+        break;
+    case Orientation::UP:
+        final_orientation=Orientation::UP_RIGHT;
+        break;
+    case Orientation::UP_LEFT:
+        final_orientation=Orientation::UP;
+        break;
+    case Orientation::UP_RIGHT:
+        final_orientation=Orientation::DOWN_RIGHT;
+        break;
+    default:
+        break;
+    }
+    return final_orientation;
+}
+
+Utils::Orientation Utils::turn_counterclock(Utils::Orientation actual_orientation)
+{
+    Orientation final_orientation = Orientation::NONE;
+    switch (actual_orientation) {
+    case Orientation::DOWN:
+        final_orientation=Orientation::DOWN_RIGHT;
+        break;
+    case Orientation::DOWN_LEFT:
+        final_orientation=Orientation::DOWN;
+        break;
+    case Orientation::DOWN_RIGHT:
+        final_orientation=Orientation::UP_RIGHT;
+        break;
+    case Orientation::UP:
+        final_orientation=Orientation::UP_LEFT;
+        break;
+    case Orientation::UP_LEFT:
+        final_orientation=Orientation::DOWN_LEFT;
+        break;
+    case Orientation::UP_RIGHT:
+        final_orientation=Orientation::UP;
+        break;
+    default:
+        break;
+    }
+    return final_orientation;
+}

@@ -87,6 +87,15 @@ $ Memomry (deleting buttons - check issues)
 * Résolution du problème avec le texte ds prgm box
 * Préparation pour la mise à jour de program handler
 
+## Version 17 : 22/05/17 ##
+* Changement du robot par une image
+* Amélioration visuelle
+* Résolution save level en ajoutant les infos du robot
+* Changement des coordonnées dans la grille par leur hauteur
++ Finition du runProgram()
++ Implem delete action (row) et auto-alignement des boutons
++ Implet insertion action
++ ..... PLEIN DE CHOSES
 
 
 #TODO:
@@ -101,7 +110,16 @@ $ Memomry (deleting buttons - check issues)
 * GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
 * FR TO ENGLISH IN APPLICATION;H
 
-* Finir runProgram();
-* Fix save level (ajout du robot)
+* Vérifier Fix save level (ajout du robot)
 + interaction avec les boutons des progam box
 + ajout program box rang donné
+
++ Animation
+* AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on
+change la rotation
++ Ajouter gestion des appels récursifs à l'infini!! (cpt max ..)
++ Editeur
+
++ Gestion lose / win
+
+THROW EXCEPTION LVEL NAME WITH SPACE

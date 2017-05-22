@@ -22,13 +22,16 @@ namespace {
 
     const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
 
-    const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {415,200};
+    const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {360,218};
     const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35};
 
-    const sf::Vector2f PROGRAM_BOX_SIZE_P = {PROGRAM_BOX_SIZE_MAIN.x,150};
+    const sf::Vector2f PROGRAM_BOX_SIZE_P = {PROGRAM_BOX_SIZE_MAIN.x,145};
 
     const sf::Vector2f PROGRAM_BOX_POS_P1 = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35+PROGRAM_BOX_SIZE_MAIN.y+40};
     const sf::Vector2f PROGRAM_BOX_POS_P2 = {PROGRAM_BOX_POS_P1.x,PROGRAM_BOX_POS_P1.y+PROGRAM_BOX_SIZE_P.y+40};
+
+    const int RUN = 1;
+    const int CLEAR = 2;
 }
 
 /************************************************
@@ -49,16 +52,18 @@ Interface::Interface()
     Theme *actionTheme = new Theme(2);
     m_themes.push_back(actionTheme);
 
-    Button* home1 = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2, SCREEN_HEIGHT/(float)1.8}     , {90, 70} , defaultTheme, "Play");
+    Button* play = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2.-90/2, (float)SCREEN_HEIGHT/2-50/2}     , {90, 50} , defaultTheme, "Play");
     //home1->setLabelText("Play");
-    Button* home2 = new Button(Utils::State::CREDITS,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "Credits");
+    Button* credits = new Button(Utils::State::CREDITS,{(float)SCREEN_WIDTH/2.-90/2, (float)SCREEN_HEIGHT/2+50/2+10} , {90, 50}, defaultTheme, "Credits");
     //home2->setLabelText("Credits");
-    m_buttons_home.push_back(home1);
-    m_buttons_home.push_back(home2);
+    m_buttons_home.push_back(play);
+    m_buttons_home.push_back(credits);
 
-    Button* levelSelection1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
+    Button* back_to_menu = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/2-80/2-20, (float)SCREEN_HEIGHT-50-20}, {80, 50}, defaultTheme, "Back");
+    Button* go_to_editor = new Button(Utils::State::LEVEL_EDITOR, {(float)SCREEN_WIDTH/2+80/2+20, (float)SCREEN_HEIGHT-50-20} , {80, 50}, defaultTheme, "Editor");
     //levelSelection1->setLabelText("<-");
-    m_buttons_level_selection.push_back(levelSelection1);
+    m_buttons_level_selection.push_back(back_to_menu);
+    m_buttons_level_selection.push_back(go_to_editor);
 
     Button* credits1 = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
     //credits1->setLabelText("<-");
@@ -75,15 +80,16 @@ Interface::Interface()
     Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,defaultTheme,"TCC");
     */
 
-    Button* in_game1 = new Button(Utils::Action::FORWARD,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game2 = new Button(Utils::Action::JUMP,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game3 = new Button(Utils::Action::LIGHT,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game4 = new Button(Utils::Action::PROG_P1,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game5 = new Button(Utils::Action::PROG_P2,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
-    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game1 = new Button(Utils::Action::FORWARD,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game2 = new Button(Utils::Action::JUMP,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game3 = new Button(Utils::Action::LIGHT,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*2,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game4 = new Button(Utils::Action::PROG_P1,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*3,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game5 = new Button(Utils::Action::PROG_P2,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*4,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game6 = new Button(Utils::Action::TURN_CLOCKWISE,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*5,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
+    Button* in_game7 = new Button(Utils::Action::TURN_COUNTERCLOCK,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*6,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
 
-    Button* run_prgm = new Button(1,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "RUN");
+    Button* run_prgm = new Button(RUN,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "RUN");
+    Button* clear_prgms = new Button(CLEAR,{SCREEN_WIDTH/(float)1.3, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "CLEAR");
 
     m_buttons_in_game.push_back(in_game1);
     m_buttons_in_game.push_back(in_game2);
@@ -94,6 +100,7 @@ Interface::Interface()
     m_buttons_in_game.push_back(in_game7);
 
     m_buttons_in_game.push_back(run_prgm);
+    m_buttons_in_game.push_back(clear_prgms);
 
 
     ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color(128,128,128,128),sf::Color::Black,2,"Main");
@@ -172,7 +179,7 @@ void Interface::loop()
             //m_grid->saveLevel("99","testage");
         }
 
-        m_grid->drawGrid(m_window);
+        m_grid->drawGrid(m_window, {250,350});
         break;
     case Utils::State::IN_GAME:
         draw_buttons(m_buttons_in_game);
@@ -183,7 +190,7 @@ void Interface::loop()
             //m_grid->saveLevel("test","debug");
         }
 
-        m_grid->drawGrid(m_window);
+        m_grid->drawGrid(m_window, {-1,-1});
         draw_prgm_boxes(m_program_boxes);
 
         break;
@@ -236,12 +243,30 @@ void Interface::mouse_button_pressed(){
         for(Button * b : m_buttons_in_game){
             changeButtonAppareance(false,b);
             // If the mouse is on the run program button
-            if(b->isOverRect(m_mouse) && b->getUtility()==1){
-                ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_robot,m_grid);
-                prog->runProgram();
-                delete prog;
+            if(b->isOverRect(m_mouse)){
+                if(b->getUtility()==RUN){
+                    ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
+                    prog->runProgram(m_program_boxes[0]); // run main
+                    delete prog;
+                }
+                else if(b->getUtility()==CLEAR){
+                    for(ProgramBox* p : m_program_boxes){
+                        p->clearActions();
+                    }
+                }
             }
         }
+        // For each program box
+        for(ProgramBox* p : m_program_boxes){
+            // We check if he clicked on a button
+            for(int i = 0 ; i < p->getActions().size() ; i ++){
+                // If he clicked in one, we have to remove it
+                if(p->getActions().at(i)->isOverRect(m_mouse)){
+                    p->deleteAction(i);
+                }
+            }
+        }
+
 
         // Get the selected button to move it later
         m_selected_button = getSelectedButton();
@@ -271,7 +296,23 @@ void Interface::mouse_button_released(){
             unsigned int i =0;
             while(!found && i <m_program_boxes.size()){
                 if(m_program_boxes.at(i)->overBox(m_mouse)){
-                    m_program_boxes.at(i)->addAction(m_selected_button);
+
+                    // We check ig he put the action between two
+                    bool row_found = false;
+                    if(m_program_boxes.at(i)->getActions().size()>0){
+                        unsigned int row = 0;
+                        while(!row_found && row<m_program_boxes.at(i)->getActions().size()){
+                            if(m_program_boxes.at(i)->getActions().at(row)->isOverRect(m_mouse)){
+                                m_program_boxes.at(i)->addAction(m_selected_button,row);
+                                row_found = true;
+                            }else{
+                                row ++;
+                            }
+                        }
+                    }
+                    if(!row_found){
+                        m_program_boxes.at(i)->addAction(m_selected_button);
+                    }
                     m_selected_button = nullptr;
                     found = true;
                 }else{
@@ -428,16 +469,16 @@ void Interface::loadBackground(){
     std::string image;
     switch (m_state) {
     case Utils::State::HOME:
-        image = "lightbot-main.png";
+        image = "menu-lightbot.png";
         break;
     case Utils::State::CREDITS:
         image = "default.png";
         break;
     case Utils::State::LEVEL_SELECTION:
-        image = "default.png";
+        image = "level-selection.png";
         break;
     case Utils::State::IN_GAME:
-        image = "default.png";
+        image = "in-game-background3.png";
         break;
     case Utils::State::LEVEL_EDITOR:
         image = "default.png";
@@ -453,9 +494,9 @@ void Interface::loadBackground(){
     }
     if(!m_texture.loadFromFile(Utils::IMG_PATH+image)){
         std::cout << Utils::getTime() + "[Texture-ERROR]: Could not load the background" << std::endl;
-        std::cout << Utils::getTime() + "[Textur-FIX]: Check \""
+        std::cout << Utils::getTime() + "[Texture-FIX]: Check \""
                      + Utils::IMG_PATH + "\"" << std::endl;
-        std::cout << Utils::getTime() + "[Textur-FIX]: The texture will be ignored." << std::endl;
+        std::cout << Utils::getTime() + "[Texture-FIX]: The texture will be ignored." << std::endl;
     }else{
         m_sprite.setTexture(m_texture);
         m_sprite.setPosition(0,0);
