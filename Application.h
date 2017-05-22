@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+// TODO CHANGE TO ENG
 /*
  * Classe abstraite qui fournit un modèle de comportement
  * pour les applications qui en héritent
@@ -21,9 +22,6 @@ public:
                 const std::wstring & title);
     void run();
     virtual ~Application()               = default;
-
-    static float module(const  sf::Vector2i  & v);
-    static float distance(const  sf::Vector2i  & p1, const  sf::Vector2i  & p2 );
 
     // Interaction indicator (true if the mouse is being pressed)
     bool m_pressing_mouse;

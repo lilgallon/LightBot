@@ -33,7 +33,7 @@ public:
 private:
     /** INIT **/
     void initLabel();
-    void initRobot(const std::__cxx11::string &line);
+    void initRobot(const std::string &line);
     //void calculatePosition(Cell* c, sf::Vector2f &pos);
 
     std::vector<Cell*> m_cells;

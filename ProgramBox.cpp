@@ -45,6 +45,8 @@ ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color
 
     m_text.setFont(m_font);
     m_text.setString(prog_name);
+    m_text.setColor(sf::Color(128,128,128));
+    m_text.setPosition({pos.x,pos.y-35});
 }
 
 ProgramBox::~ProgramBox()
@@ -185,4 +187,5 @@ void ProgramBox::drawProgBox(sf::RenderWindow &window)
         b->draw_on(window);
     }
     window.draw(m_rect);
+    window.draw(m_text);
 }

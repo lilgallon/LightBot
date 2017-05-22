@@ -23,7 +23,12 @@ namespace {
     const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
 
     const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {415,200};
-    const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,10};
+    const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35};
+
+    const sf::Vector2f PROGRAM_BOX_SIZE_P = {PROGRAM_BOX_SIZE_MAIN.x,150};
+
+    const sf::Vector2f PROGRAM_BOX_POS_P1 = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35+PROGRAM_BOX_SIZE_MAIN.y+40};
+    const sf::Vector2f PROGRAM_BOX_POS_P2 = {PROGRAM_BOX_POS_P1.x,PROGRAM_BOX_POS_P1.y+PROGRAM_BOX_SIZE_P.y+40};
 }
 
 /************************************************
@@ -91,9 +96,13 @@ Interface::Interface()
     m_buttons_in_game.push_back(run_prgm);
 
 
-    ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color::Transparent,sf::Color::Black,2,"Main");
+    ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color(128,128,128,128),sf::Color::Black,2,"Main");
+    ProgramBox* prgm_p1 = new ProgramBox(PROGRAM_BOX_POS_P1,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P1");
+    ProgramBox* prgm_p2 = new ProgramBox(PROGRAM_BOX_POS_P2,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P2");
 
     m_program_boxes.push_back(prgm_main);
+    m_program_boxes.push_back(prgm_p1);
+    m_program_boxes.push_back(prgm_p2);
 
     // The grid needs a robot before puttin a grid on it
     // because loading a level (a grid) will use the robot
@@ -123,10 +132,10 @@ Interface::~Interface(){
     for(Theme* t : m_themes){
         delete t;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a theme" << std::endl;
-    }/*
+    }
     for(ProgramBox* p : m_program_boxes){
         delete p;
-    }*/
+    }
     delete m_grid;
     delete m_robot;
 }
@@ -226,6 +235,7 @@ void Interface::mouse_button_pressed(){
     case Utils::State::IN_GAME:
         for(Button * b : m_buttons_in_game){
             changeButtonAppareance(false,b);
+            // If the mouse is on the run program button
             if(b->isOverRect(m_mouse) && b->getUtility()==1){
                 ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_robot,m_grid);
                 prog->runProgram();

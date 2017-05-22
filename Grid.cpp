@@ -28,7 +28,7 @@ namespace{
     const int POS_ORIENTATION_INDEX = 1;
     const int HEIGHT_INDEX = 2;
     const int LIGHT_INDEX = 3;
-    const sf::Vector2f GAP = {150,150};
+    const sf::Vector2f GAP = {250,250};
 }
 
 // TODO
@@ -79,7 +79,7 @@ void Grid::initRobot(const std::string &line)
     std::vector<std::string> sub_string = Utils::split(line,";");
 
 
-    m_robot->setPos({atof(sub_string[POS_X_INDEX].c_str()),atof(sub_string[POS_Y_INDEX].c_str())});
+    m_robot->setPos({atoi(sub_string[POS_X_INDEX].c_str()),atoi(sub_string[POS_Y_INDEX].c_str())});
 
     int orientation = atof(sub_string[POS_ORIENTATION_INDEX].c_str());
     switch (orientation) {
@@ -416,7 +416,7 @@ void Grid::drawGrid(sf::RenderWindow& window){
 
             // Sets the center in the center :)
             hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
-            robot_shape.setOrigin({m_robot->getPos().x+m_radius/10,m_robot->getPos().y+m_radius/10});
+            robot_shape.setOrigin({m_robot->getPos().x+(float)m_radius/10,m_robot->getPos().y+(float)m_radius/10});
             bool robot_is_there = false;
             if(c->getPos().x==m_robot->getPos().x
                     && c->getPos().y == m_robot->getPos().y){

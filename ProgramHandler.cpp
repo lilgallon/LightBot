@@ -1,3 +1,18 @@
+//    This file is part of LightBot.
+//
+//    LightBot is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    LightBot is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "ProgramHandler.h"
 
 void ProgramHandler::moveForward()
@@ -49,10 +64,15 @@ void ProgramHandler::runProgram()
             break;
         case Utils::Action::LIGHT:
             for(Cell* c : cells){
+                // TODO: Verifier si la cellule est à sa hauteur ou moins s'il na pas sauté
                 if(c->getPos().x == m_robot->getPos().x
                         && c->getPos().y == m_robot->getPos().y){
                     c->setLight(true);
                 }
+                // S'il a sauté, vérifier si la cellule est à une hauteur de plus
+                // ...
+
+                // TODO -> cell : afficher la hauteur au lieu de l'indice (1;0 ...)
             }
             break;
         case Utils::Action::TURN_CLOCKWISE:

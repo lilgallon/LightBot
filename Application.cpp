@@ -1,3 +1,18 @@
+//    This file is part of LightBot.
+//
+//    LightBot is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    LightBot is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "Application.h"
 
 
@@ -76,18 +91,4 @@ void Application::set_mouse_coord(int x, int y)
 {
     auto pos = m_window.mapPixelToCoords( {x, y});
     m_mouse = { pos.x, pos.y };
-}
-
-/*
- * utilitaires (fonctions statiques)
- */
-
-float Application::module(const  sf::Vector2i  & v)
-{
-    return sqrt(v.x * v.x + v.y * v.y);
-}
-
-float Application::distance(const sf::Vector2i &p1, const sf::Vector2i &p2 )
-{
-    return module( p1 - p2 );
 }

@@ -73,12 +73,20 @@ $ Memomry (deleting buttons - check issues)
 # Version 14 : 16/05/17 ##
 + Implementation des programboxes (non fini)
 
-## Version 15: 19/15/17 ##
+## Version 15: 19/05/17 ##
 + Ajout des textures des boutons
 + Ajout du robot
 + Ajout de program handler
 * Fix textures
 + et plein d'autres choses..........
+
+## Version 16: 22/05/17 ##
++ Ajout des deux prgm box (p1, p2)
+* Résolution des warnings
+* Résolutions des fuites mémoire
+* Résolution du problème avec le texte ds prgm box
+* Préparation pour la mise à jour de program handler
+
 
 
 #TODO:
@@ -92,7 +100,6 @@ $ Memomry (deleting buttons - check issues)
 * Catch / exceptions handler when a line of a level is fuckedup
 * GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
 * FR TO ENGLISH IN APPLICATION;H
-* Changer l'algo oNCell()
 
 * Finir runProgram();
 * Fix save level (ajout du robot)
