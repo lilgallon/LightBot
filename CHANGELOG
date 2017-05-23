@@ -103,6 +103,10 @@ $ Memomry (deleting buttons - check issues)
 + Debut ajout end screen
 * Fix saut
 
+## Version 19 : 23/05/17 ##
+==== VERSION BUGUEE (normal)
+.. Continuation (lol) de l'écran de fin d'execution
+
 
 #TODO:
 (code ready in grid.cpp)

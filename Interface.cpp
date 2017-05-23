@@ -17,23 +17,23 @@
 #include "Utils.h"
 
 namespace {
-    const unsigned int SCREEN_WIDTH = 1280;
-    const unsigned int SCREEN_HEIGHT = 720;
+const unsigned int SCREEN_WIDTH = 1280;
+const unsigned int SCREEN_HEIGHT = 720;
 
-    const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
+const sf::Vector2f ACTION_BUTTON_SIZE = {80,80};
 
-    const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {360,218};
-    const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35};
+const sf::Vector2f PROGRAM_BOX_SIZE_MAIN = {360,218};
+const sf::Vector2f PROGRAM_BOX_POS_MAIN = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35};
 
-    const sf::Vector2f PROGRAM_BOX_SIZE_P = {PROGRAM_BOX_SIZE_MAIN.x,145};
+const sf::Vector2f PROGRAM_BOX_SIZE_P = {PROGRAM_BOX_SIZE_MAIN.x,145};
 
-    const sf::Vector2f PROGRAM_BOX_POS_P1 = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35+PROGRAM_BOX_SIZE_MAIN.y+40};
-    const sf::Vector2f PROGRAM_BOX_POS_P2 = {PROGRAM_BOX_POS_P1.x,PROGRAM_BOX_POS_P1.y+PROGRAM_BOX_SIZE_P.y+40};
+const sf::Vector2f PROGRAM_BOX_POS_P1 = {SCREEN_WIDTH-PROGRAM_BOX_SIZE_MAIN.x-20,35+PROGRAM_BOX_SIZE_MAIN.y+40};
+const sf::Vector2f PROGRAM_BOX_POS_P2 = {PROGRAM_BOX_POS_P1.x,PROGRAM_BOX_POS_P1.y+PROGRAM_BOX_SIZE_P.y+40};
 
-    const int RUN = 1;
-    const int CLEAR = 2;
-    const int RETRY = 3;
-    const int BACK = 4;
+const int RUN = 1;
+const int CLEAR = 2;
+const int RETRY = 3;
+const int BACK = 4;
 }
 
 /************************************************
@@ -205,7 +205,6 @@ void Interface::loop()
         m_grid->drawGrid(m_window, {-1,-1});
         draw_prgm_boxes(m_program_boxes);
 
-        m_program_end_screen=true;
         // After the execution of the program
         if(m_program_end_screen){
             // Grey transparent background over the game
@@ -266,32 +265,52 @@ void Interface::mouse_button_pressed(){
         }
         break;
     case Utils::State::IN_GAME:
-        for(Button * b : m_buttons_in_game){
-            changeButtonAppareance(false,b);
-            // If the mouse is on the run program button
-            if(b->isOverRect(m_mouse)){
-                if(b->getUtility()==RUN){
-                    ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
-                    prog->runProgram(m_program_boxes[0]); // run main
-                    delete prog;
+        if(m_program_end_screen){
+            for(Button* b : m_buttons_end_program){
+                if(b->isOverRect(m_mouse)){
+                    if(b->getUtility()==RETRY){
+                        m_program_end_screen = false;
+                        // TODO
+                        // RESET LEVEL
+                        // RESET PROGRAM BOXES
+                    }else if(b->getUtility()==BACK){
+                        m_program_end_screen = false;
+                        m_grid->loadLevel("1");
+                        m_state = Utils::State::LEVEL_SELECTION;
+                        // RESET PROGRAM BOXES
+                    }
+
                 }
-                else if(b->getUtility()==CLEAR){
-                    for(ProgramBox* p : m_program_boxes){
-                        p->clearActions();
+            }
+        }else{
+            for(Button * b : m_buttons_in_game){
+                changeButtonAppareance(false,b);
+                // If the mouse is on the run program button
+                if(b->isOverRect(m_mouse)){
+                    if(b->getUtility()==RUN){
+                        ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
+                        prog->runProgram(m_program_boxes[0]); // run main
+                        delete prog;
+                        m_program_end_screen = true;
+                    }
+                    else if(b->getUtility()==CLEAR){
+                        for(ProgramBox* p : m_program_boxes){
+                            p->clearActions();
+                        }
                     }
                 }
             }
-        }
-        // For each program box
-        for(ProgramBox* p : m_program_boxes){
-            // We check if he clicked on a button
-            for(unsigned int i = 0 ; i < p->getActions().size() ; i ++){
-                // If he clicked in one, we have to remove it
-                if(p->getActions().at(i)->isOverRect(m_mouse)){
-                    if(p->getActions().size()!=1){
-                        p->deleteAction(i);
-                    }else{
-                        p->clearActions();
+            // For each program box
+            for(ProgramBox* p : m_program_boxes){
+                // We check if he clicked on a button
+                for(unsigned int i = 0 ; i < p->getActions().size() ; i ++){
+                    // If he clicked in one, we have to remove it
+                    if(p->getActions().at(i)->isOverRect(m_mouse)){
+                        if(p->getActions().size()!=1){
+                            p->deleteAction(i);
+                        }else{
+                            p->clearActions();
+                        }
                     }
                 }
             }
@@ -321,49 +340,52 @@ void Interface::mouse_button_released(){
     case Utils::State::LEVEL_SELECTION:
         break;
     case Utils::State::IN_GAME:
-        if(m_selected_button!=nullptr){
-            bool found = false;
-            unsigned int i =0;
-            while(!found && i <m_program_boxes.size()){
-                if(m_program_boxes.at(i)->overBox(m_mouse)){
+        if(!m_program_end_screen){
+            if(m_selected_button!=nullptr){
+                bool found = false;
+                unsigned int i =0;
+                while(!found && i <m_program_boxes.size()){
+                    if(m_program_boxes.at(i)->overBox(m_mouse)){
 
-                    // We check ig he put the action between two
-                    bool row_found = false;
-                    if(m_program_boxes.at(i)->getActions().size()>0){
-                        unsigned int row = 0;
-                        while(!row_found && row<m_program_boxes.at(i)->getActions().size()){
-                            if(m_program_boxes.at(i)->getActions().at(row)->isOverRect(m_mouse)){
+                        // We check ig he put the action between two
+                        bool row_found = false;
+                        if(m_program_boxes.at(i)->getActions().size()>0){
+                            unsigned int row = 0;
+                            while(!row_found && row<m_program_boxes.at(i)->getActions().size()){
+                                if(m_program_boxes.at(i)->getActions().at(row)->isOverRect(m_mouse)){
 
-                                if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
-                                || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
-                                || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
-                            std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
+                                    if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
+                                            || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
+                                            || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
+                                        std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
+                                    }else{
+                                        m_program_boxes.at(i)->addAction(m_selected_button,row);
+                                    }
+                                    row_found = true;
                                 }else{
-                                    m_program_boxes.at(i)->addAction(m_selected_button,row);
+                                    row ++;
                                 }
-                                row_found = true;
-                            }else{
-                                row ++;
                             }
                         }
-                    }
-                    if(!row_found){
-                        if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
-                        || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
-                        || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
-                             std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
-                        }else{
-                            m_program_boxes.at(i)->addAction(m_selected_button);
-                        }
+                        if(!row_found){
+                            if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
+                                    || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
+                                    || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
+                                std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
+                            }else{
+                                m_program_boxes.at(i)->addAction(m_selected_button);
+                            }
 
+                        }
+                        m_selected_button = nullptr;
+                        found = true;
+                    }else{
+                        i ++;
                     }
-                    m_selected_button = nullptr;
-                    found = true;
-                }else{
-                    i ++;
                 }
             }
         }
+
         break;
     case Utils::State::LEVEL_EDITOR:
         break;
@@ -397,8 +419,14 @@ void Interface::mouse_moved(){
         m_grid->isOverCell(m_mouse);
         break;
     case Utils::State::IN_GAME:
-        for(Button * b : m_buttons_in_game){
-            changeButtonAppareance(isOnButton(b),b);
+        if(m_program_end_screen){
+            for(Button* b : m_buttons_end_program){
+                changeButtonAppareance(isOnButton(b),b);
+            }
+        }else{
+            for(Button * b : m_buttons_in_game){
+                changeButtonAppareance(isOnButton(b),b);
+            }
         }
         break;
     case Utils::State::LEVEL_EDITOR:
@@ -422,9 +450,11 @@ void Interface::mouse_pressing()
     case Utils::State::LEVEL_SELECTION:
         break;
     case Utils::State::IN_GAME:
-        if(m_selected_button!=nullptr){
-            if(m_selected_button->getAction()!=Utils::Action::NONE){
-                draw_button_at(*m_selected_button,m_mouse);
+        if(!m_program_end_screen){
+            if(m_selected_button!=nullptr){
+                if(m_selected_button->getAction()!=Utils::Action::NONE){
+                    draw_button_at(*m_selected_button,m_mouse);
+                }
             }
         }
         break;
