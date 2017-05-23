@@ -259,7 +259,7 @@ void Interface::mouse_button_pressed(){
         // For each program box
         for(ProgramBox* p : m_program_boxes){
             // We check if he clicked on a button
-            for(int i = 0 ; i < p->getActions().size() ; i ++){
+            for(unsigned int i = 0 ; i < p->getActions().size() ; i ++){
                 // If he clicked in one, we have to remove it
                 if(p->getActions().at(i)->isOverRect(m_mouse)){
                     p->deleteAction(i);

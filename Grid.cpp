@@ -264,7 +264,7 @@ std::vector<Cell*> Grid::getGrid(){
 /**************************************************
  *                 FILE STREAM
  * ************************************************/
-void Grid::loadLevel(const std::__cxx11::string &level_id){
+void Grid::loadLevel(const std::string &level_id){
 
     std::fstream f;
     std::string line;
@@ -373,7 +373,7 @@ void Grid::loadLevel(const std::__cxx11::string &level_id){
     f.close();
 }
 
-void Grid::saveLevel(const std::__cxx11::string &level_id, const std::__cxx11::string &level_name){
+void Grid::saveLevel(const std::string &level_id, const std::string &level_name){
     std::fstream f;
     std::string file = Utils::LEVELS_PATH + level_id + ".txt";
 

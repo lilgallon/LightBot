@@ -90,5 +90,5 @@ void Application::process_events()
 void Application::set_mouse_coord(int x, int y)
 {
     auto pos = m_window.mapPixelToCoords( {x, y});
-    m_mouse = { pos.x, pos.y };
+    m_mouse = { (int)pos.x, (int)pos.y };
 }
