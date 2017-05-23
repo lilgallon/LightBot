@@ -31,10 +31,12 @@ private:
     std::vector<Button*> m_buttons_level_selection;
     std::vector<Button*> m_buttons_credits;
     std::vector<Button*> m_buttons_in_game;
+    std::vector<Button*> m_buttons_end_program;
     std::vector<Theme*> m_themes;
     std::vector<ProgramBox*> m_program_boxes;
     // Loop controller
     bool m_first_loop;
+    bool m_program_end_screen;
     // Selection "tools"
     std::string m_selected_level;
     Button* m_selected_button;

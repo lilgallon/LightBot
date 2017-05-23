@@ -32,6 +32,8 @@ namespace {
 
     const int RUN = 1;
     const int CLEAR = 2;
+    const int RETRY = 3;
+    const int BACK = 4;
 }
 
 /************************************************
@@ -39,7 +41,7 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -103,14 +105,20 @@ Interface::Interface()
     m_buttons_in_game.push_back(clear_prgms);
 
 
-    ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color(128,128,128,128),sf::Color::Black,2,"Main");
-    ProgramBox* prgm_p1 = new ProgramBox(PROGRAM_BOX_POS_P1,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P1");
-    ProgramBox* prgm_p2 = new ProgramBox(PROGRAM_BOX_POS_P2,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P2");
+    ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,sf::Color(128,128,128,128),sf::Color::Black,2,"Main",Utils::TypeProg::MAIN);
+    ProgramBox* prgm_p1 = new ProgramBox(PROGRAM_BOX_POS_P1,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P1",Utils::TypeProg::P1);
+    ProgramBox* prgm_p2 = new ProgramBox(PROGRAM_BOX_POS_P2,PROGRAM_BOX_SIZE_P,sf::Color(128,128,128,128),sf::Color::Black,2,"P2",Utils::TypeProg::P2);
 
     m_program_boxes.push_back(prgm_main);
     m_program_boxes.push_back(prgm_p1);
     m_program_boxes.push_back(prgm_p2);
 
+    Button* retry = new Button(RETRY,{SCREEN_HEIGHT/2,SCREEN_WIDTH/2},{100,100},defaultTheme,"RETRY");
+    Button* back = new Button(BACK,{SCREEN_HEIGHT/2+80,SCREEN_WIDTH/2},{150,100},defaultTheme,"BACK TO MENU");
+
+
+    m_buttons_end_program.push_back(retry);
+    m_buttons_end_program.push_back(back);
     // The grid needs a robot before puttin a grid on it
     // because loading a level (a grid) will use the robot
     // instance
@@ -133,6 +141,10 @@ Interface::~Interface(){
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;
     }
     for(Button* b : m_buttons_in_game){
+        delete b;
+        std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;
+    }
+    for(Button* b : m_buttons_end_program){
         delete b;
         std::cout << Utils::getTime() + "[EXIT-INFO]: Deleting a button" << std::endl;
     }
@@ -192,6 +204,20 @@ void Interface::loop()
 
         m_grid->drawGrid(m_window, {-1,-1});
         draw_prgm_boxes(m_program_boxes);
+
+        m_program_end_screen=true;
+        // After the execution of the program
+        if(m_program_end_screen){
+            // Grey transparent background over the game
+            sf::RectangleShape rect;
+            rect.setSize({SCREEN_WIDTH,SCREEN_HEIGHT});
+            rect.setFillColor(sf::Color(128,128,128,150));
+            rect.setPosition(0,0);
+            m_window.draw(rect);
+
+            draw_buttons(m_buttons_end_program);
+
+        }
 
         break;
     case Utils::State::LEVEL_EDITOR:
@@ -262,7 +288,11 @@ void Interface::mouse_button_pressed(){
             for(unsigned int i = 0 ; i < p->getActions().size() ; i ++){
                 // If he clicked in one, we have to remove it
                 if(p->getActions().at(i)->isOverRect(m_mouse)){
-                    p->deleteAction(i);
+                    if(p->getActions().size()!=1){
+                        p->deleteAction(i);
+                    }else{
+                        p->clearActions();
+                    }
                 }
             }
         }
@@ -303,7 +333,14 @@ void Interface::mouse_button_released(){
                         unsigned int row = 0;
                         while(!row_found && row<m_program_boxes.at(i)->getActions().size()){
                             if(m_program_boxes.at(i)->getActions().at(row)->isOverRect(m_mouse)){
-                                m_program_boxes.at(i)->addAction(m_selected_button,row);
+
+                                if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
+                                || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
+                                || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
+                            std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
+                                }else{
+                                    m_program_boxes.at(i)->addAction(m_selected_button,row);
+                                }
                                 row_found = true;
                             }else{
                                 row ++;
@@ -311,7 +348,14 @@ void Interface::mouse_button_released(){
                         }
                     }
                     if(!row_found){
-                        m_program_boxes.at(i)->addAction(m_selected_button);
+                        if((m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P1)
+                        || (m_selected_button->getAction()==Utils::Action::PROG_P2 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)
+                        || (m_selected_button->getAction()==Utils::Action::PROG_P1 && m_program_boxes.at(i)->getType()==Utils::TypeProg::P2)){
+                             std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
+                        }else{
+                            m_program_boxes.at(i)->addAction(m_selected_button);
+                        }
+
                     }
                     m_selected_button = nullptr;
                     found = true;

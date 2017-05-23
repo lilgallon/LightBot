@@ -15,9 +15,10 @@ private:
     sf::RectangleShape m_rect;
     sf::Font m_font;
     sf::Text m_text;
+    Utils::TypeProg m_type_prog;
 
 public:
-    ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_size, std::string prog_name);
+    ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_size, std::string prog_name, Utils::TypeProg type_prog);
     ~ProgramBox();
 
     // Actions
@@ -33,6 +34,7 @@ public:
 
     std::vector<Button *> getActions() const;
     std::string getName() const;
+    Utils::TypeProg getType() const;
 
     // Graphic
     void drawProgBox(sf::RenderWindow &window);

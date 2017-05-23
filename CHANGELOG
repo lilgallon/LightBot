@@ -98,6 +98,11 @@ $ Memomry (deleting buttons - check issues)
 + Implet insertion action
 + ..... PLEIN DE CHOSES
 
+## Version 18 : 23/05/17 ##
+* Fix delete action
++ Debut ajout end screen
+* Fix saut
+
 
 #TODO:
 (code ready in grid.cpp)
@@ -122,5 +127,6 @@ change la rotation
 + Editeur
 
 + Gestion lose / win
++ Todo execution aps à pas
 
 THROW EXCEPTION LVEL NAME WITH SPACE

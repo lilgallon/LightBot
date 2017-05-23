@@ -22,7 +22,8 @@ namespace{
     const sf::Vector2f ACTION_GAP = {2,2};
 }
 
-ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_thickness, std::string prog_name)
+ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_thickness, std::string prog_name, Utils::TypeProg type_prog)
+    :m_type_prog{type_prog}
 {
     // Inits the box where the actions will be in
     m_rect.setPosition(pos);
@@ -94,15 +95,16 @@ void ProgramBox::addAction(Button* action, const unsigned int &row)
 
 void ProgramBox::deleteAction(const unsigned int &row)
 {
+
     if(row>=m_actions.size()){
         std::cout << Utils::getTime() + "[Program Box-ERROR]: An action of row " + std::to_string(row) + " has to be deleted but has not been found" << std::endl;
     }else{
         if(m_actions.at(row)!=nullptr){
-             delete m_actions.at(row);
+            delete m_actions.at(row);
             std::cout << Utils::getTime() + "[Program Box-INFO]: Deleted an action" << std::endl;
         }
         // Left decal
-        for(unsigned int i = row; i<m_actions.size()-2; i++){
+        for(unsigned int i = row; i<=m_actions.size()-2; i++){
             m_actions.at(i)=m_actions.at(i+1);
         }
         m_actions.resize(m_actions.size()-1);
@@ -113,6 +115,7 @@ void ProgramBox::deleteAction(const unsigned int &row)
     for(Button* b : temp_container){
         addAction(b);
     }
+
 }
 
 void ProgramBox::clearActions()
@@ -198,6 +201,11 @@ std::vector<Button*> ProgramBox::getActions() const
 std::string ProgramBox::getName() const
 {
     return m_text.getString();
+}
+
+Utils::TypeProg ProgramBox::getType() const
+{
+    return m_type_prog;
 }
 
 void ProgramBox::drawProgBox(sf::RenderWindow &window)

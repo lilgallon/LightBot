@@ -100,18 +100,20 @@ void ProgramHandler::moveForward()
             std::cout << "[ProgramHandler-CRITICAL]: Could not find the robot cell (is he dead?)" << std::endl;
         }else{
             // If the final cell height is 1 more that the initial, we have to check if the robot jumped
-            if(m_grid->getGrid().at(i_init)->getHeight()==m_grid->getGrid().at(i_final)->getHeight()+1){
+            if(m_grid->getGrid().at(i_init)->getHeight()==m_grid->getGrid().at(i_final)->getHeight()-1){
                 if(m_robot_jumped){
                     // OK
                     m_robot->setPos(new_pos);
                 }else{
                     // ROBOT DID NOT JUMPED BUT IT HAD TO!!
                 }
-            }else if(m_grid->getGrid().at(i_init)->getHeight()>m_grid->getGrid().at(i_final)->getHeight()+1){
+            }else if(m_grid->getGrid().at(i_init)->getHeight()<m_grid->getGrid().at(i_final)->getHeight()+1){
                 // THE FINAL CELL IS WAY TOO HIGH! (dif >1)
+
             }else{
-                // The initial cell has an higher or equal height as the final one, the robot can move
                 m_robot->setPos(new_pos);
+                // The initial cell has an higher or equal height as the final one, the robot can move
+
             }
         }
     }else{
@@ -208,14 +210,14 @@ void ProgramHandler::runProgram(ProgramBox *program)
             m_robot->setOrientation(Utils::turn_counterclock(m_robot->getOrientation()));
             break;
         case Utils::Action::PROG_P1:
-            if(program->getName()=="P1"){
+            if(program->getType()==Utils::TypeProg::P1){
                 std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P1. The instruction causing this loop will be ignored." << std::endl;
             }else{
                 runProgram(m_program_p1);
             }
             break;
         case Utils::Action::PROG_P2:
-            if(program->getName()=="P1"){
+            if(program->getType()==Utils::TypeProg::P2){
                 std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P2. The instruction causing this loop will be ignored." << std::endl;
             }else{
                 runProgram(m_program_p2);
