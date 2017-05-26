@@ -66,7 +66,6 @@ void ProgramHandler::moveForward()
         break;
     }
 
-    //std::cout << "init : " + std::to_string(m_robot->getPos().x) + ";" + std::to_string(m_robot->getPos().y) + " final: " + std::to_string(new_pos.x) + ";" + std::to_string(new_pos.y) << std::endl;
 
     // Find final cell index
     unsigned int i_final = 0;
@@ -107,7 +106,7 @@ void ProgramHandler::moveForward()
                 }else{
                     // ROBOT DID NOT JUMPED BUT IT HAD TO!!
                 }
-            }else if(m_grid->getGrid().at(i_init)->getHeight()<m_grid->getGrid().at(i_final)->getHeight()+1){
+            }else if(m_grid->getGrid().at(i_init)->getHeight()<m_grid->getGrid().at(i_final)->getHeight()){
                 // THE FINAL CELL IS WAY TOO HIGH! (dif >1)
 
             }else{
@@ -116,10 +115,15 @@ void ProgramHandler::moveForward()
 
             }
         }
+
     }else{
         // The robot moved in an inexistant cell
         // THE ROBOT HAS TO DIE :)
     }
+
+
+    //        std::cout << "init : " + std::to_string(m_robot->getPos().x) + ";" + std::to_string(m_robot->getPos().y) + " final: " + std::to_string(new_pos.x) + ";" + std::to_string(new_pos.y) << std::endl;
+
 
 
     /*

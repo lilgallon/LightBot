@@ -41,7 +41,7 @@ const int BACK = 4;
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false}, m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false},  m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -113,8 +113,8 @@ Interface::Interface()
     m_program_boxes.push_back(prgm_p1);
     m_program_boxes.push_back(prgm_p2);
 
-    Button* retry = new Button(RETRY,{SCREEN_HEIGHT/2,SCREEN_WIDTH/2},{100,100},defaultTheme,"RETRY");
-    Button* back = new Button(BACK,{SCREEN_HEIGHT/2+80,SCREEN_WIDTH/2},{150,100},defaultTheme,"BACK TO MENU");
+    Button* retry = new Button(RETRY,{SCREEN_WIDTH/2-70,SCREEN_HEIGHT/2},{100,50},defaultTheme,"RETRY");
+    Button* back = new Button(BACK,{SCREEN_WIDTH/2+70, SCREEN_HEIGHT/2},{120,50},defaultTheme,"GO BACK");
 
 
     m_buttons_end_program.push_back(retry);
@@ -206,6 +206,7 @@ void Interface::loop()
         draw_prgm_boxes(m_program_boxes);
 
         // After the execution of the program
+
         if(m_program_end_screen){
             // Grey transparent background over the game
             sf::RectangleShape rect;
@@ -230,6 +231,8 @@ void Interface::loop()
         break;
     }
 
+    // If the program was executed, we have update de screen
+    // before freezing it to the end screen
     m_first_loop = false;
 
 }
@@ -259,7 +262,6 @@ void Interface::mouse_button_pressed(){
             changeButtonAppareance(false,b);
         }
         if(m_grid->isOverCell(m_mouse)){
-
             changeSelectedCell();
             changeGameState(Utils::State::IN_GAME);
         }
@@ -270,13 +272,22 @@ void Interface::mouse_button_pressed(){
                 if(b->isOverRect(m_mouse)){
                     if(b->getUtility()==RETRY){
                         m_program_end_screen = false;
+                        m_grid->loadLevel("1");
                         // TODO
                         // RESET LEVEL
                         // RESET PROGRAM BOXES
+                        for(ProgramBox* b : m_program_boxes){
+                            b->clearActions();
+                        }
+                        m_grid->loadLevel(m_selected_level);
+                        // done?
                     }else if(b->getUtility()==BACK){
                         m_program_end_screen = false;
                         m_grid->loadLevel("1");
-                        m_state = Utils::State::LEVEL_SELECTION;
+                        for(ProgramBox* b : m_program_boxes){
+                            b->clearActions();
+                        }
+                        changeGameState(Utils::State::LEVEL_SELECTION);
                         // RESET PROGRAM BOXES
                     }
 
@@ -291,7 +302,7 @@ void Interface::mouse_button_pressed(){
                         ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
                         prog->runProgram(m_program_boxes[0]); // run main
                         delete prog;
-                        m_program_end_screen = true;
+                         m_program_end_screen = true;
                     }
                     else if(b->getUtility()==CLEAR){
                         for(ProgramBox* p : m_program_boxes){
@@ -315,7 +326,6 @@ void Interface::mouse_button_pressed(){
                 }
             }
         }
-
 
         // Get the selected button to move it later
         m_selected_button = getSelectedButton();
