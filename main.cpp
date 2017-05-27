@@ -17,14 +17,10 @@
 #include <SFML/Graphics.hpp>
 #include "Interface.h"
 
-
-using namespace std;
-
 int main()
 {
     Interface game;
     game.run();
-//    execlp("xreader","xreader", "test.pdf", NULL);
     return 0;
 }
 

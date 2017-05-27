@@ -124,6 +124,23 @@ Interface::Interface()
     // instance
     m_grid->setRobot(m_robot);
 
+    m_end_screen_message.setPosition(SCREEN_WIDTH/4,SCREEN_HEIGHT/4);
+    m_end_screen_message.setColor(sf::Color(125,125,125,255));
+    m_end_screen_message.setCharacterSize(20);
+    sf::Font font;
+    std::string font_name = "coolvetica.ttf";
+
+    if (!font.loadFromFile(Utils::FONT_PATH+font_name)) {
+        //throw "Police "+POLICE+" manquante";
+        std::cout << Utils::getTime() + "[Interface-ERROR]: Could not load the font of end level message" << std::endl;
+        std::cout << Utils::getTime() + "[Interface-FIX]: Check \""
+                     + Utils::FONT_PATH+font_name + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Interface-FIX]: The font will be ignored." << std::endl;
+
+    }else{
+        m_end_screen_message.setFont(font);
+        std::cout << Utils::getTime() + "[Interface-INFO]: Font loaded" << std::endl;
+    }
 }
 // It deletes the pointers taht are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
@@ -214,7 +231,7 @@ void Interface::loop()
             rect.setFillColor(sf::Color(128,128,128,150));
             rect.setPosition(0,0);
             m_window.draw(rect);
-
+           // m_window.draw(m_end_screen_message);
             draw_buttons(m_buttons_end_program);
 
         }
@@ -300,9 +317,31 @@ void Interface::mouse_button_pressed(){
                 if(b->isOverRect(m_mouse)){
                     if(b->getUtility()==RUN){
                         ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
-                        prog->runProgram(m_program_boxes[0]); // run main
+                        int result = prog->runProgram(m_program_boxes[0]); // run main
+                        std::cout << std::to_string(result) << std::endl;
                         delete prog;
-                         m_program_end_screen = true;
+                        m_program_end_screen = true;
+
+                        switch (result) {
+                        case -4:
+                            m_end_screen_message.setString("Failed! Not all the cells are turned on.");
+                            break;
+                        case -3:
+                            m_end_screen_message.setString("Failed! Had to jump very high...");
+                            break;
+                        case -2:
+                            m_end_screen_message.setString("Failed! Had to jump.");
+                            break;
+                        case -1:
+                            m_end_screen_message.setString("Failed! Out of the grid.");
+                            break;
+                        case 1:
+                            m_end_screen_message.setString("Level finished! Well done.");
+                            break;
+                        default:
+                            m_end_screen_message.setString("Failed! Unknown reason.");
+                            break;
+                        }
                     }
                     else if(b->getUtility()==CLEAR){
                         for(ProgramBox* p : m_program_boxes){

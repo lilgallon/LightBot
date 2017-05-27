@@ -50,6 +50,8 @@ private:
     // RObot!!
     Robot* m_robot;
 
+    sf::Text m_end_screen_message;
+
     /** Methods **/
 
     // Interactions w/ user

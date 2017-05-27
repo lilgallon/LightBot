@@ -14,13 +14,13 @@ private:
     bool m_robot_jumped;
     Grid* m_grid;
 
-    void moveForward();
+    int moveForward();
     //void runSubProgram(std::vector<Button *> actions);
 
 public:
     ProgramHandler(ProgramBox *program_main, ProgramBox *program_p1, ProgramBox *program_p2, Robot *robot, Grid* grid);
 
-    void runProgram(ProgramBox* program);
+    int runProgram(ProgramBox* program);
 };
 
 #endif // PROGRAMHANDLER_H

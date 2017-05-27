@@ -16,11 +16,13 @@
 #include "ProgramHandler.h"
 #include <iostream>
 
-void ProgramHandler::moveForward()
+int ProgramHandler::moveForward()
 {
     // TODO TRAITER LES CAS IMPOSSIBLE X<0, PAS CELL à x et y .., height,..
 
     sf::Vector2i new_pos = {m_robot->getPos().x,m_robot->getPos().y};
+
+    int result = 0;
 
 
     switch (m_robot->getOrientation()) {
@@ -29,7 +31,7 @@ void ProgramHandler::moveForward()
         break;
     case Utils::Orientation::DOWN_LEFT:
         if(new_pos.x%2!=0){
-             new_pos.x --;
+            new_pos.x --;
         }else{
             new_pos.x --;
             new_pos.y ++;
@@ -105,10 +107,11 @@ void ProgramHandler::moveForward()
                     m_robot->setPos(new_pos);
                 }else{
                     // ROBOT DID NOT JUMPED BUT IT HAD TO!!
+                    result = -2;
                 }
             }else if(m_grid->getGrid().at(i_init)->getHeight()<m_grid->getGrid().at(i_final)->getHeight()){
                 // THE FINAL CELL IS WAY TOO HIGH! (dif >1)
-
+                result = -3;
             }else{
                 m_robot->setPos(new_pos);
                 // The initial cell has an higher or equal height as the final one, the robot can move
@@ -119,6 +122,8 @@ void ProgramHandler::moveForward()
     }else{
         // The robot moved in an inexistant cell
         // THE ROBOT HAS TO DIE :)
+        result = -1;
+
     }
 
 
@@ -165,6 +170,8 @@ void ProgramHandler::moveForward()
     default:
         break;
     }*/
+
+    return result;
 }
 /*
 void ProgramHandler::runSubProgram(std::vector<Button*> actions)
@@ -177,7 +184,7 @@ ProgramHandler::ProgramHandler(ProgramBox* program_main, ProgramBox *program_p1,
 
 }
 
-void ProgramHandler::runProgram(ProgramBox *program)
+int ProgramHandler::runProgram(ProgramBox *program)
 {
     /*
     std::vector<Button*> actions = m_program_main->getActions();
@@ -185,11 +192,19 @@ void ProgramHandler::runProgram(ProgramBox *program)
     std::vector<Button*> actions_p2 = m_program_p2->getActions();
     */
     std::vector<Cell *> cells = m_grid->getGrid();
+    int result = 0;
+    int index = 0;
 
-    for(Button* action : program->getActions()){
-        switch (action->getAction()) {
+    // -4 = ALL CELLS ARE NOT TURNED ON
+    // -3 = FAILED (cell way too high)
+    // -2 = FAILED (had to jump)
+    // -1 = FAILED (out of the grid)
+    // 0 = IT'S FINE FOR THE MOMENT
+
+    while(index < program->getActions().size() && result == 0 ){
+        switch (program->getActions().at(index)->getAction()) {
         case Utils::Action::FORWARD:
-                moveForward();
+            result = moveForward();
             break;
         case Utils::Action::JUMP:
             m_robot_jumped = true;
@@ -217,20 +232,42 @@ void ProgramHandler::runProgram(ProgramBox *program)
             if(program->getType()==Utils::TypeProg::P1){
                 std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P1. The instruction causing this loop will be ignored." << std::endl;
             }else{
-                runProgram(m_program_p1);
+                result = runProgram(m_program_p1);
             }
             break;
         case Utils::Action::PROG_P2:
             if(program->getType()==Utils::TypeProg::P2){
                 std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P2. The instruction causing this loop will be ignored." << std::endl;
             }else{
-                runProgram(m_program_p2);
+                result = runProgram(m_program_p2);
             }
             break;
         default:
             break;
         }
+        index ++;
     }
+
+    // If result = 0 -> verify that all the cells have light turned on
+
+    if(result == 0){
+        bool all_cells_are_turned_on = true;
+        int i = 0;
+        while(i < cells.size() && all_cells_are_turned_on){
+            if(!cells.at(i)->getLight()){
+                all_cells_are_turned_on = false;
+            }
+            i ++;
+        }
+
+        if(all_cells_are_turned_on){
+            result = 1;
+        }else{
+            result = -4;
+        }
+    }
+
+    return result;
 
     //std::cout << "#### pos:" + std::to_string(m_robot->getPos().x) + " ; " + std::to_string(m_robot->getPos().y) << std::endl;
 }
