@@ -231,6 +231,14 @@ void Button::setPosition(const sf::Vector2f &pos)
     m_button.setPosition(pos);
 }
 
+void Button::setTheme(Theme *theme)
+{
+    setColor(theme->getRectDefaultFillColor());
+    setLabelColor(theme->getLabelDefaultFillColor());
+    setOutlineColor(theme->getRectDefaultOutlineColor());
+    m_theme = theme;
+}
+
 /************************************************
 *                   OTHERS                      *
 *************************************************/

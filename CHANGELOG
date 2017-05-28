@@ -107,6 +107,10 @@ $ Memomry (deleting buttons - check issues)
 ==== VERSION BUGUEE (normal)
 .. Continuation (lol) de l'écran de fin d'execution
 
+## Version 20 : 28/05/17 ##
++ Execution pas à pas avec indications
++ End screen avec messages
+
 
 #TODO:
 (code ready in grid.cpp)
@@ -117,20 +121,15 @@ $ Memomry (deleting buttons - check issues)
 - height >=0
 * Method in interface that is called only on changing game state ( inits things -> remove m_frist_loop)
 * Catch / exceptions handler when a line of a level is fuckedup
-* GAP of the grid: drawGrid() should be customizable -> drawGrid(gap)
 * FR TO ENGLISH IN APPLICATION;H
++ gestion win / lose (level selector)
++ COmmentaires
++ const type & variable où il faut
 
-* Vérifier Fix save level (ajout du robot)
-+ interaction avec les boutons des progam box
-+ ajout program box rang donné
 
-+ Animation
 * AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on
 change la rotation
 + Ajouter gestion des appels récursifs à l'infini!! (cpt max ..)
-+ Editeur
-
 + Gestion lose / win
-+ Todo execution aps à pas
 
 THROW EXCEPTION LVEL NAME WITH SPACE

@@ -36,6 +36,7 @@ public:
     void setLabelText(const std::string &label);
     void setLabelColor(const sf::Color &color);
     void setPosition(const sf::Vector2f &pos);
+    void setTheme(Theme* theme);
 
     /** OTHERS **/
     void draw_on(sf::RenderWindow &window) const;

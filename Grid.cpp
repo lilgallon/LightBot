@@ -471,6 +471,7 @@ void Grid::drawGrid(sf::RenderWindow& window, const sf::Vector2f &grid_pos){
             // Sets the center in the center :)
             hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
             m_robot_rect.setOrigin({(float)(m_robot->getPos().x+(double)m_radius/1.3),(float)(m_robot->getPos().y+(double)m_radius/1.3)});
+
             bool robot_is_there = false;
 
 

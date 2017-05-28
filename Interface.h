@@ -50,7 +50,11 @@ private:
     // RObot!!
     Robot* m_robot;
 
-    sf::Text m_end_screen_message;
+    sf::Text m_end_screen_text;
+    sf::Font m_end_screen_font;
+
+    unsigned int m_step_index;
+    bool m_is_in_exectuion;
 
     /** Methods **/
 

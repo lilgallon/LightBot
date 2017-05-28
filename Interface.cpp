@@ -41,7 +41,7 @@ const int BACK = 4;
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false},  m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
+    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false},  m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()},m_step_index{0},m_is_in_exectuion{false}
 {
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
@@ -55,7 +55,7 @@ Interface::Interface()
     m_themes.push_back(actionTheme);
 
     Button* play = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/2.-90/2, (float)SCREEN_HEIGHT/2-50/2}     , {90, 50} , defaultTheme, "Play");
-    //home1->setLabelText("Play");
+    //home1->setLabelText
     Button* credits = new Button(Utils::State::CREDITS,{(float)SCREEN_WIDTH/2.-90/2, (float)SCREEN_HEIGHT/2+50/2+10} , {90, 50}, defaultTheme, "Credits");
     //home2->setLabelText("Credits");
     m_buttons_home.push_back(play);
@@ -124,13 +124,11 @@ Interface::Interface()
     // instance
     m_grid->setRobot(m_robot);
 
-    m_end_screen_message.setPosition(SCREEN_WIDTH/4,SCREEN_HEIGHT/4);
-    m_end_screen_message.setColor(sf::Color(125,125,125,255));
-    m_end_screen_message.setCharacterSize(20);
-    sf::Font font;
+    m_end_screen_text.setPosition((float)SCREEN_WIDTH/3,(float)SCREEN_HEIGHT/3);
+    m_end_screen_text.setColor(sf::Color(255,255,255));
     std::string font_name = "coolvetica.ttf";
 
-    if (!font.loadFromFile(Utils::FONT_PATH+font_name)) {
+    if (!m_end_screen_font.loadFromFile(Utils::FONT_PATH+font_name)) {
         //throw "Police "+POLICE+" manquante";
         std::cout << Utils::getTime() + "[Interface-ERROR]: Could not load the font of end level message" << std::endl;
         std::cout << Utils::getTime() + "[Interface-FIX]: Check \""
@@ -138,11 +136,12 @@ Interface::Interface()
         std::cout << Utils::getTime() + "[Interface-FIX]: The font will be ignored." << std::endl;
 
     }else{
-        m_end_screen_message.setFont(font);
+        m_end_screen_text.setFont(m_end_screen_font);
         std::cout << Utils::getTime() + "[Interface-INFO]: Font loaded" << std::endl;
     }
+
 }
-// It deletes the pointers taht are contained in the buttons arrays and themes arrays
+// It deletes the pointers that are contained in the buttons arrays and themes arrays
 Interface::~Interface(){
 
     for(Button* b : m_buttons_home){
@@ -230,8 +229,12 @@ void Interface::loop()
             rect.setSize({SCREEN_WIDTH,SCREEN_HEIGHT});
             rect.setFillColor(sf::Color(128,128,128,150));
             rect.setPosition(0,0);
+
+            rect.setFillColor(sf::Color(128,128,128,150));
+            rect.setPosition(0,0);
+
             m_window.draw(rect);
-           // m_window.draw(m_end_screen_message);
+            m_window.draw(m_end_screen_text);
             draw_buttons(m_buttons_end_program);
 
         }
@@ -293,9 +296,9 @@ void Interface::mouse_button_pressed(){
                         // TODO
                         // RESET LEVEL
                         // RESET PROGRAM BOXES
-                        for(ProgramBox* b : m_program_boxes){
+                        /*for(ProgramBox* b : m_program_boxes){
                             b->clearActions();
-                        }
+                        }*/
                         m_grid->loadLevel(m_selected_level);
                         // done?
                     }else if(b->getUtility()==BACK){
@@ -315,33 +318,131 @@ void Interface::mouse_button_pressed(){
                 changeButtonAppareance(false,b);
                 // If the mouse is on the run program button
                 if(b->isOverRect(m_mouse)){
-                    if(b->getUtility()==RUN){
+                    if(b->getUtility()==RUN ){
+                        //if(!m_is_in_exectuion){
                         ProgramHandler* prog = new ProgramHandler(m_program_boxes[0],m_program_boxes[1],m_program_boxes[2],m_robot,m_grid);
+                        //}
+                        //m_is_in_exectuion = true;
+
+                        /* RUN STRAIGHT
                         int result = prog->runProgram(m_program_boxes[0]); // run main
+                        */
+                        /* RUN STEP BY STEP */
+                        int result = 0;
+                        if(m_program_boxes[0]->getActions().size()==0){
+                            result = -4;
+                        }else{
+                            unsigned int index = 0;
+                            while(index < m_program_boxes[0]->getActions().size() && (result==0 || result ==1 || result ==2)){
+
+                                result = prog->runProgram(m_program_boxes[0],index,result,m_themes[1],m_themes[0]);
+                                loop();
+                                m_window.display();
+                                sleep(1);
+
+                                if(result == 1){
+                                    unsigned int j = 0;
+                                    if(m_program_boxes[1]->getActions().size()!=0){
+                                        while(j<m_program_boxes[1]->getActions().size() && (result == 1 || result == 2)){
+                                            result = prog->runProgram(m_program_boxes[1],j,result,m_themes[1],m_themes[0]);
+                                            loop();
+                                            m_window.display();
+                                            sleep(1);
+
+                                            if(result == 2){
+                                                unsigned int j = 0;
+                                                if(m_program_boxes[2]->getActions().size()!=0){
+                                                    while(result == 2 && j<m_program_boxes[2]->getActions().size()){
+                                                        result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
+                                                        loop();
+                                                        m_window.display();
+                                                        sleep(1);
+                                                        j ++;
+                                                    }
+
+                                                    if(result==2){
+                                                        // All was fine until now
+                                                        result = 1;
+                                                    }
+                                                }
+                                            }
+                                            m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
+                                            m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
+
+                                            j ++;
+                                        }
+                                        if(result==1){
+                                             // All was fine until now
+                                             result = 0;
+                                         }
+                                    }
+                                }
+
+                                if(result == 2){
+                                    unsigned int j = 0;
+                                    if(m_program_boxes[2]->getActions().size()!=0){
+                                        while(result == 2 && j<m_program_boxes[2]->getActions().size()){
+                                            result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
+                                            loop();
+                                            m_window.display();
+                                            sleep(1);
+                                            j ++;
+                                        }
+
+                                        if(result==2){
+                                            // All was fine until now
+                                            result = 0;
+                                        }
+                                    }
+                                }
+                                m_program_boxes.at(0)->getActions().at(m_program_boxes.at(0)->getActions().size()-1)->setTheme(m_themes[1]);
+                                m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
+                                m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
+
+                                index ++;
+                            }
+
+                        }
+
+                        if(result == 0 || result == 1 || result == 2){
+                            result = -4;
+                        }
+                        /*
+                        sleep(1);
+                        if(m_step_index<m_program_boxes[0]->getActions().size()){
+                            result = prog->runProgram(m_program_boxes[0], m_step_index, result);
+                            m_step_index ++;
+                        }else{*/
+                        m_step_index = 0;
+                        //m_is_in_exectuion = false;
+
+                        // int result =
                         std::cout << std::to_string(result) << std::endl;
                         delete prog;
                         m_program_end_screen = true;
-
+                        std::string end_screen_message = "";
                         switch (result) {
                         case -4:
-                            m_end_screen_message.setString("Failed! Not all the cells are turned on.");
+                            end_screen_message = "Failed! Not all the cells are turned on.";
                             break;
                         case -3:
-                            m_end_screen_message.setString("Failed! Had to jump very high...");
+                            end_screen_message = "Failed! Had to jump very high...";
                             break;
                         case -2:
-                            m_end_screen_message.setString("Failed! Had to jump.");
+                            end_screen_message = "Failed! Had to jump.";
                             break;
                         case -1:
-                            m_end_screen_message.setString("Failed! Out of the grid.");
+                            end_screen_message = "Failed! Out of the grid.";
                             break;
-                        case 1:
-                            m_end_screen_message.setString("Level finished! Well done.");
+                        case 3:
+                            end_screen_message = "Level finished! Well done.";
                             break;
                         default:
-                            m_end_screen_message.setString("Failed! Unknown reason.");
+                            end_screen_message = "Failed! Unknown reason.";
                             break;
                         }
+                        m_end_screen_text.setString(end_screen_message);
+                        // }
                     }
                     else if(b->getUtility()==CLEAR){
                         for(ProgramBox* p : m_program_boxes){
@@ -409,6 +510,11 @@ void Interface::mouse_button_released(){
                                         std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
                                     }else{
                                         m_program_boxes.at(i)->addAction(m_selected_button,row);
+                                        // Sets the theme by default (it could be not the one by default if the execution stopped on
+                                        // a specific action (ex: stopped on "forward" when the robot when out of the grid)
+                                        for(Button * b : m_program_boxes.at(i)->getActions()){
+                                            b->setTheme(m_themes[1]);
+                                        }
                                     }
                                     row_found = true;
                                 }else{
@@ -423,6 +529,9 @@ void Interface::mouse_button_released(){
                                 std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
                             }else{
                                 m_program_boxes.at(i)->addAction(m_selected_button);
+                                for(Button * b : m_program_boxes.at(i)->getActions()){
+                                    b->setTheme(m_themes[1]);
+                                }
                             }
 
                         }

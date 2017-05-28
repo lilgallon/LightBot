@@ -17,7 +17,7 @@
 #include <iostream>
 
 Robot::Robot(sf::Vector2i pos, Utils::Orientation orientation)
-    :m_pos{pos},m_orientation{orientation}
+    :m_pos{pos},m_orientation{orientation},m_is_jumping{false}
 {
 
 }
@@ -32,6 +32,11 @@ Utils::Orientation Robot::getOrientation() const
     return m_orientation;
 }
 
+bool Robot::isJumping() const
+{
+    return m_is_jumping;
+}
+
 void Robot::setPos(const sf::Vector2i &pos)
 {
     m_pos = pos;
@@ -40,4 +45,8 @@ void Robot::setPos(const sf::Vector2i &pos)
 void Robot::setOrientation(const Utils::Orientation &orientation)
 {
     m_orientation = orientation;
+}
+
+void Robot::setJumping(const bool &b){
+    m_is_jumping = b;
 }
