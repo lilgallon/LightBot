@@ -111,6 +111,11 @@ $ Memomry (deleting buttons - check issues)
 + Execution pas à pas avec indications
 + End screen avec messages
 
+## Version 21 : 28/05/17 ##
++ Visuel saut
+* Fix crash si on utilise pas P1 et/ou P2
+
+
 
 #TODO:
 (code ready in grid.cpp)
@@ -125,6 +130,9 @@ $ Memomry (deleting buttons - check issues)
 + gestion win / lose (level selector)
 + COmmentaires
 + const type & variable où il faut
+* clean code (trucs en commentaires, nombres magiques, ..)
++ description méthode au dessus de celle ci
++ ajouter niveaux
 
 
 * AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on

@@ -328,85 +328,9 @@ void Interface::mouse_button_pressed(){
                         int result = prog->runProgram(m_program_boxes[0]); // run main
                         */
                         /* RUN STEP BY STEP */
-                        int result = 0;
-                        if(m_program_boxes[0]->getActions().size()==0){
-                            result = -4;
-                        }else{
-                            unsigned int index = 0;
-                            while(index < m_program_boxes[0]->getActions().size() && (result==0 || result ==1 || result ==2)){
 
-                                result = prog->runProgram(m_program_boxes[0],index,result,m_themes[1],m_themes[0]);
-                                loop();
-                                m_window.display();
-                                sleep(1);
 
-                                if(result == 1){
-                                    unsigned int j = 0;
-                                    if(m_program_boxes[1]->getActions().size()!=0){
-                                        while(j<m_program_boxes[1]->getActions().size() && (result == 1 || result == 2)){
-                                            result = prog->runProgram(m_program_boxes[1],j,result,m_themes[1],m_themes[0]);
-                                            loop();
-                                            m_window.display();
-                                            sleep(1);
-
-                                            if(result == 2){
-                                                unsigned int j = 0;
-                                                if(m_program_boxes[2]->getActions().size()!=0){
-                                                    while(result == 2 && j<m_program_boxes[2]->getActions().size()){
-                                                        result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
-                                                        loop();
-                                                        m_window.display();
-                                                        sleep(1);
-                                                        j ++;
-                                                    }
-
-                                                    if(result==2){
-                                                        // All was fine until now
-                                                        result = 1;
-                                                    }
-                                                }
-                                            }
-                                            m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
-                                            m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
-
-                                            j ++;
-                                        }
-                                        if(result==1){
-                                             // All was fine until now
-                                             result = 0;
-                                         }
-                                    }
-                                }
-
-                                if(result == 2){
-                                    unsigned int j = 0;
-                                    if(m_program_boxes[2]->getActions().size()!=0){
-                                        while(result == 2 && j<m_program_boxes[2]->getActions().size()){
-                                            result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
-                                            loop();
-                                            m_window.display();
-                                            sleep(1);
-                                            j ++;
-                                        }
-
-                                        if(result==2){
-                                            // All was fine until now
-                                            result = 0;
-                                        }
-                                    }
-                                }
-                                m_program_boxes.at(0)->getActions().at(m_program_boxes.at(0)->getActions().size()-1)->setTheme(m_themes[1]);
-                                m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
-                                m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
-
-                                index ++;
-                            }
-
-                        }
-
-                        if(result == 0 || result == 1 || result == 2){
-                            result = -4;
-                        }
+                        int result = executeProgram(prog);
                         /*
                         sleep(1);
                         if(m_step_index<m_program_boxes[0]->getActions().size()){
@@ -510,11 +434,6 @@ void Interface::mouse_button_released(){
                                         std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
                                     }else{
                                         m_program_boxes.at(i)->addAction(m_selected_button,row);
-                                        // Sets the theme by default (it could be not the one by default if the execution stopped on
-                                        // a specific action (ex: stopped on "forward" when the robot when out of the grid)
-                                        for(Button * b : m_program_boxes.at(i)->getActions()){
-                                            b->setTheme(m_themes[1]);
-                                        }
                                     }
                                     row_found = true;
                                 }else{
@@ -529,9 +448,6 @@ void Interface::mouse_button_released(){
                                 std::cout << Utils::getTime() + "[Game-INFO]: Impossible to add an action: it could create an infinite loop" << std::endl;
                             }else{
                                 m_program_boxes.at(i)->addAction(m_selected_button);
-                                for(Button * b : m_program_boxes.at(i)->getActions()){
-                                    b->setTheme(m_themes[1]);
-                                }
                             }
 
                         }
@@ -768,4 +684,88 @@ Button* Interface::getSelectedButton()
     }
 
     return m_selected_button;
+}
+
+int Interface::executeProgram(ProgramHandler* prog)
+{
+    int result = 0;
+    if(m_program_boxes[0]->getActions().size()==0)
+        return -4;
+
+    unsigned int index = 0;
+    while(index < m_program_boxes[0]->getActions().size() && (result==0 || result ==1 || result ==2)){
+
+        result = prog->runProgram(m_program_boxes[0],index,result,m_themes[1],m_themes[0]);
+        loop();
+        m_window.display();
+        sleep(1);
+
+        if(result == 1){
+            unsigned int j = 0;
+            if(m_program_boxes[1]->getActions().size()!=0){
+                while(j<m_program_boxes[1]->getActions().size() && (result == 1 || result == 2)){
+                    result = prog->runProgram(m_program_boxes[1],j,result,m_themes[1],m_themes[0]);
+                    loop();
+                    m_window.display();
+                    sleep(1);
+
+                    if(result == 2){
+                        unsigned int j = 0;
+                        if(m_program_boxes[2]->getActions().size()!=0){
+                            while(result == 2 && j<m_program_boxes[2]->getActions().size()){
+                                result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
+                                loop();
+                                m_window.display();
+                                sleep(1);
+                                j ++;
+                            }
+
+                            if(result==2){
+                                // All was fine until now
+                                result = 1;
+                            }
+                        }
+                    }
+                    m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
+                    m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
+
+                    j ++;
+                }
+                if(result==1){
+                    // All was fine until now
+                    result = 0;
+                }
+            }
+        }
+
+        if(result == 2){
+            unsigned int j = 0;
+            if(m_program_boxes[2]->getActions().size()!=0){
+                while(result == 2 && j<m_program_boxes[2]->getActions().size()){
+                    result = prog->runProgram(m_program_boxes[2],j,result,m_themes[1],m_themes[0]);
+                    loop();
+                    m_window.display();
+                    sleep(1);
+                    j ++;
+                }
+
+                if(result==2){
+                    // All was fine until now
+                    result = 0;
+                }
+            }
+        }
+        m_program_boxes.at(0)->getActions().at(m_program_boxes.at(0)->getActions().size()-1)->setTheme(m_themes[1]);
+        if(m_program_boxes.at(1)->getActions().size()!=0)
+            m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
+        if(m_program_boxes.at(2)->getActions().size()!=0)
+            m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
+
+        index ++;
+    }
+
+    if(result == 0 || result == 1 || result == 2){
+        result = -4;
+    }
+    return result;
 }

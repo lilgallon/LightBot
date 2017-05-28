@@ -528,6 +528,13 @@ void Grid::drawGrid(sf::RenderWindow& window, const sf::Vector2f &grid_pos){
             window.draw(hexa);
             window.draw(m_text);
             if(robot_is_there){
+                if(m_robot->isJumping()){
+                    m_robot_rect.setSize({125,125});
+                    m_robot_rect.setOrigin({125/2,125/2});
+                }else{
+                    m_robot_rect.setSize({100,100});
+                    m_robot_rect.setOrigin({100/2,100/2});
+                }
                 m_robot_rect.setPosition(pos);
                 window.draw(m_robot_rect);
             }
