@@ -122,6 +122,12 @@ $ Memomry (deleting buttons - check issues)
 + début commentaire
 * clean code
 
+## Version 22 : 29/05/17 ##
+* Fix bugs de couleurs quand on perd dans P1 et/ou P2
+* Fin commentaires
+* Plein de petits fix
+* Améliorations de l'algo d'execution
+
 
 
 #TODO:
@@ -145,6 +151,8 @@ $ Memomry (deleting buttons - check issues)
 + renommer projet en interface en lightnbot
 + faire crédtis
 + remove editeur
++ programbox qui change de couleur en fonction du dernier element mis dedans
++ button change de couelur -> reset par défault fait des fois mais inutile
 
 
 * AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on

@@ -35,13 +35,10 @@ public:
     static Orientation turn_clockwise(Orientation actual_orientation);
     static Orientation turn_counterclock(Orientation actual_orientation);
 
+    // Converts the position in index to pixels (hexagonal grid)
     static sf::Vector2f positionToPixel(const sf::Vector2f &pos_in_index, const sf::Vector2f &gap, const int &radius);
 private:
     Utils() = default;
 };
-
-//std::string Utils::FONT_PATH = "resources/fonts/";
-//std::string Utils::IMG_PATH = "resources/images/";
-//std::string Utils::LEVELS_PATH = "levels/";
 
 #endif // UTILS_H

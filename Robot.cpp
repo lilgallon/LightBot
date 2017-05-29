@@ -18,9 +18,7 @@
 
 Robot::Robot(sf::Vector2i pos, Utils::Orientation orientation)
     :m_pos{pos},m_orientation{orientation},m_is_jumping{false}
-{
-
-}
+{}
 
 sf::Vector2i Robot::getPos() const
 {

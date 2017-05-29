@@ -15,10 +15,12 @@
 
 #include "Utils.h"
 
+// Because we declared thos variables as static const, we have to initalize those there
 const std::string Utils::FONT_PATH = "resources/fonts/";
 const std::string Utils::IMG_PATH = "resources/images/";
 const std::string Utils::LEVELS_PATH = "levels/";
 
+// Returns the absolute value of
 float Utils::abs(const float &value){
     if(value>0)
         return value;

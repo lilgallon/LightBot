@@ -14,10 +14,6 @@ public:
 
     /** GETTTERS **/
 
-    // TODO
-    // Ce serait bien avec de la surcharge, de, selon le theme
-    // soit changer la couleur, soit changer la texture
-
     // Rect default
     sf::Color getRectDefaultFillColor() const;
     sf::Color getRectDefaultOutlineColor() const;

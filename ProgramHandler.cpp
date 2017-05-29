@@ -16,15 +16,22 @@
 #include "ProgramHandler.h"
 #include <iostream>
 
+// Move the robot forward and returns the "state" of the robot
+// with magic numbers
+// RESULT ->
+// -4 = ALL CELLS ARE NOT TURNED ON
+// -3 = FAILED (cell way too high)
+// -2 = FAILED (had to jump)
+// -1 = FAILED (out of the grid)
+// 0 = IT'S FINE FOR THE MOMENT (MAIN)
+// 1 = IT'S FINE FOR THE MOMENT (PROGRAM 1)
+// 2 = IT'S FINE FOR THE MOMENT (PROGRAM 2)
 int ProgramHandler::moveForward(int result)
 {
-    // TODO TRAITER LES CAS IMPOSSIBLE X<0, PAS CELL à x et y .., height,..
-
+    // Init the new pos at the current robot position
     sf::Vector2i new_pos = {m_robot->getPos().x,m_robot->getPos().y};
 
-   // int result = 0;
-
-
+    // Move the robot pos according to it's orientation
     switch (m_robot->getOrientation()) {
     case Utils::Orientation::DOWN:
         new_pos.y ++;
@@ -69,7 +76,7 @@ int ProgramHandler::moveForward(int result)
     }
 
 
-    // Find final cell index
+    // Find final cell (when the robot should go)
     unsigned int i_final = 0;
     bool found_final = false;
     while(!found_final && i_final<m_grid->getGrid().size()){
@@ -115,190 +122,36 @@ int ProgramHandler::moveForward(int result)
             }else{
                 m_robot->setPos(new_pos);
                 // The initial cell has an higher or equal height as the final one, the robot can move
-
             }
         }
-
     }else{
         // The robot moved in an inexistant cell
         // THE ROBOT HAS TO DIE :)
         result = -1;
-
     }
-
-
-    //        std::cout << "init : " + std::to_string(m_robot->getPos().x) + ";" + std::to_string(m_robot->getPos().y) + " final: " + std::to_string(new_pos.x) + ";" + std::to_string(new_pos.y) << std::endl;
-
-
-
-    /*
-    switch (m_robot->getOrientation()) {
-    case Utils::Orientation::DOWN:
-        m_robot->setPos({m_robot->getPos().x,m_robot->getPos().y+1});
-        break;
-    case Utils::Orientation::DOWN_LEFT:
-        if(m_robot->getPos().x%2!=0){
-             m_robot->setPos({m_robot->getPos().x-1,m_robot->getPos().y});
-        }else{
-             m_robot->setPos({m_robot->getPos().x-1,m_robot->getPos().y+1});
-        }
-        break;
-    case Utils::Orientation::DOWN_RIGHT:
-        if(m_robot->getPos().x%2!=0){
-             m_robot->setPos({m_robot->getPos().x+1,m_robot->getPos().y});
-        }else{
-             m_robot->setPos({m_robot->getPos().x+1,m_robot->getPos().y+1});
-        }
-        break;
-    case Utils::Orientation::UP:
-        m_robot->setPos({m_robot->getPos().x,m_robot->getPos().y-1});
-        break;
-    case Utils::Orientation::UP_LEFT:
-        if(m_robot->getPos().x%2!=0){
-            m_robot->setPos({m_robot->getPos().x-1,m_robot->getPos().y-1});
-        }else{
-            m_robot->setPos({m_robot->getPos().x-1,m_robot->getPos().y});
-        }
-        break;
-    case Utils::Orientation::UP_RIGHT:
-        if(m_robot->getPos().x%2!=0){
-            m_robot->setPos({m_robot->getPos().x+1,m_robot->getPos().y-1});
-        }else{
-            m_robot->setPos({m_robot->getPos().x+1,m_robot->getPos().y});
-        }
-        break;
-    default:
-        break;
-    }*/
 
     return result;
 }
-/*
-void ProgramHandler::runSubProgram(std::vector<Button*> actions)
-{
-}*/
 
 ProgramHandler::ProgramHandler(ProgramBox* program_main, ProgramBox *program_p1, ProgramBox *program_p2, Robot* robot, Grid *grid)
     :m_program_main{program_main}, m_program_p1{program_p1}, m_program_p2{program_p2}, m_robot{robot}, m_grid{grid},m_robot_jumped_before{false}
-{
-
-}
-/*
-int ProgramHandler::runProgram(ProgramBox *program)
-{
-
-    std::vector<Button*> actions = m_program_main->getActions();
-    std::vector<Button*> actions_p1 = m_program_p1->getActions();
-    std::vector<Button*> actions_p2 = m_program_p2->getActions();
-
-    std::vector<Cell *> cells = m_grid->getGrid();
-    int result = 0;
-    int index = 0;
-
-    // -4 = ALL CELLS ARE NOT TURNED ON
-    // -3 = FAILED (cell way too high)
-    // -2 = FAILED (had to jump)
-    // -1 = FAILED (out of the grid)
-    // 0 = IT'S FINE FOR THE MOMENT
-
-    while(index < program->getActions().size() && result == 0 ){
-        switch (program->getActions().at(index)->getAction()) {
-        case Utils::Action::FORWARD:
-            result = moveForward();
-            break;
-        case Utils::Action::JUMP:
-            m_robot->setJumping(true);
-            break;
-        case Utils::Action::LIGHT:
-            for(Cell* c : cells){
-                // TODO: Verifier si la cellule est à sa hauteur ou moins s'il na pas sauté
-                if(c->getPos().x == m_robot->getPos().x
-                        && c->getPos().y == m_robot->getPos().y){
-                    c->setLight(true);
-                }
-                // S'il a sauté, vérifier si la cellule est à une hauteur de plus
-                // ...
-
-                // TODO -> cell : afficher la hauteur au lieu de l'indice (1;0 ...)
-            }
-            break;
-        case Utils::Action::TURN_CLOCKWISE:
-            m_robot->setOrientation(Utils::turn_clockwise(m_robot->getOrientation()));
-            break;
-        case Utils::Action::TURN_COUNTERCLOCK:
-            m_robot->setOrientation(Utils::turn_counterclock(m_robot->getOrientation()));
-            break;
-        case Utils::Action::PROG_P1:
-            if(program->getType()==Utils::TypeProg::P1){
-                std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P1. The instruction causing this loop will be ignored." << std::endl;
-            }else{
-                result = runProgram(m_program_p1);
-            }
-            break;
-        case Utils::Action::PROG_P2:
-            if(program->getType()==Utils::TypeProg::P2){
-                std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P2. The instruction causing this loop will be ignored." << std::endl;
-            }else{
-                result = runProgram(m_program_p2);
-            }
-            break;
-        default:
-            break;
-        }
-        index ++;
-    }
-
-    // If result = 0 -> verify that all the cells have light turned on
-
-    if(result == 0){
-        bool all_cells_are_turned_on = true;
-        int i = 0;
-        while(i < cells.size() && all_cells_are_turned_on){
-            if(!cells.at(i)->getLight()){
-                all_cells_are_turned_on = false;
-            }
-            i ++;
-        }
-
-        if(all_cells_are_turned_on){
-            result = 1;
-        }else{
-            result = -4;
-        }
-    }
-
-    return result;
-
-    //std::cout << "#### pos:" + std::to_string(m_robot->getPos().x) + " ; " + std::to_string(m_robot->getPos().y) << std::endl;
-}*/
+{}
 
 int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, int result, Theme* defaultTheme, Theme* currentActionTheme)
 {
-    /*
-    std::vector<Button*> actions = m_program_main->getActions();
-    std::vector<Button*> actions_p1 = m_program_p1->getActions();
-    std::vector<Button*> actions_p2 = m_program_p2->getActions();
-    */
+
     std::vector<Cell *> cells = m_grid->getGrid();
 
-    // -4 = ALL CELLS ARE NOT TURNED ON
-    // -3 = FAILED (cell way too high)
-    // -2 = FAILED (had to jump)
-    // -1 = FAILED (out of the grid)
-    // 0 = IT'S FINE FOR THE MOMENT
-    // 1 = PROGRAM 1
-    // 2 = PROGRAM 2
-
+    // The current action has a different theme
+    //(like that we know that the robot is doing this action)
     program->getActions().at(index)->setTheme(currentActionTheme);
+
     // Set default theme to the precedent action (button)
     if(index!=0){
         program->getActions().at(index-1)->setTheme(defaultTheme);
     }
 
-    for(Button* action : program->getActions()){
-        action->setTheme(action->getTheme());
-    }
-
+    // We will do things according to the action
     switch (program->getActions().at(index)->getAction()) {
     case Utils::Action::FORWARD:
         result = moveForward(result);
@@ -309,15 +162,9 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
         break;
     case Utils::Action::LIGHT:
         for(Cell* c : cells){
-            // TODO: Verifier si la cellule est à sa hauteur ou moins s'il na pas sauté
-            if(c->getPos().x == m_robot->getPos().x
-                    && c->getPos().y == m_robot->getPos().y){
+            if(c->getPos().x == m_robot->getPos().x && c->getPos().y == m_robot->getPos().y){
                 c->setLight(true);
             }
-            // S'il a sauté, vérifier si la cellule est à une hauteur de plus
-            // ...
-
-            // TODO -> cell : afficher la hauteur au lieu de l'indice (1;0 ...)
         }
         break;
     case Utils::Action::TURN_CLOCKWISE:
@@ -330,7 +177,7 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
         if(program->getType()==Utils::TypeProg::P1){
             std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P1. The instruction causing this loop will be ignored." << std::endl;
         }else{
-            //result = runProgram(m_program_p1);
+            // result = 1 -> say that we are running P1
             result = 1;
         }
         break;
@@ -338,7 +185,7 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
         if(program->getType()==Utils::TypeProg::P2){
             std::cout << Utils::getTime() + "[ProgramHandler-INFO]: Infinite loop detected in P2. The instruction causing this loop will be ignored." << std::endl;
         }else{
-            //result = runProgram(m_program_p2);
+            // result = 2 -> say that we are running P2
             result = 2;
         }
         break;
@@ -346,35 +193,10 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
         break;
     }
 
-    // If the robot jumped and did an other action after, he lands on the floor
+    // If the robot jumped and did go forward after, he lands on the floor
     if(m_robot->isJumping() && program->getActions().at(index)->getAction()==Utils::Action::FORWARD){
         m_robot->setJumping(false);
     }
 
-
-    // If result = 0 -> verify that all the cells have light turned on
-
-    // If it is the last action..
-    if(index==program->getActions().size()-1 && result!=1 && result!=2){
-        if(result == 0){
-            bool all_cells_are_turned_on = true;
-            unsigned int i = 0;
-            while(i < cells.size() && all_cells_are_turned_on){
-                if(!cells.at(i)->getLight()){
-                    all_cells_are_turned_on = false;
-                }
-                i ++;
-            }
-
-            if(all_cells_are_turned_on){
-                result = 3;
-            }else{
-                result = -4;
-            }
-        }
-    }
-
     return result;
-
-    //std::cout << "#### pos:" + std::to_string(m_robot->getPos().x) + " ; " + std::to_string(m_robot->getPos().y) << std::endl;
 }

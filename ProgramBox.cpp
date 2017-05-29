@@ -125,6 +125,8 @@ void ProgramBox::deleteAction(const unsigned int &row)
 
 void ProgramBox::clearActions()
 {
+    // Clear the container (delete all buttons before)
+
     std::cout << Utils::getTime() + "[Program Box-INFO]: Will clear program box \"" /*+ m_text.getString() + "\"" */<< std::endl;
     for(Button* b : m_actions){
         delete b;
@@ -133,8 +135,12 @@ void ProgramBox::clearActions()
     m_actions.clear();
 }
 
+// It calculates the new position of a new action
+// if no place was found to add a new action, it returns (-1;-1)
 sf::Vector2f ProgramBox::calculateNewPosition() const
 {
+    // The variables here are for a better comprehension
+
     float box_pos_x = m_rect.getPosition().x;
     float box_pos_y = m_rect.getPosition().y;
 
@@ -149,15 +155,16 @@ sf::Vector2f ProgramBox::calculateNewPosition() const
 
     float number_of_actions = m_actions.size();
 
+    // max actions on line is determined by the width of the program box, the width of an action, and the gap between those
     float max_actions_on_line = box_width/(gap_between_actions_width+action_width);
+    // same for max line but with height
     float max_lines = box_height/(gap_between_actions_height+action_heigth);
 
-    //float line = 1;
-    std::cout << std::to_string(max_lines) << std::endl;
-
+    // new_position will not change if no place was found. So no place -> returns {-1;-1}
     sf::Vector2f new_position = {-1,-1};
 
     float number_of_actions_of_line = number_of_actions;
+    // We will begin searching from line 1 (first one)
     float line = 1;
     bool found = false;
 
@@ -172,9 +179,9 @@ sf::Vector2f ProgramBox::calculateNewPosition() const
     }
 
     if(!found){
-        // ON SAIT QUE YA PLUS DE PLACE
          std::cout << Utils::getTime() + "[Program Box-INFO]: No place found for the action" << std::endl;
     }else{
+        // It gets the pos of where we can put the action
         new_position.x = box_pos_x + number_of_actions_of_line*(action_width + gap_between_actions_width);
         if(line==1){
             // If it is the first line, we doesn't apply the Y gap
@@ -182,7 +189,7 @@ sf::Vector2f ProgramBox::calculateNewPosition() const
         }else{
             new_position.y = box_pos_y + ((line-1)*(action_heigth+gap_between_actions_height));
         }
-        // Correct alignement (due to button origin in center)
+        // Correct alignemen t (due to button origin set in center)
         new_position.x += action_width/2;
         new_position.y += action_heigth/2;
     }
@@ -190,6 +197,7 @@ sf::Vector2f ProgramBox::calculateNewPosition() const
     return new_position;
 }
 
+// Returns true if the mouse is over the program box
 bool ProgramBox::overBox(const sf::Vector2i &pos) const
 {
     return pos.x >= m_rect.getPosition().x
@@ -197,6 +205,8 @@ bool ProgramBox::overBox(const sf::Vector2i &pos) const
             && pos.y >= m_rect.getPosition().y
             && pos.y <= m_rect.getPosition().y + m_rect.getSize().y;
 }
+
+/* GETTERS */
 
 std::vector<Button*> ProgramBox::getActions() const
 {
@@ -212,6 +222,8 @@ Utils::TypeProg ProgramBox::getType() const
 {
     return m_type_prog;
 }
+
+/* DRAWER */
 
 void ProgramBox::drawProgBox(sf::RenderWindow &window)
 {
