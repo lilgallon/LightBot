@@ -20,7 +20,7 @@ public:
 
     /** GETTERS **/
     std::vector<Cell*> getGrid();
-    bool isOverCell(sf::Vector2i mouse);
+    bool isOverCell(const sf::Vector2i &mouse);
     Cell* getOverCell() const;
 
     /** OTHERS **/
@@ -32,7 +32,7 @@ public:
 
 private:
     /** INIT **/
-    void initLabel();
+    void initLabels();
     void initRobotRect();
     void initRobot(const std::string &line);
 
@@ -51,9 +51,13 @@ private:
     // Error handler (prevent from spamming it in the console)
     bool m_error_drawing;
 
-    // Only used for the level editor
+    // Grid height display
     sf::Text m_text;
     sf::Font m_font;
+
+    // Grid name display
+    sf::Text m_text_name;
+    sf::Font m_font_name;
 
     // The cell that is currently on mouse
     Cell* m_over_cell;

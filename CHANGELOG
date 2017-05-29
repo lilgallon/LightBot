@@ -122,11 +122,14 @@ $ Memomry (deleting buttons - check issues)
 + début commentaire
 * clean code
 
-## Version 22 : 29/05/17 ##
+## Version 23 : 29/05/17 ##
 * Fix bugs de couleurs quand on perd dans P1 et/ou P2
 * Fin commentaires
 * Plein de petits fix
 * Améliorations de l'algo d'execution
+
+## Version 24 : ../../.. ##
++ Level validity checker
 
 
 

@@ -20,7 +20,6 @@
 
 #include <fstream>
 #include <cstdlib>
-#include <exception>
 
 namespace{
     const int POS_X_INDEX = 0;
@@ -30,12 +29,14 @@ namespace{
     const int LIGHT_INDEX = 3;
 
     const sf::Vector2f DEFAULT_GAP = {100,150};
-    const sf::Vector2f DEFAULT_ROBOT_SIZE{100,100};
+    const sf::Vector2f DEFAULT_ROBOT_SIZE = {100,100};
     const int          DEFAULT_RADIUS = 65;
 
     const int          DEFAULT_TEXT_SIZE = 20;
+    const int          DEFAULT_TEXT_NAME_SIZE = 15;
 
     const std::string  FONT_NAME = "coolvetica.ttf";
+    const std::string  FONT_TEXT_NAME = "Ubuntu-L.ttf";
     const sf::Color    TEXT_COLOR = sf::Color::Black;
 
     const sf::Color    CELL_LIGHT_COLOR = sf::Color(220,241,251,128);
@@ -45,6 +46,7 @@ namespace{
     const int          CELL_OUTLINE_THICKNESS = 2;
 
     const sf::Color    CELL_TEXT_COLOR = sf::Color(128,128,128,128);
+    const sf::Color    CELL_TEXT_NAME_COLOR = sf::Color::Black;
 
     const sf::Vector2f ROBOT_RECT_SIZE_JUMPING = {125,125};
     const sf::Vector2f ROBOT_RECT_SIZE_NJUMPING = {100,100};
@@ -58,9 +60,6 @@ namespace{
 // ...
 
 // TODO
-// Changer rect robot en sprite
-
-// TODO
 // Check level correct
 
 /************************************************
@@ -69,13 +68,13 @@ namespace{
 Grid::Grid(std::vector<Cell*> cells, Robot *robot)
     :m_cells{cells}, m_robot{robot}, m_radius{DEFAULT_RADIUS}, m_gap{DEFAULT_GAP}, m_error_drawing{false},m_over_cell{nullptr}, m_robot_orientation{Utils::Orientation::NONE}
 {
-    initLabel();
+    initLabels();
     initRobotRect();
 }
 Grid::Grid()
     :m_radius{DEFAULT_RADIUS}, m_gap{DEFAULT_GAP}, m_error_drawing{false},m_over_cell{nullptr},m_robot_orientation{Utils::Orientation::NONE}
 {
-    initLabel();
+    initLabels();
     initRobotRect();
 }
 
@@ -84,9 +83,9 @@ void Grid::initRobotRect(){
     m_robot_rect.setSize(DEFAULT_ROBOT_SIZE);
 }
 
-void Grid::initLabel(){
+void Grid::initLabels(){
 
-    // Font load
+    // Font load (cell height)
     if (!m_font.loadFromFile(Utils::FONT_PATH+FONT_NAME)) {
         std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
         std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
@@ -99,6 +98,21 @@ void Grid::initLabel(){
     m_text.setColor(TEXT_COLOR);
     m_text.setCharacterSize(DEFAULT_TEXT_SIZE);
 
+    // Font load (level name)
+    if (!m_font_name.loadFromFile(Utils::FONT_PATH+FONT_TEXT_NAME)) {
+        std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: The font will be ignored." << std::endl;
+    }else{
+        m_text_name.setFont(m_font_name);
+        std::cout << Utils::getTime() + "[Grid-INFO]: Font loaded" << std::endl;
+    }
+
+    m_text_name.setColor(TEXT_COLOR);
+    m_text_name.setCharacterSize(DEFAULT_TEXT_NAME_SIZE);
+    // TODO ANTIALIASING
+    //m_text_name.setStyle();
+
 }
 
 void Grid::initRobot(const std::string &line)
@@ -106,37 +120,44 @@ void Grid::initRobot(const std::string &line)
     // Divide the line with ';'
     std::vector<std::string> sub_string = Utils::split(line,";");
 
-    // The robot receive its position
-    m_robot->setPos({atoi(sub_string[POS_X_INDEX].c_str()),atoi(sub_string[POS_Y_INDEX].c_str())});
+    bool error = false;
+    if(sub_string.size()!=3){
+        error = true;
+        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Robot line invalid" << std::endl;
+    }
+    if(!error){
+        // The robot receive its position
+        m_robot->setPos({atoi(sub_string[POS_X_INDEX].c_str()),atoi(sub_string[POS_Y_INDEX].c_str())});
 
-    // Get the orientation from the file and give it to the robot
+        // Get the orientation from the file and give it to the robot
 
-    int orientation = atof(sub_string[POS_ORIENTATION_INDEX].c_str());
+        int orientation = atof(sub_string[POS_ORIENTATION_INDEX].c_str());
 
-    switch (orientation) {
-    case 1:
-        m_robot->setOrientation(Utils::Orientation::DOWN);
-        break;
-    case 2:
-        m_robot->setOrientation(Utils::Orientation::DOWN_LEFT);
-        break;
-    case 3:
-        m_robot->setOrientation(Utils::Orientation::DOWN_RIGHT);
-        break;
-    case 4:
-        m_robot->setOrientation(Utils::Orientation::UP);
-        break;
-    case 5:
-        m_robot->setOrientation(Utils::Orientation::UP_LEFT);
-        break;
-    case 6:
-        m_robot->setOrientation(Utils::Orientation::UP_RIGHT);
-        break;
-    default:
-        std::cout << Utils::getTime() + "[Grid-ERROR]: Orientation " + std::to_string(orientation) + " is invalid." << std::endl;
-        m_robot->setOrientation(Utils::Orientation::DOWN);
-        std::cout << Utils::getTime() + "[Grid-FIX]: The robot orientation has been set to DOWN" << std::endl;
-        break;
+        switch (orientation) {
+        case 1:
+            m_robot->setOrientation(Utils::Orientation::DOWN);
+            break;
+        case 2:
+            m_robot->setOrientation(Utils::Orientation::DOWN_LEFT);
+            break;
+        case 3:
+            m_robot->setOrientation(Utils::Orientation::DOWN_RIGHT);
+            break;
+        case 4:
+            m_robot->setOrientation(Utils::Orientation::UP);
+            break;
+        case 5:
+            m_robot->setOrientation(Utils::Orientation::UP_LEFT);
+            break;
+        case 6:
+            m_robot->setOrientation(Utils::Orientation::UP_RIGHT);
+            break;
+        default:
+            std::cout << Utils::getTime() + "[Grid-ERROR]: Orientation " + std::to_string(orientation) + " is invalid." << std::endl;
+            m_robot->setOrientation(Utils::Orientation::DOWN);
+            std::cout << Utils::getTime() + "[Grid-FIX]: The robot orientation has been set to DOWN" << std::endl;
+            break;
+        }
     }
 }
 
@@ -201,7 +222,7 @@ void Grid::setRobot(Robot *robot)
 *                   GETTERS                      *
 *************************************************/
 // It returns true if the mouse is on a cell
-bool Grid::isOverCell(sf::Vector2i mouse){
+bool Grid::isOverCell(const sf::Vector2i &mouse){
 
     // Reset all the lights
     for(Cell* c : m_cells){
@@ -287,54 +308,79 @@ void Grid::loadLevel(const std::string &level_id){
 
         // The first line corresponds to the level name
         f >> level_name;
+        m_text_name.setString(level_name);
+        std::cout << level_name << std::endl;
 
         // Robot values
         std::string robot_line;
         f >> robot_line;
         initRobot(robot_line);
 
+        bool error_sub_string;
+        bool error_values;
+
         while( !f.eof() )
         {
+            error_sub_string = false;
             // Gets the line
             f >> line;
             sub_string = Utils::split(line,";");
 
-            /* TODO CHECKER
+            /* TODO CHECKER */
             if(sub_string.size()==0){
                 // say something
                 // do something
+                std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there is nothing" << std::endl;
+                error_sub_string = true;
             }
             if(sub_string.size()>4){
                 // say something
                 // do something
-            }*/
-
-            // Convert strings to good values
-            pos.x = atof(sub_string[POS_X_INDEX].c_str());
-            pos.y = atof(sub_string[POS_Y_INDEX].c_str());
-            height = atoi(sub_string[HEIGHT_INDEX].c_str());
-            light = (bool)atoi(sub_string[LIGHT_INDEX].c_str());
-
-
-            /** CHECKER **
-            // TODO
-            if(pos.x>max){
-                // say something
-                // change pos_x
+                std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there is too much arguments" << std::endl;
+                error_sub_string = true;
             }
-            if(pos.y>max){
+            if(sub_string.size()<4){
                 // say something
-                // change pos_y
+                // do something
+                std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there not enough arguments" << std::endl;
+                error_sub_string = true;
             }
-            if(height<0){
-                // say something
-                // change height
-            }       ***/
+
+
+            if(!error_sub_string){
+                // Convert strings to good values
+                pos.x = atof(sub_string[POS_X_INDEX].c_str());
+                pos.y = atof(sub_string[POS_Y_INDEX].c_str());
+                height = atoi(sub_string[HEIGHT_INDEX].c_str());
+                light = (bool)atoi(sub_string[LIGHT_INDEX].c_str());
+
+
+                /** CHECKER **/
+                if(pos.x>7){
+                    // say something
+                    // change pos_x
+                    error_values = true;
+                    std::cout << Utils::getTime() + "[Level Loader-ERROR]: pos X: " + std::to_string(pos.x) + " is invalid (>7)" << std::endl;
+                }
+                if(pos.y>4){
+                    // say something
+                    // change pos_y
+                    error_values = true;
+                     std::cout << Utils::getTime() + "[Level Loader-ERROR]: pos Y: " + std::to_string(pos.y) + " is invalid (>4)" << std::endl;
+                }
+                if(height<0){
+                    // say something
+                    // change height
+                     std::cout << Utils::getTime() + "[Level Loader-ERROR]: height: " + std::to_string(height) + " is invalid (<0)" << std::endl;
+                    error_values = true;
+                }
+            }
 
 
             // Definition of the new cell, if this is not the end of the file
             // prevent an extra loop
-            if(!f.eof()){
+
+            if(!f.eof() && !error_sub_string && !error_values){
                 Cell* c = new Cell(pos,height,light);
                 m_cells.push_back(c);
             }
@@ -451,16 +497,21 @@ void Grid::drawGrid(sf::RenderWindow& window, const sf::Vector2f &grid_pos){
             // TEXT with height
             std::string label = std::to_string(c->getHeight());
 
-            // The text here is the height
+            // The text where is the height
             m_text.setString(label);
             m_text.setColor(sf::Color(CELL_TEXT_COLOR));
             // -4 here is to adjust the text position since m_text.getGlobalBounds().height is not working well
             // m_radius/2 is to show the text at the middle of the cell (the origin is on the top left corner)
             m_text.setPosition({pos.x-4,pos.y+m_radius/2});
 
+            m_text_name.setColor(sf::Color(CELL_TEXT_NAME_COLOR));
+            // -4 here is to adjust the text position since m_text.getGlobalBounds().height is not working well
+            // m_radius/2 is to show the text at the middle of the cell (the origin is on the top left corner)
+            m_text_name.setPosition({0,0});
             // Draw elements
             window.draw(hexa);
             window.draw(m_text);
+            window.draw(m_text_name);
 
             // If the robot is on the current cell, we draw it according to if its jumping or not
             if(robot_is_there){
