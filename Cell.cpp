@@ -39,7 +39,6 @@ void Cell::setPos(const sf::Vector2f &pos){
     m_pos = pos;
 }
 
-
 /************************************************
 *                   GETTERS                     *
 *************************************************/
@@ -49,7 +48,7 @@ int Cell::getHeight() const{
 bool Cell::getLight() const{
     return m_light;
 }
-// It returns a Vector2f because it is usefull for the calculations after
+// It returns a Vector2f because it is usefull for the calculations after (no warning)
 sf::Vector2f Cell::getPos() const{
     return m_pos;
 }

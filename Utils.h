@@ -3,12 +3,13 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <SFML/Graphics.hpp>
 
 class Utils
 {
 public:
     // Absolute value
-    static float abs(float value);
+    static float abs(const float &value);
     // Get the time for the outputs
     static std::string getTime();
     // Get PI (same method as Math.h)
@@ -34,6 +35,7 @@ public:
     static Orientation turn_clockwise(Orientation actual_orientation);
     static Orientation turn_counterclock(Orientation actual_orientation);
 
+    static sf::Vector2f positionToPixel(const sf::Vector2f &pos_in_index, const sf::Vector2f &gap, const int &radius);
 private:
     Utils() = default;
 };

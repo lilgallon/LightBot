@@ -1,9 +1,12 @@
 #ifndef BUTTON_H
 #define BUTTON_H
-#include <SFML/Graphics.hpp>
-#include "Theme.h"
 
+/* LOCAL CLASSES */
+#include "Theme.h"
 #include "Utils.h"
+
+/* LIBRARIES */
+#include <SFML/Graphics.hpp>
 
 class Button
 {
@@ -42,18 +45,27 @@ public:
     void draw_on(sf::RenderWindow &window) const;
 
 private:
+    // Initialization methods called in contructors (clean the code)
     void initButton(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &fillColor, const int &outline, const sf::Color &outlineColor);
     void initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text);
     void initButton(const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, Utils::Action a);
 
+    // Attributes linked to the role of the button:
+    // - state: the state to go after clicking the button
+    // - action: the action corresponding to the button
+    // - utility: the utility of the button to call a method (ex: 1 -> call runProgram, 2 -> call .. and so on)
     const Utils::State m_state;
     const Utils::Action m_action;
-    Theme* m_theme;
     int m_utility;
 
-    sf::Texture m_texture;
+    // The color theme of the button
+    Theme* m_theme;
 
+    // The texture of the button
+    sf::Texture m_texture;
+    // The rectangle of the button
     sf::RectangleShape m_button;
+    // The text of the button
     sf::Text m_label;
 };
 

@@ -115,6 +115,13 @@ $ Memomry (deleting buttons - check issues)
 + Visuel saut
 * Fix crash si on utilise pas P1 et/ou P2
 
+## Verson 22 : 29/05/17 ##
+* Fix qqes problèmes de chargement de police (grid)
+* Qqes autres fix
++ positionToPixels()
++ début commentaire
+* clean code
+
 
 
 #TODO:
@@ -133,11 +140,17 @@ $ Memomry (deleting buttons - check issues)
 * clean code (trucs en commentaires, nombres magiques, ..)
 + description méthode au dessus de celle ci
 + ajouter niveaux
++ virer les todo
++ chaneg sprites 
++ renommer projet en interface en lightnbot
++ faire crédtis
++ remove editeur
 
 
 * AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on
 change la rotation
 + Ajouter gestion des appels récursifs à l'infini!! (cpt max ..)
 + Gestion lose / win
++ afficher le nom du niveau en haut du niveau
 
 THROW EXCEPTION LVEL NAME WITH SPACE

@@ -36,13 +36,19 @@ private:
     void initRobotRect();
     void initRobot(const std::string &line);
 
-    void changeRobotTexture(Utils::Orientation orientation);
-    //void calculatePosition(Cell* c, sf::Vector2f &pos);
+    void changeRobotTexture(const Utils::Orientation &orientation);
 
+    // All the cells of the grid
     std::vector<Cell*> m_cells;
+    // The robot
     Robot* m_robot;
+
+    // Radius of the hexagones
     int m_radius;
-    // Error handler
+    // Gap of the grid in the window
+    sf::Vector2f m_gap;
+
+    // Error handler (prevent from spamming it in the console)
     bool m_error_drawing;
 
     // Only used for the level editor
@@ -52,12 +58,13 @@ private:
     // The cell that is currently on mouse
     Cell* m_over_cell;
 
-    // Texture for the robot
-    sf::RectangleShape m_robot_rect;
-    sf::Texture m_robot_texture;
-    Utils::Orientation m_robot_orientation;
 
-    sf::Vector2f m_gap;
+    // Rectangle of the robot
+    sf::RectangleShape m_robot_rect;
+    // Texture for the robot
+    sf::Texture m_robot_texture;
+    // Orientation of the robot (texture will change according to it)
+    Utils::Orientation m_robot_orientation;
 };
 
 #endif // GRID_H

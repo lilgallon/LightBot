@@ -29,7 +29,25 @@ namespace{
     const int HEIGHT_INDEX = 2;
     const int LIGHT_INDEX = 3;
 
-    sf::Vector2f DEFAULT_GAP = {100,150};
+    const sf::Vector2f DEFAULT_GAP = {100,150};
+    const sf::Vector2f DEFAULT_ROBOT_SIZE{100,100};
+    const int          DEFAULT_RADIUS = 65;
+
+    const int          DEFAULT_TEXT_SIZE = 20;
+
+    const std::string  FONT_NAME = "coolvetica.ttf";
+    const sf::Color    TEXT_COLOR = sf::Color::Black;
+
+    const sf::Color    CELL_LIGHT_COLOR = sf::Color(220,241,251,128);
+    const sf::Color    CELL_NLIGHT_COLOR = sf::Color::Transparent;
+    const sf::Color    CELL_FILL_COLOR = sf::Color::Transparent;
+    const sf::Color    CELL_OUTLINE_COLOR = sf::Color::Black;
+    const int          CELL_OUTLINE_THICKNESS = 2;
+
+    const sf::Color    CELL_TEXT_COLOR = sf::Color(128,128,128,128);
+
+    const sf::Vector2f ROBOT_RECT_SIZE_JUMPING = {125,125};
+    const sf::Vector2f ROBOT_RECT_SIZE_NJUMPING = {100,100};
 }
 
 // TODO
@@ -39,17 +57,23 @@ namespace{
 // m_radius = radius calculé
 // ...
 
+// TODO
+// Changer rect robot en sprite
+
+// TODO
+// Check level correct
+
 /************************************************
 *         CONSTRUCTORS / DESTRUCTORS            *
 *************************************************/
 Grid::Grid(std::vector<Cell*> cells, Robot *robot)
-    :m_cells{cells}, m_robot{robot}, m_radius{65},m_error_drawing{false},m_over_cell{nullptr}, m_robot_orientation{Utils::Orientation::NONE},m_gap{DEFAULT_GAP}
+    :m_cells{cells}, m_robot{robot}, m_radius{DEFAULT_RADIUS}, m_gap{DEFAULT_GAP}, m_error_drawing{false},m_over_cell{nullptr}, m_robot_orientation{Utils::Orientation::NONE}
 {
     initLabel();
     initRobotRect();
 }
 Grid::Grid()
-    :m_radius{65},m_error_drawing{false},m_over_cell{nullptr},m_robot_orientation{Utils::Orientation::NONE},m_gap{DEFAULT_GAP}
+    :m_radius{DEFAULT_RADIUS}, m_gap{DEFAULT_GAP}, m_error_drawing{false},m_over_cell{nullptr},m_robot_orientation{Utils::Orientation::NONE}
 {
     initLabel();
     initRobotRect();
@@ -57,57 +81,56 @@ Grid::Grid()
 
 void Grid::initRobotRect(){
     m_robot_rect.setFillColor(sf::Color(255,255,255,255));
-    m_robot_rect.setSize({100,100});
+    m_robot_rect.setSize(DEFAULT_ROBOT_SIZE);
 }
 
 void Grid::initLabel(){
-    std::string fontPath = "resources/fonts/";
-    std::string fontName = "coolvetica.ttf";
 
     // Font load
-    if (!m_font.loadFromFile(fontPath+fontName)) {
-        //throw "Police "+POLICE+" manquante";
+    if (!m_font.loadFromFile(Utils::FONT_PATH+FONT_NAME)) {
         std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
-        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""
-                     + fontPath+fontName + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
         std::cout << Utils::getTime() + "[Grid-FIX]: The font will be ignored." << std::endl;
-        m_text.setFont(m_font);
     }else{
+        m_text.setFont(m_font);
         std::cout << Utils::getTime() + "[Grid-INFO]: Font loaded" << std::endl;
     }
 
-    m_text.setFont(m_font);
-    m_text.setColor(sf::Color::Black);
-    m_text.setCharacterSize(20);
+    m_text.setColor(TEXT_COLOR);
+    m_text.setCharacterSize(DEFAULT_TEXT_SIZE);
 
 }
 
 void Grid::initRobot(const std::string &line)
 {
+    // Divide the line with ';'
     std::vector<std::string> sub_string = Utils::split(line,";");
 
-
+    // The robot receive its position
     m_robot->setPos({atoi(sub_string[POS_X_INDEX].c_str()),atoi(sub_string[POS_Y_INDEX].c_str())});
 
+    // Get the orientation from the file and give it to the robot
+
     int orientation = atof(sub_string[POS_ORIENTATION_INDEX].c_str());
+
     switch (orientation) {
     case 1:
-            m_robot->setOrientation(Utils::Orientation::DOWN);
+        m_robot->setOrientation(Utils::Orientation::DOWN);
         break;
     case 2:
-            m_robot->setOrientation(Utils::Orientation::DOWN_LEFT);
+        m_robot->setOrientation(Utils::Orientation::DOWN_LEFT);
         break;
     case 3:
-            m_robot->setOrientation(Utils::Orientation::DOWN_RIGHT);
+        m_robot->setOrientation(Utils::Orientation::DOWN_RIGHT);
         break;
     case 4:
-            m_robot->setOrientation(Utils::Orientation::UP);
+        m_robot->setOrientation(Utils::Orientation::UP);
         break;
     case 5:
-            m_robot->setOrientation(Utils::Orientation::UP_LEFT);
+        m_robot->setOrientation(Utils::Orientation::UP_LEFT);
         break;
     case 6:
-            m_robot->setOrientation(Utils::Orientation::UP_RIGHT);
+        m_robot->setOrientation(Utils::Orientation::UP_RIGHT);
         break;
     default:
         std::cout << Utils::getTime() + "[Grid-ERROR]: Orientation " + std::to_string(orientation) + " is invalid." << std::endl;
@@ -115,13 +138,12 @@ void Grid::initRobot(const std::string &line)
         std::cout << Utils::getTime() + "[Grid-FIX]: The robot orientation has been set to DOWN" << std::endl;
         break;
     }
-
-    //std::cout << "#### ROBOT POS : " + std::to_string(m_robot->getPos().x) + " ; " + std::to_string(m_robot->getPos().y) << std::endl;
-    //std::cout << "#### ROBOT ORIENTATION : " + std::to_string(orientation) << std::endl;
 }
 
-void Grid::changeRobotTexture(Utils::Orientation orientation)
+// Change the robot texture according to its orientation
+void Grid::changeRobotTexture(const Utils::Orientation &orientation)
 {
+
     std::string image;
     switch (orientation) {
     case Utils::Orientation::DOWN:
@@ -156,27 +178,6 @@ void Grid::changeRobotTexture(Utils::Orientation orientation)
         m_robot_rect.setTexture(&m_robot_texture);
     }
 }
-/*
-void Grid::calculatePosition(Cell *c, sf::Vector2f &pos)
-{
-    if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
-        pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
-        if(c->getPos().y==0){
-            pos.y -= (m_radius*sin(Utils::PI/3.));
-        }else{
-            pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
-        }
-    }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
-        pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
-        pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
-    }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
-        pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-        pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.));
-    }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
-        pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-        pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
-    }
-}*/
 
 Grid::~Grid(){
     for(Cell* c : m_cells){
@@ -199,49 +200,34 @@ void Grid::setRobot(Robot *robot)
 /************************************************
 *                   GETTERS                      *
 *************************************************/
-// TODO
-// NOT CHECKED - It returns true if the mouse is on a cell
+// It returns true if the mouse is on a cell
 bool Grid::isOverCell(sf::Vector2i mouse){
 
+    // Reset all the lights
     for(Cell* c : m_cells){
         c->setLight(false);
     }
 
+    // We suppose that the mouse is not over a cell
     bool isOver = false;
     unsigned int i = 0;
+
+    // We check if the mouse is over one of the cells of m_cells
     while(!isOver && i<m_cells.size()){
-
-        sf::Vector2f pos = m_gap;
-
+        // Gets the cell at the actual index
         Cell* c = m_cells.at(i);
-
-        if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
-            pos.x += c->getPos().x * (m_radius + m_radius* cos(Utils::PI/3.));
-
-
-            if(c->getPos().y==0){
-                pos.y -= (m_radius*sin(Utils::PI/3.));
-            }else{
-                pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)) + (m_radius*sin(Utils::PI/3.));
-            }
-
-        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
-            pos.x += c->getPos().x * (m_radius+m_radius * cos(Utils::PI/3.));
-            pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
-        }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
-            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-            pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.));
-        }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
-            pos.x += c->getPos().x * (m_radius + m_radius * cos(Utils::PI/3.));
-            pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.));
-        }
-
-
+        // Get the pos in pixels of the cell
+        sf::Vector2f pos = Utils::positionToPixel(c->getPos(),m_gap,m_radius);
+        // Compare mouse pos and hexagone pos (pixels)
         isOver = Utils::abs(mouse.x-pos.x)<=m_radius
-              && Utils::abs(mouse.y-pos.y)<=m_radius;
+                && Utils::abs(mouse.y-pos.y)<=m_radius;
+        // The algorithm acts as if the hexagone was a circle
         i++;
     }
     i --;
+
+    // If the mouse is over a cell, we change the light of this cell
+    // And we get the cell which the mouse is over
     if(isOver){
         m_cells.at(i)->setLight(true);
         m_over_cell = m_cells.at(i);
@@ -256,7 +242,7 @@ Cell *Grid::getOverCell() const
 {
     return m_over_cell;
 }
-// Returns the grid
+
 std::vector<Cell*> Grid::getGrid(){
     return m_cells;
 }
@@ -266,13 +252,15 @@ std::vector<Cell*> Grid::getGrid(){
  * ************************************************/
 void Grid::loadLevel(const std::string &level_id){
 
+    // Variables to read
     std::fstream f;
     std::string line;
-    std::string level_name;
     std::vector<std::string> sub_string;
 
-    //std::vector<Cell*> cells;
+    // Variable for the level
+    std::string level_name;
 
+    // Variables for the cell
     sf::Vector2f pos;
     int light;
     int height;
@@ -282,31 +270,25 @@ void Grid::loadLevel(const std::string &level_id){
     f.open(Utils::LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( f.fail() )
     {
-        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + level_id
-                  << std::endl;
+        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Could not load the level id #" + level_id << std::endl;
     }else{
 
+        // If the grid already was loaded before, we reset it
         if(!m_cells.empty()){
             for(Cell* c : m_cells){
                 delete c;
-                std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting a cell"
-                          << std::endl;
+                std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting a cell" << std::endl;
             }
-            std::cout << Utils::getTime() + "[Level Loader-INFO]: Clearing a cell"
-                      << std::endl;
             m_cells.clear();
-
-            std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting last level"
-                      << std::endl;
+            std::cout << Utils::getTime() + "[Level Loader-INFO]: Deleting last level" << std::endl;
         }
 
+        std::cout << Utils::getTime() + "[Level Loader-INFO]: Reading the level" << std::endl;
 
         // The first line corresponds to the level name
-        std::cout << Utils::getTime() + "[Level Loader-INFO]: Reading the level"
-                  << std::endl;
         f >> level_name;
 
-        // ROBOT
+        // Robot values
         std::string robot_line;
         f >> robot_line;
         initRobot(robot_line);
@@ -355,61 +337,52 @@ void Grid::loadLevel(const std::string &level_id){
             if(!f.eof()){
                 Cell* c = new Cell(pos,height,light);
                 m_cells.push_back(c);
-
             }
 
-
         }
-        // Resizing because f.eof() make an extra loop
-        //delete m_cells.at(m_cells.size()-1);
-        //m_cells.resize(m_cells.size()-1);
-        //m_cells.erase(m_cells.end()-1);
-        // Erase the precedent grid to put the new one
-        //this->setGrid(cells);
-        std::cout << Utils::getTime() + "[Level Loader-INFO]: Level loaded"
-                  << std::endl;
+        std::cout << Utils::getTime() + "[Level Loader-INFO]: Level loaded" << std::endl;
     }
 
     f.close();
 }
 
 void Grid::saveLevel(const std::string &level_id, const std::string &level_name){
-    std::fstream f;
-    std::string file = Utils::LEVELS_PATH + level_id + ".txt";
 
+    // File stream
+    std::fstream f;
     std::fstream f_in;
+
+    // File adress (level)
+    std::string file = Utils::LEVELS_PATH + level_id + ".txt";
 
     // Tries to open the file
     f_in.open(Utils::LEVELS_PATH + level_id + ".txt", std::ios::in);
     if( !f_in.fail() )
     {
-        std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + level_id + " already exists."
-                  << std::endl;
-        std::cout << Utils::getTime() + "[Level Saver-FIX]: The level id#" + level_id + " will not be saved."
-                  << std::endl;
+        std::cout << Utils::getTime() + "[Level Saver-ERROR]: The level id#" + level_id + " already exists." << std::endl;
+        std::cout << Utils::getTime() + "[Level Saver-FIX]: The level id#" + level_id + " will not be saved." << std::endl;
     }else{
 
         f.open(file.c_str(), std::ios::out);
         if( f.fail() )
         {
-            std::cout << Utils::getTime() + "[Level Saver-ERROR]: Could not save the level id #" + level_id
-                      << std::endl;
+            std::cout << Utils::getTime() + "[Level Saver-ERROR]: Could not save the level id #" + level_id << std::endl;
         }else{
-            // Header
+            // Level info
             f << level_name;
             f << "\n";
+            // Robot infos
             f << m_robot->getPos().x << ";" << m_robot->getPos().y << ";" << (int)m_robot->getOrientation();
+            // Cells infos
             for(Cell* c : m_cells){
                 f << "\n";
                 f << c->getPos().x << ";" << c->getPos().y << ";" << c->getHeight() << ";" << std::to_string(c->getLight());
             }
-            std::cout << Utils::getTime() + "[Level Saver-INFO]: Level id #" + level_id + " has been saved."
-                      << std::endl;
+            std::cout << Utils::getTime() + "[Level Saver-INFO]: Level id #" + level_id + " has been saved." << std::endl;
         }
     }
     f_in.close();
     f.close();
-
 }
 
 /************************************************
@@ -417,129 +390,90 @@ void Grid::saveLevel(const std::string &level_id, const std::string &level_name)
 *************************************************/
 // Draws the grid
 void Grid::drawGrid(sf::RenderWindow& window, const sf::Vector2f &grid_pos){
-    // debug
-    //sf::CircleShape center;
-    //center.setFillColor(sf::Color::Red);
-    //center.setRadius(1);
 
     if(m_cells.empty() && !m_error_drawing){
-        std::cout << Utils::getTime() + "[Grid renderer-ERROR]: The grid seems to be empty"
-                  << std::endl;
-        std::cout << Utils::getTime() + "[Grid renderer-FIX]: The grid will not be displayed"
-                  << std::endl;
+        // If cells container is empty, we do not write the level
+        std::cout << Utils::getTime() + "[Grid renderer-ERROR]: The grid seems to be empty" << std::endl;
+        std::cout << Utils::getTime() + "[Grid renderer-FIX]: The grid will not be displayed" << std::endl;
         // m_error_drawing is used to display the error message only once instead of spamming it in the console
         m_error_drawing = true;
     }else if(!m_cells.empty()){
         m_error_drawing = false;
-        sf::CircleShape hexa;
+
+        // Sets the gap (-1;-1) indicates that we want the default one
         if(grid_pos.x!=-1 && grid_pos.y!=-1){
             m_gap = grid_pos;
         }else{
             m_gap = DEFAULT_GAP;
         }
-        sf::Vector2f pos;
-        sf::Color color_light(220,241,251,128);
+
+        sf::CircleShape hexa;
         hexa.setPointCount(6);
-        hexa.setFillColor(sf::Color::Transparent);
-        hexa.setOutlineColor(sf::Color::Black);
-        hexa.setOutlineThickness(2);
         hexa.setRotation(90);
         hexa.setRadius(m_radius);
-
-        //sf::CircleShape robot_shape;
-        //robot_shape.setFillColor(sf::Color::Red);
-        // TODO : magic number m_radius/10 -> changer et mettre
-        // en namespace ou qqch
-        //robot_shape.setRadius(m_radius/10);
-
-
+        hexa.setFillColor(CELL_FILL_COLOR);
+        hexa.setOutlineColor(CELL_OUTLINE_COLOR);
+        hexa.setOutlineThickness(CELL_OUTLINE_THICKNESS);
 
         for(Cell* c : m_cells){
 
-            // HEXAGONES
-
+            // If the cell has the light on, the color is different
             if(c->getLight()){
-                hexa.setFillColor(color_light);
+                hexa.setFillColor(CELL_LIGHT_COLOR);
             }else{
-                hexa.setFillColor(sf::Color::Transparent);
+                hexa.setFillColor(CELL_NLIGHT_COLOR);
             }
 
-            // If we don't want the grid at a specific position
-            pos = m_gap;
-
-
-            // Sets the center in the center :)
+            // Sets the origins in the center
             hexa.setOrigin({c->getPos().x+m_radius,c->getPos().y+m_radius});
             m_robot_rect.setOrigin({(float)(m_robot->getPos().x+(double)m_radius/1.3),(float)(m_robot->getPos().y+(double)m_radius/1.3)});
 
+            // We suppose that the robot is not here, we will draw it after if he is on the current cell
             bool robot_is_there = false;
-
-
             if(c->getPos().x==m_robot->getPos().x && c->getPos().y == m_robot->getPos().y){
                 robot_is_there = true;
             }
 
+            // If the orientation of the robot has changed, we change the texture
             if(m_robot->getOrientation()==Utils::Orientation::NONE || m_robot->getOrientation()!=m_robot_orientation){
                 m_robot_orientation = m_robot->getOrientation();
                 changeRobotTexture(m_robot_orientation);
             }
 
+            // Convert the position of the cell from index to pixels
+            sf::Vector2f pos = Utils::positionToPixel(c->getPos(),m_gap,m_radius);
 
-
-            if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2==0){     // OK
-                pos.x += c->getPos().x * (m_radius+1 + m_radius* cos(Utils::PI/3.)+1);
-                if(c->getPos().y==0){
-                    pos.y -= (m_radius*sin(Utils::PI/3.)+1);
-                }else{
-                    pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)+1) + (m_radius*sin(Utils::PI/3.)+1);
-                }
-            }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2==0){
-                pos.x += c->getPos().x * (m_radius+1+m_radius * cos(Utils::PI/3.)+1);
-                if(c->getPos().y==0){
-                    pos.y -= c->getPos().y * 2*(m_radius*sin(Utils::PI/3.)+1);
-                }else{
-                    pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.)+1);
-                }
-
-            }else if((int)c->getPos().x%2!=0 && (int)c->getPos().y%2!=0){
-                pos.x += c->getPos().x * (m_radius+1 + m_radius * cos(Utils::PI/3.)+1);
-                if(c->getPos().y==1){
-                    pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)+1);
-                }else{
-                    pos.y += c->getPos().y * (m_radius*sin(Utils::PI/3.)+1) + 2*(m_radius*sin(Utils::PI/3.)+1);
-                }
-            }else if((int)c->getPos().x%2==0 && (int)c->getPos().y%2!=0){
-                pos.x += c->getPos().x * (m_radius+1 + m_radius * cos(Utils::PI/3.)+1);
-                pos.y += c->getPos().y * 2*(m_radius*sin(Utils::PI/3.)+1);
-            }
-
-
+            // Sets the cell at this position
             hexa.setPosition(pos);
 
-            // TEXT w/ x;y
+            // TEXT with x;y
             //std::string label = std::to_string((int)c->getPos().x) + ";" + std::to_string((int)c->getPos().y);
-            // TEXT w/ height
+            // TEXT with height
             std::string label = std::to_string(c->getHeight());
 
+            // The text here is the height
             m_text.setString(label);
+            m_text.setColor(sf::Color(CELL_TEXT_COLOR));
+            // -4 here is to adjust the text position since m_text.getGlobalBounds().height is not working well
+            // m_radius/2 is to show the text at the middle of the cell (the origin is on the top left corner)
             m_text.setPosition({pos.x-4,pos.y+m_radius/2});
-            m_text.setColor(sf::Color(128,128,128,128));
 
+            // Draw elements
             window.draw(hexa);
             window.draw(m_text);
+
+            // If the robot is on the current cell, we draw it according to if its jumping or not
             if(robot_is_there){
                 if(m_robot->isJumping()){
-                    m_robot_rect.setSize({125,125});
-                    m_robot_rect.setOrigin({125/2,125/2});
+                    m_robot_rect.setSize(ROBOT_RECT_SIZE_JUMPING);
+                    m_robot_rect.setOrigin({ROBOT_RECT_SIZE_JUMPING.x/2,ROBOT_RECT_SIZE_JUMPING.y/2});
                 }else{
-                    m_robot_rect.setSize({100,100});
-                    m_robot_rect.setOrigin({100/2,100/2});
+                    m_robot_rect.setSize(ROBOT_RECT_SIZE_NJUMPING);
+                    m_robot_rect.setOrigin({ROBOT_RECT_SIZE_NJUMPING.x/2,ROBOT_RECT_SIZE_NJUMPING.y/2});
                 }
                 m_robot_rect.setPosition(pos);
                 window.draw(m_robot_rect);
             }
         }
     }
-
-
 }

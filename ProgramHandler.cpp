@@ -347,7 +347,7 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
     }
 
     // If the robot jumped and did an other action after, he lands on the floor
-    if(m_robot->isJumping() && program->getActions().at(index)->getAction()!=Utils::Action::JUMP){
+    if(m_robot->isJumping() && program->getActions().at(index)->getAction()==Utils::Action::FORWARD){
         m_robot->setJumping(false);
     }
 
@@ -358,7 +358,7 @@ int ProgramHandler::runProgram(ProgramBox *program, const unsigned int &index, i
     if(index==program->getActions().size()-1 && result!=1 && result!=2){
         if(result == 0){
             bool all_cells_are_turned_on = true;
-            int i = 0;
+            unsigned int i = 0;
             while(i < cells.size() && all_cells_are_turned_on){
                 if(!cells.at(i)->getLight()){
                     all_cells_are_turned_on = false;

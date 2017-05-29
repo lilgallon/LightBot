@@ -13,17 +13,23 @@
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
 
+/* LOCAL CLASSES */
 #include "Button.h"
 #include "Utils.h"
+
+/* LIBRARIES */
 #include <iostream>
 
+namespace{
+    const int LABEL_SIZE = 20;
+}
 
 /************************************************
 *                CONSTRUCTORS                   *
 *************************************************/
 // Constructor for a state button
 Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
-    : m_state{stateIfClicked}, m_action{Utils::Action::NONE}, m_theme{theme}, m_utility{-1}
+    : m_state{stateIfClicked}, m_action{Utils::Action::NONE}, m_utility{-1}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -34,7 +40,7 @@ Button::Button(const Utils::State &stateIfClicked, const sf::Vector2f &position,
 
 // Constructor for a button that will start a certain function
 Button::Button(const int &utility, const sf::Vector2f &position, const sf::Vector2f &size, Theme *theme, const std::string &text)
-    : m_state{Utils::State::IDLE}, m_action{Utils::Action::NONE}, m_theme{theme}, m_utility{utility}
+    : m_state{Utils::State::IDLE}, m_action{Utils::Action::NONE}, m_utility{utility}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -45,7 +51,7 @@ Button::Button(const int &utility, const sf::Vector2f &position, const sf::Vecto
 
 // Constructor for an action button
 Button::Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, const std::string &text)
-    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
+    :m_state{Utils::State::IDLE}, m_action{action}, m_utility{-1}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size,theme->getRectDefaultFillColor(),theme->getRectOutlineThickness(),theme->getRectDefaultOutlineColor());
@@ -55,69 +61,63 @@ Button::Button(const Utils::Action &action, const sf::Vector2f &position, const 
 }
 
 Button::Button(const Utils::Action &action, const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme)
-    :m_state{Utils::State::IDLE}, m_action{action},m_theme{theme}, m_utility{-1}
+    :m_state{Utils::State::IDLE}, m_action{action}, m_utility{-1}, m_theme{theme}
 {
     std::cout << Utils::getTime() + "[Button-INFO]: Loading button" << std::endl;
     initButton(position,size, theme, action);
     std::cout << Utils::getTime() + "[Button-INFO]: Surface initialized" << std::endl;
-    //std::cout << Utils::getTime() + "[Button-INFO]: Label initialized" << std::endl;
 }
-
-/*
-Button::Button(const Button &b)
-    :m_state{b.getState()}, m_action {b.getAction()}, m_theme {b.getTheme()}, m_button{b.getButton()}, m_label {b.getLabel()}
-{
-    m_texture = b.getTexture();
-    m_button.setTexture(&m_texture);
-}*/
 
 // Init the label inside a constructor
 void Button::initLabel(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &color, const sf::Text &font, const std::string &text){
 
-    //m_label = font;     // FONT FIX!!
-
-    // marche aussi finalement
+    // Sets the font to the text
     const sf::Font* font1 = font.getFont();
     m_label.setFont(*font1);
-    //
 
-    // TODO
-    // Améliorer pour prendre en compte la taille du texte pour mieux positionner le label
+    // Sets the label to the text
     m_label.setString(text);
-    m_label.setOrigin(size.x/3.5,size.y/4.);
-    //m_label.setPosition({position.x+size.x/2,position.y+size.y/2});
-    //m_label.setPosition(position);
 
-    //m_label.setOrigin({m_label.getLocalBounds().width/2-5,m_label.getLocalBounds().height/2});
+    // Sets the position of the label
+    m_label.setOrigin(size.x/3.5,size.y/4.);
     m_label.setPosition(position);
 
+    // Sets the color & size of the label
     m_label.setColor(color);
-m_label.setCharacterSize(20);
+    m_label.setCharacterSize(LABEL_SIZE);
 
 }
 // Init the button insaide a constructor
 void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &fillColor, const int &outline, const sf::Color &outlineColor){
-    m_button.setPosition(position);
-    m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
+
+    // Sets the size of the rectangle
     m_button.setSize(size);
 
+    // Sets the position of the rectangle
+    m_button.setPosition(position);
+    m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
+
+    // Sets the color / thickness of the rectangle
     m_button.setFillColor(fillColor);
     m_button.setOutlineThickness(outline);
     m_button.setOutlineColor(outlineColor);
-    //m_button.setTexture(texture);
 }
 
 void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, Theme* theme, Utils::Action a){
-    m_button.setPosition(position);
-    m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
+
+    // Sets the size of the rectangle
     m_button.setSize(size);
 
+    // Sets the position of the rectangle
+    m_button.setPosition(position);
+    m_button.setOrigin(size.x-size.x/2., size.y-size.y/2.);
+
+    // Sets the color / thickness of the rectangle according to its theme
     m_button.setFillColor(theme->getRectDefaultFillColor());
     m_button.setOutlineThickness(theme->getRectOutlineThickness());
     m_button.setOutlineColor(theme->getRectDefaultOutlineColor());
 
-    //m_texture = new sf::Texture();
-
+    // Set the image name according to the action
     std::string image = "";
     switch (a) {
     case Utils::Action::FORWARD:
@@ -144,10 +144,11 @@ void Button::initButton(const sf::Vector2f &position, const sf::Vector2f &size, 
     default:
         break;
     }
+
+    // Load the texture
     if(!m_texture.loadFromFile(Utils::IMG_PATH+image)){
         std::cout << Utils::getTime() + "[TextureAction-ERROR]: Could not load the background" << std::endl;
-        std::cout << Utils::getTime() + "[TextureAction-FIX]: Check \""
-                     + Utils::IMG_PATH + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[TextureAction-FIX]: Check \"" + Utils::IMG_PATH + "\"" << std::endl;
         std::cout << Utils::getTime() + "[TextureAction-FIX]: The texture will be ignored." << std::endl;
     }else{
         m_button.setTexture(&m_texture);
@@ -231,6 +232,7 @@ void Button::setPosition(const sf::Vector2f &pos)
     m_button.setPosition(pos);
 }
 
+// Sets the theme to the button (changes the colors according to the theme)
 void Button::setTheme(Theme *theme)
 {
     setColor(theme->getRectDefaultFillColor());

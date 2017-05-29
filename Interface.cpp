@@ -727,7 +727,8 @@ int Interface::executeProgram(ProgramHandler* prog)
                         }
                     }
                     m_program_boxes.at(1)->getActions().at(m_program_boxes.at(1)->getActions().size()-1)->setTheme(m_themes[1]);
-                    m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
+                     if(m_program_boxes.at(2)->getActions().size()!=0)
+                        m_program_boxes.at(2)->getActions().at(m_program_boxes.at(2)->getActions().size()-1)->setTheme(m_themes[1]);
 
                     j ++;
                 }

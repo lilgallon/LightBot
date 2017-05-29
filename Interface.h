@@ -6,7 +6,6 @@
 #include <vector>
 #include <iostream>
 #include <unistd.h>
-#include <sys/wait.h>
 
 #include "Utils.h"
 #include "Grid.h"

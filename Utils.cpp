@@ -19,7 +19,7 @@ const std::string Utils::FONT_PATH = "resources/fonts/";
 const std::string Utils::IMG_PATH = "resources/images/";
 const std::string Utils::LEVELS_PATH = "levels/";
 
-float Utils::abs(float value){
+float Utils::abs(const float &value){
     if(value>0)
         return value;
     return -value;
@@ -123,4 +123,34 @@ Utils::Orientation Utils::turn_counterclock(Utils::Orientation actual_orientatio
         break;
     }
     return final_orientation;
+}
+
+sf::Vector2f Utils::positionToPixel(const sf::Vector2f &pos_in_index, const sf::Vector2f &gap, const int &radius)
+{
+    sf::Vector2f pos = gap;
+
+    if((int)pos_in_index.x%2!=0 && (int)pos_in_index.y%2==0){
+        if(pos_in_index.y==0){
+            pos.y -= (radius*sin(Utils::PI/3.)+1);
+        }else{
+            pos.y += pos_in_index.y * (radius*sin(Utils::PI/3.)+1) + (radius*sin(Utils::PI/3.)+1);
+        }
+    }else if((int)pos_in_index.x%2==0 && (int)pos_in_index.y%2==0){
+        if(pos_in_index.y==0){
+            pos.y -= pos_in_index.y * 2*(radius*sin(Utils::PI/3.)+1);
+        }else{
+            pos.y += pos_in_index.y * 2*(radius*sin(Utils::PI/3.)+1);
+        }
+    }else if((int)pos_in_index.x%2!=0 && (int)pos_in_index.y%2!=0){
+        if(pos_in_index.y==1){
+            pos.y += pos_in_index.y * (radius*sin(Utils::PI/3.)+1);
+        }else{
+            pos.y += pos_in_index.y * (radius*sin(Utils::PI/3.)+1) + 2*(radius*sin(Utils::PI/3.)+1);
+        }
+    }else if((int)pos_in_index.x%2==0 && (int)pos_in_index.y%2!=0){
+        pos.y += pos_in_index.y * 2*(radius*sin(Utils::PI/3.)+1);
+    }
+    pos.x += pos_in_index.x * (radius+1 + radius * cos(Utils::PI/3.)+1);
+
+    return pos;
 }

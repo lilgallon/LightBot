@@ -23,8 +23,11 @@ public:
     sf::Vector2f getPos() const;
 
 private:
+    // Position (x,y) of the cell
     sf::Vector2f m_pos;
+    // Height of the cell
     int m_height;
+    // Light of the cell
     bool m_light;
 
 };

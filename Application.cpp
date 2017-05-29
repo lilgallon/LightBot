@@ -16,11 +16,9 @@
 #include "Application.h"
 
 
-Application::Application(unsigned int w, unsigned int h,
-                     const std::wstring & title )
-    : m_pressing_mouse{false}, m_window { {w, h}, title}
-{
-}
+Application::Application(unsigned int w, unsigned int h, const std::wstring & title )
+    : m_window { {w, h}, title }, m_pressing_mouse{false}
+{}
 
 void Application::stop() {
     m_running = false;
@@ -28,14 +26,18 @@ void Application::stop() {
 
 void Application::run()
 {
+    // 60 FPS
     m_window.setFramerateLimit(60);
     m_running = true;
 
-    init();
-    while (m_running) {  // voir
+    // While the user is playing
+    while (m_running) {
+        // Call the method correspondign to the user interaction
         process_events();
+        // Call the method where we draw elements
         loop();
         if(m_pressing_mouse){
+            // Call the mouse_pressing() method if the mouse is getting pressed
             mouse_pressing();
         }
         m_window.display();
@@ -44,6 +46,7 @@ void Application::run()
 
 void Application::process_events()
 {
+    // If the window is closed, we stop the execution
     if (! m_window.isOpen()) {
         stop();
         return;
@@ -58,18 +61,13 @@ void Application::process_events()
         case sf::Event::Closed :
             stop();
             break;
-        case sf::Event::KeyPressed :
-            key_pressed(event.key);
-            break;
         case sf::Event::MouseButtonPressed :
-            // bouton = event.mouseButton.button;
             m_pressing_mouse = true;
             set_mouse_coord(event.mouseButton.x, event.mouseButton.y);
             mouse_button_pressed();
             break;
         case sf::Event::MouseButtonReleased :   
             m_pressing_mouse = false;
-            // bouton = event.mouseButton.button;
             set_mouse_coord(event.mouseButton.x, event.mouseButton.y);
             mouse_button_released();
             break;
@@ -83,12 +81,9 @@ void Application::process_events()
     }
 }
 
-/*
- * mémorisation de la position de la souris,
- * avec conversion de coordonnées  pixel -> fenetre
- */
+// Update m_mouse with the mouse position
 void Application::set_mouse_coord(int x, int y)
 {
-    auto pos = m_window.mapPixelToCoords( {x, y});
+    sf::Vector2f pos = m_window.mapPixelToCoords( {x, y});
     m_mouse = { (int)pos.x, (int)pos.y };
 }

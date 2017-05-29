@@ -17,12 +17,16 @@
 #include <iostream>
 
 namespace{
-    const std::string FONT_NAME = "coolvetica.ttf";
+    const std::string  FONT_NAME = "coolvetica.ttf";
+
     const sf::Vector2f ACTION_SIZE = {70,70};
     const sf::Vector2f ACTION_GAP = {2,2};
+
+    const sf::Color    TEXT_COLOR   = sf::Color(128,128,128);
+    const sf::Vector2f TEXT_POS_GAP = {0,-35};
 }
 
-ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color, sf::Color outline_color, int outline_thickness, std::string prog_name, Utils::TypeProg type_prog)
+ProgramBox::ProgramBox(const sf::Vector2f &pos, const sf::Vector2f &size, const sf::Color &fill_color, const sf::Color &outline_color, const int &outline_size, const std::string &prog_name, const Utils::TypeProg &type_prog)
     :m_type_prog{type_prog}
 {
     // Inits the box where the actions will be in
@@ -30,24 +34,22 @@ ProgramBox::ProgramBox(sf::Vector2f pos, sf::Vector2f size, sf::Color fill_color
     m_rect.setSize(size);
     m_rect.setFillColor(fill_color);
     m_rect.setOutlineColor(outline_color);
-    m_rect.setOutlineThickness(outline_thickness);
+    m_rect.setOutlineThickness(outline_size);
 
     // Inits the text indicating the name of the prog
     // Font load
     if (!m_font.loadFromFile(Utils::FONT_PATH+FONT_NAME)) {
-        //throw "Police "+POLICE+" manquante";
         std::cout << Utils::getTime() + "[Program Box-ERROR]: Could not load the font" << std::endl;
-        std::cout << Utils::getTime() + "[Program Box-FIX]: Check \""
-                     + Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Program Box-FIX]: Check \"" + Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
         std::cout << Utils::getTime() + "[Program Box-FIX]: The font will be ignored." << std::endl;
     }else{
+        m_text.setFont(m_font);
         std::cout << Utils::getTime() + "[Program Box-INFO]: Font loaded" << std::endl;
     }
 
-    m_text.setFont(m_font);
     m_text.setString(prog_name);
-    m_text.setColor(sf::Color(128,128,128));
-    m_text.setPosition({pos.x,pos.y-35});
+    m_text.setColor(TEXT_COLOR);
+    m_text.setPosition({TEXT_POS_GAP.x+pos.x,TEXT_POS_GAP.y+pos.y});
 }
 
 ProgramBox::~ProgramBox()
@@ -70,31 +72,34 @@ void ProgramBox::addAction(Button* button)
 
 void ProgramBox::addAction(Button* action, const unsigned int &row)
 {
-    // Création copie pointeur
-    // TODO
-    // ..
+    // explaination:
+    // - To add an action between other actions, we insert the action in the container
+    // - We create a copy of this container
+    // - We clear the original container
+    // - We call the method addAction() for every actions in the copied container
 
+
+    // Add the action in the container
     m_actions.resize(m_actions.size()+1);
     for(unsigned int i=m_actions.size()-1 ; i>row ; i--){
         m_actions.at(i)=m_actions.at(i-1);
     }
     m_actions.at(row) = action;
 
-
+    // Create a copy of this container
     std::vector<Button*> temp_container = m_actions;
+    // Clear the original container
     m_actions.clear();
 
+    // For every action of the temp container, add the action
     for(Button* b : temp_container){
         addAction(b);
     }
-
-
-
- //   m_actions.insert(action,row);
 }
 
 void ProgramBox::deleteAction(const unsigned int &row)
 {
+    // It is the same principe of addAction with a specific row
 
     if(row>=m_actions.size()){
         std::cout << Utils::getTime() + "[Program Box-ERROR]: An action of row " + std::to_string(row) + " has to be deleted but has not been found" << std::endl;
@@ -185,7 +190,7 @@ sf::Vector2f ProgramBox::calculateNewPosition() const
     return new_position;
 }
 
-bool ProgramBox::overBox(sf::Vector2i pos) const
+bool ProgramBox::overBox(const sf::Vector2i &pos) const
 {
     return pos.x >= m_rect.getPosition().x
             && pos.x <= m_rect.getPosition().x + m_rect.getSize().x

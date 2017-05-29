@@ -3,59 +3,44 @@
 
 #include <SFML/Graphics.hpp>
 
-// TODO CHANGE TO ENG
-/*
- * Classe abstraite qui fournit un modèle de comportement
- * pour les applications qui en héritent
- *
- * Elle lance la boucle lecture des evenements/affichage,
- * assure le décodage des eévènements et exécute
- * les fonctions mouse_button_pressed, etc. qui sont
- * (re) définies dans les sous-classes, ainsi que
- * (design pattern comportemental : "patron de méthodes")
- */
-
 class Application
 {
 public:
-    Application(unsigned int w, unsigned int h,
-                const std::wstring & title);
-    void run();
-    virtual ~Application()               = default;
+    Application(unsigned int w, unsigned int h, const std::wstring & title);
+    virtual ~Application() = default;
 
-    // Interaction indicator (true if the mouse is being pressed)
-    bool m_pressing_mouse;
+    // Start the game
+    void run();
 
 protected:
-    /*
-     * les variables accessibles par les sous-classes
-     */
-    sf::RenderWindow m_window;           // fenêtre de dessin
-    sf::Vector2i         m_mouse;            // position de la souris
+    // The screen where everything will be showed on
+    sf::RenderWindow m_window;
+    // The variable containing the mouse position
+    sf::Vector2i     m_mouse;
 
-    // fonctions accessibles
+    // Stop the game
     void stop();
 
-    // fonctions à surcharger
+    // We will draw everything here
+    virtual void loop() = 0;
 
-    // affichage sur m_window (obligatoire)
-    virtual void loop()                                 = 0;
-    // initialisations avant le lancement de la boucle
-    virtual void init()                                  {}
-
-    // divers traitements d'évenements
-    virtual void mouse_button_pressed ()                 {}
-    virtual void mouse_button_released()                 {}
-    virtual void mouse_moved          ()                 {}
-    virtual void mouse_pressing       ()                 {}
-
-    virtual void key_pressed (const sf::Event::KeyEvent & /*event*/) {}
+    // User interaction
+    virtual void mouse_button_pressed () {}
+    virtual void mouse_button_released() {}
+    virtual void mouse_moved          () {}
+    virtual void mouse_pressing       () {}
 
 private:
+    // Indicators
+    // True if the mouse is being pressed: used to call mouse_pressing()
+    bool m_pressing_mouse;
+    // True if the game is running: used to call methods while the program is running
     bool m_running;
 
-    void process_events();               // traitement des evenements
-    void set_mouse_coord(int x, int y);  // releve coord souris
+    // Calls the user interaction method corresponding to the user interaction
+    void process_events();
+    // Used to change m_mouse with the current mouse curosr position
+    void set_mouse_coord(int x, int y);
 };
 
-#endif // APPLICATION_H
+#endif
