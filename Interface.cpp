@@ -778,8 +778,8 @@ int Interface::executeProgram(ProgramHandler* prog)
 
 
     unsigned int index_main = 0;
-    unsigned int index_p1;
-    unsigned int index_p2;
+    unsigned int index_p1   = 0;
+    unsigned int index_p2   = 0;
 
     // This loop will remain while there are actions in main & the result is okay (there is no error)
     while(index_main < m_program_boxes[0]->getActions().size() && (result==0 || result ==1 || result ==2)){
@@ -874,9 +874,9 @@ int Interface::executeProgram(ProgramHandler* prog)
     // We stopped the execution, so the last actions theme were not set to default.
     // We have to set the button theme to default, otherwise it will stay "highlighted"
     m_program_boxes.at(0)->getActions().at(index_main-1)->setTheme(m_themes[1]);
-    if(m_program_boxes.at(1)->getActions().size()!=0)
+    if(m_program_boxes.at(1)->getActions().size()!=0 && index_p1!=0)
         m_program_boxes.at(1)->getActions().at(index_p1-1)->setTheme(m_themes[1]);
-    if(m_program_boxes.at(2)->getActions().size()!=0)
+    if(m_program_boxes.at(2)->getActions().size()!=0 && index_p2!=0)
         m_program_boxes.at(2)->getActions().at(index_p2-1)->setTheme(m_themes[1]);
 
     if(result == 0 || result == 1 || result == 2){

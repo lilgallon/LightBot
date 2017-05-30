@@ -132,3 +132,6 @@ $ Memomry (deleting buttons - check issues)
 + Level validity checker
 + Level name display
 
+## Version 25 : 30/05/17 ##
+* Fixed a critical crash with out of range exception if p1 & p2 have action but main have not p1 &&/|| p2
+
