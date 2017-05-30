@@ -12,13 +12,14 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Utils.h"
 
 // Because we declared thos variables as static const, we have to initalize those there
 const std::string Utils::FONT_PATH = "resources/fonts/";
 const std::string Utils::IMG_PATH = "resources/images/";
-const std::string Utils::LEVELS_PATH = "levels/";
+const std::string Utils::LEVELS_PATH = "resources/levels/";
 
 
 // Returns the absolute value of
@@ -28,6 +29,7 @@ float Utils::abs(const float &value){
     return -value;
 }
 
+// Gives the current time (hh:mm:ss) in a string
 std::string Utils::getTime(){
     time_t t = time(0); // Time from now (0)
     struct tm* now = localtime(&t);
@@ -56,6 +58,7 @@ std::string Utils::getTime(){
     return "[" + hour + ":" + min + ":" + sec + "] ";
 }
 
+// Split a string into others with a specified delimliter
 std::vector<std::string> Utils::split(const std::string &str, const std::string &delim)
 {
     std::vector<std::string> tokens;
@@ -63,15 +66,20 @@ std::vector<std::string> Utils::split(const std::string &str, const std::string 
     do
     {
         pos = str.find(delim, prev);
-        if(pos == std::string::npos) pos = str.length();
+        if(pos == std::string::npos)
+            pos = str.length();
+
         std::string token = str.substr(prev, pos-prev);
-        if(!token.empty()) tokens.push_back(token);
+        if(!token.empty())
+            tokens.push_back(token);
+
         prev = pos + delim.length();
     }
     while(pos < str.length() && prev < str.length());
     return tokens;
 }
 
+// Turn the robot clockwise according to its orientation
 Utils::Orientation Utils::turn_clockwise(Utils::Orientation actual_orientation)
 {
     Orientation final_orientation = Orientation::NONE;
@@ -100,6 +108,8 @@ Utils::Orientation Utils::turn_clockwise(Utils::Orientation actual_orientation)
     return final_orientation;
 }
 
+
+// Turn the robot counterclock according to its orientation
 Utils::Orientation Utils::turn_counterclock(Utils::Orientation actual_orientation)
 {
     Orientation final_orientation = Orientation::NONE;
@@ -128,6 +138,7 @@ Utils::Orientation Utils::turn_counterclock(Utils::Orientation actual_orientatio
     return final_orientation;
 }
 
+// Gives the position of the robot in pixel with its index
 sf::Vector2f Utils::positionToPixel(const sf::Vector2f &pos_in_index, const sf::Vector2f &gap, const int &radius)
 {
     sf::Vector2f pos = gap;

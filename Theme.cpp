@@ -12,6 +12,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Theme.h"
 #include "Utils.h"
@@ -94,7 +95,8 @@ sf::Color Theme::getRectDefaultOutlineColor() const{
     sf::Color color = sf::Color::Red;
     switch(m_id){
     case 1:
-        color = sf::Color(61,75,87);
+        // color = sf::Color(61,75,87);
+        color = sf::Color::Transparent;
         break;
     case 2:
         color = sf::Color::Transparent;

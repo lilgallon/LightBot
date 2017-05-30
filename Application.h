@@ -40,7 +40,7 @@ private:
     // Calls the user interaction method corresponding to the user interaction
     void process_events();
     // Used to change m_mouse with the current mouse curosr position
-    void set_mouse_coord(int x, int y);
+    void set_mouse_coord(const int &x, const int &y);
 };
 
 #endif

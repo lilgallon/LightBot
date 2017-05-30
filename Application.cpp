@@ -12,13 +12,15 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Application.h"
 
 
-Application::Application(unsigned int w, unsigned int h, const std::wstring & title )
-    : m_window { {w, h}, title }, m_pressing_mouse{false}
-{}
+Application::Application(unsigned int w, unsigned int h, const std::wstring & title)
+    :  m_window{{w, h}, title}, m_pressing_mouse{false}
+{
+}
 
 void Application::stop() {
     m_running = false;
@@ -82,7 +84,7 @@ void Application::process_events()
 }
 
 // Update m_mouse with the mouse position
-void Application::set_mouse_coord(int x, int y)
+void Application::set_mouse_coord(const int &x, const int &y)
 {
     sf::Vector2f pos = m_window.mapPixelToCoords( {x, y});
     m_mouse = { (int)pos.x, (int)pos.y };

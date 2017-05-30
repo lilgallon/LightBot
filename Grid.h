@@ -52,12 +52,12 @@ private:
     bool m_error_drawing;
 
     // Grid height display
-    sf::Text m_text;
-    sf::Font m_font;
+    sf::Text m_text_levelheight;
+    sf::Font m_font_levelheight;
 
     // Grid name display
-    sf::Text m_text_name;
-    sf::Font m_font_name;
+    sf::Text m_text_levelname;
+    sf::Font m_font_levelname;
 
     // The cell that is currently on mouse
     Cell* m_over_cell;

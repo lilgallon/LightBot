@@ -12,6 +12,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Cell.h"
 

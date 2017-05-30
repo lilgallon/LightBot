@@ -33,6 +33,7 @@ private:
     std::vector<Button*> m_buttons_credits;
     std::vector<Button*> m_buttons_in_game;
     std::vector<Button*> m_buttons_end_program;
+    std::vector<Button*> m_buttons_editor;
     // Themes
     std::vector<Theme*> m_themes;
     // Program boxes

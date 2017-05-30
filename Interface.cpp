@@ -12,6 +12,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Interface.h"
 #include "Utils.h"
@@ -49,6 +50,7 @@ namespace {
 
     const int EXECUTION_DELAY_MICRO_SEC = 800000;
     // 800 000 us = 800 ms = 0.8 sec
+
 }
 
 /************************************************
@@ -56,8 +58,11 @@ namespace {
 *************************************************/
 // It initializes the buttons, the initial game state
 Interface::Interface()
-    :Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false},  m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
+    : Application {SCREEN_WIDTH, SCREEN_HEIGHT, L"Lightbot"}, m_state {Utils::State::HOME}, m_first_loop{true}, m_program_end_screen{false},  m_selected_level{-1}, m_selected_button{nullptr},m_grid{new Grid()},m_robot{new Robot()}
 {
+
+
+
     // IDEE
     // Une optimisation, si nécesasire, serait de ne charger que les boutons correspondant à
     // l'état du jeu dans lequel on est. Là, on charge tous les boutons du jeu entier en un coup
@@ -86,6 +91,10 @@ Interface::Interface()
     Button* back_from_credits = new Button(Utils::State::HOME,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
     m_buttons_credits.push_back(back_from_credits);
 
+    // CREDITS BUTTONS
+    Button* back_from_editor = new Button(Utils::State::LEVEL_SELECTION,{(float)SCREEN_WIDTH/25, (float)SCREEN_HEIGHT/20}, {50, 50}, defaultTheme, "<-");
+    m_buttons_editor.push_back(back_from_editor);
+
     // IN_GAME BUTTONS
     Button* forward = new Button(Utils::Action::FORWARD,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*0,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
     Button* jump = new Button(Utils::Action::JUMP,{40+ACTION_BUTTON_SIZE.x+(ACTION_BUTTON_SIZE.x+10)*1,SCREEN_HEIGHT-ACTION_BUTTON_SIZE.y/2-20},ACTION_BUTTON_SIZE,actionTheme);
@@ -97,6 +106,7 @@ Interface::Interface()
 
     Button* run_prgm = new Button(RUN,{SCREEN_WIDTH/(float)1.11, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "RUN");
     Button* clear_prgms = new Button(CLEAR,{SCREEN_WIDTH/(float)1.3, SCREEN_HEIGHT/(float)1.05} , {150, 50}, defaultTheme, "CLEAR");
+    Button* back_to_selection = new Button(BACK,{SCREEN_WIDTH/(float)1.48, SCREEN_HEIGHT/(float)1.05} , {50, 50}, defaultTheme, "<-");
 
     m_buttons_in_game.push_back(forward);
     m_buttons_in_game.push_back(jump);
@@ -108,6 +118,7 @@ Interface::Interface()
 
     m_buttons_in_game.push_back(run_prgm);
     m_buttons_in_game.push_back(clear_prgms);
+    m_buttons_in_game.push_back(back_to_selection);
 
     // PROGRAM BOXES
     ProgramBox* prgm_main = new ProgramBox(PROGRAM_BOX_POS_MAIN,PROGRAM_BOX_SIZE_MAIN,PROGRAM_BOX_COLOR,PROGRAM_BOX_OUTCOL,PROGRAM_BOX_OUTTHI,"Main",Utils::TypeProg::MAIN);
@@ -235,6 +246,7 @@ void Interface::loop()
         }
         break;
     case Utils::State::LEVEL_EDITOR:
+        draw_buttons(m_buttons_editor);
         break;
     case Utils::State::END_GAME:
         break;
@@ -373,6 +385,14 @@ void Interface::mouse_button_pressed(){
                             p->clearActions();
                         }
                     }
+
+                    else if(b->getUtility()==BACK){
+                        for(ProgramBox* b : m_program_boxes){
+                            b->clearActions();
+                        }
+                        m_grid->loadLevel(LEVEL_SELECTION_ID);
+                        changeGameState(Utils::State::LEVEL_SELECTION);
+                    }
                 }
             }
 
@@ -400,6 +420,9 @@ void Interface::mouse_button_pressed(){
         m_selected_button = getSelectedButton();
         break;
     case Utils::State::LEVEL_EDITOR:
+        for(Button * b : m_buttons_editor){
+            buttonChangeState(isOnButton(b),b);
+        }
         break;
     case Utils::State::END_GAME:
         break;
@@ -538,6 +561,9 @@ void Interface::mouse_moved(){
         }
         break;
     case Utils::State::LEVEL_EDITOR:
+        for(Button * b : m_buttons_editor){
+            changeButtonAppareance(isOnButton(b),b);
+        }
         break;
     case Utils::State::END_GAME:
         break;
@@ -661,7 +687,7 @@ void Interface::loadBackground(){
         image = "menu-lightbot.png";
         break;
     case Utils::State::CREDITS:
-        image = "default.png";
+        image = "credits.png";
         break;
     case Utils::State::LEVEL_SELECTION:
         image = "level-selection.png";

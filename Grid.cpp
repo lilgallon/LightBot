@@ -12,6 +12,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with LightBot.  If not, see <http://www.gnu.org/licenses/>.
+//    Authors : Lilian Gallon, Tristan Renaudon
 
 #include "Grid.h"
 #include "Utils.h"
@@ -32,12 +33,13 @@ namespace{
     const sf::Vector2f DEFAULT_ROBOT_SIZE = {100,100};
     const int          DEFAULT_RADIUS = 65;
 
-    const int          DEFAULT_TEXT_SIZE = 20;
-    const int          DEFAULT_TEXT_NAME_SIZE = 15;
+    const std::string  FONT_LEVELNAME       = "Ubuntu-L.ttf";
+    const sf::Color    TEXT_LEVELNAME_COLOR = sf::Color::Black;
+    const int          TEXT_LEVELNAME_SIZE  = 25;
 
-    const std::string  FONT_NAME = "coolvetica.ttf";
-    const std::string  FONT_TEXT_NAME = "Ubuntu-L.ttf";
-    const sf::Color    TEXT_COLOR = sf::Color::Black;
+    const std::string  FONT_LEVELHEIGHT       = "coolvetica.ttf";
+    const sf::Color    TEXT_LEVELHEIGHT_COLOR = sf::Color(128,128,128,128);
+    const int          TEXT_LEVELHEIGHT_SIZE  = 20;
 
     const sf::Color    CELL_LIGHT_COLOR = sf::Color(220,241,251,128);
     const sf::Color    CELL_NLIGHT_COLOR = sf::Color::Transparent;
@@ -45,22 +47,9 @@ namespace{
     const sf::Color    CELL_OUTLINE_COLOR = sf::Color::Black;
     const int          CELL_OUTLINE_THICKNESS = 2;
 
-    const sf::Color    CELL_TEXT_COLOR = sf::Color(128,128,128,128);
-    const sf::Color    CELL_TEXT_NAME_COLOR = sf::Color::Black;
-
     const sf::Vector2f ROBOT_RECT_SIZE_JUMPING = {125,125};
     const sf::Vector2f ROBOT_RECT_SIZE_NJUMPING = {100,100};
 }
-
-// TODO
-// FAUT QQCH QUI CALCULE LE RADIUS EN FONCTION
-// DE LA TAILLE DE LA GRILLE
-// ARBITRAIREMENT, JE MET UN RADIUS DE 80!!
-// m_radius = radius calculé
-// ...
-
-// TODO
-// Check level correct
 
 /************************************************
 *         CONSTRUCTORS / DESTRUCTORS            *
@@ -86,32 +75,30 @@ void Grid::initRobotRect(){
 void Grid::initLabels(){
 
     // Font load (cell height)
-    if (!m_font.loadFromFile(Utils::FONT_PATH+FONT_NAME)) {
+    if (!m_font_levelheight.loadFromFile(Utils::FONT_PATH+FONT_LEVELHEIGHT)) {
         std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
-        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_LEVELHEIGHT + "\"" << std::endl;
         std::cout << Utils::getTime() + "[Grid-FIX]: The font will be ignored." << std::endl;
     }else{
-        m_text.setFont(m_font);
+        m_text_levelheight.setFont(m_font_levelheight);
         std::cout << Utils::getTime() + "[Grid-INFO]: Font loaded" << std::endl;
     }
 
-    m_text.setColor(TEXT_COLOR);
-    m_text.setCharacterSize(DEFAULT_TEXT_SIZE);
+    m_text_levelheight.setColor(TEXT_LEVELHEIGHT_COLOR);
+    m_text_levelheight.setCharacterSize(TEXT_LEVELHEIGHT_SIZE);
 
     // Font load (level name)
-    if (!m_font_name.loadFromFile(Utils::FONT_PATH+FONT_TEXT_NAME)) {
+    if (!m_font_levelname.loadFromFile(Utils::FONT_PATH+FONT_LEVELNAME)) {
         std::cout << Utils::getTime() + "[Grid-ERROR]: Could not load the font" << std::endl;
-        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_NAME + "\"" << std::endl;
+        std::cout << Utils::getTime() + "[Grid-FIX]: Check \""+ Utils::FONT_PATH+FONT_LEVELNAME + "\"" << std::endl;
         std::cout << Utils::getTime() + "[Grid-FIX]: The font will be ignored." << std::endl;
     }else{
-        m_text_name.setFont(m_font_name);
+        m_text_levelname.setFont(m_font_levelname);
         std::cout << Utils::getTime() + "[Grid-INFO]: Font loaded" << std::endl;
     }
 
-    m_text_name.setColor(TEXT_COLOR);
-    m_text_name.setCharacterSize(DEFAULT_TEXT_NAME_SIZE);
-    // TODO ANTIALIASING
-    //m_text_name.setStyle();
+    m_text_levelname.setColor(TEXT_LEVELNAME_COLOR);
+    m_text_levelname.setCharacterSize(TEXT_LEVELNAME_SIZE);
 
 }
 
@@ -123,7 +110,7 @@ void Grid::initRobot(const std::string &line)
     bool error = false;
     if(sub_string.size()!=3){
         error = true;
-        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Robot line invalid" << std::endl;
+        std::cout << Utils::getTime() + "[Level Loader-ERROR]: Robot line invalid: if the robot line seems to be valid, check if the level name has spaces (it should not)" << std::endl;
     }
     if(!error){
         // The robot receive its position
@@ -308,8 +295,7 @@ void Grid::loadLevel(const std::string &level_id){
 
         // The first line corresponds to the level name
         f >> level_name;
-        m_text_name.setString(level_name);
-        std::cout << level_name << std::endl;
+        m_text_levelname.setString(level_name);
 
         // Robot values
         std::string robot_line;
@@ -326,22 +312,16 @@ void Grid::loadLevel(const std::string &level_id){
             f >> line;
             sub_string = Utils::split(line,";");
 
-            /* TODO CHECKER */
+            /* CHECKER */
             if(sub_string.size()==0){
-                // say something
-                // do something
                 std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there is nothing" << std::endl;
                 error_sub_string = true;
             }
             if(sub_string.size()>4){
-                // say something
-                // do something
                 std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there is too much arguments" << std::endl;
                 error_sub_string = true;
             }
             if(sub_string.size()<4){
-                // say something
-                // do something
                 std::cout << Utils::getTime() + "[Level Loader-ERROR]: Error on the line, there not enough arguments" << std::endl;
                 error_sub_string = true;
             }
@@ -357,20 +337,14 @@ void Grid::loadLevel(const std::string &level_id){
 
                 /** CHECKER **/
                 if(pos.x>7){
-                    // say something
-                    // change pos_x
                     error_values = true;
                     std::cout << Utils::getTime() + "[Level Loader-ERROR]: pos X: " + std::to_string(pos.x) + " is invalid (>7)" << std::endl;
                 }
                 if(pos.y>4){
-                    // say something
-                    // change pos_y
                     error_values = true;
                      std::cout << Utils::getTime() + "[Level Loader-ERROR]: pos Y: " + std::to_string(pos.y) + " is invalid (>4)" << std::endl;
                 }
                 if(height<0){
-                    // say something
-                    // change height
                      std::cout << Utils::getTime() + "[Level Loader-ERROR]: height: " + std::to_string(height) + " is invalid (<0)" << std::endl;
                     error_values = true;
                 }
@@ -498,20 +472,20 @@ void Grid::drawGrid(sf::RenderWindow& window, const sf::Vector2f &grid_pos){
             std::string label = std::to_string(c->getHeight());
 
             // The text where is the height
-            m_text.setString(label);
-            m_text.setColor(sf::Color(CELL_TEXT_COLOR));
+            m_text_levelheight.setString(label);
+            m_text_levelheight.setColor(sf::Color(TEXT_LEVELHEIGHT_COLOR));
             // -4 here is to adjust the text position since m_text.getGlobalBounds().height is not working well
             // m_radius/2 is to show the text at the middle of the cell (the origin is on the top left corner)
-            m_text.setPosition({pos.x-4,pos.y+m_radius/2});
+            m_text_levelheight.setPosition({pos.x-4,pos.y+m_radius/2});
 
-            m_text_name.setColor(sf::Color(CELL_TEXT_NAME_COLOR));
+            m_text_levelname.setColor(sf::Color(TEXT_LEVELNAME_COLOR));
             // -4 here is to adjust the text position since m_text.getGlobalBounds().height is not working well
             // m_radius/2 is to show the text at the middle of the cell (the origin is on the top left corner)
-            m_text_name.setPosition({0,0});
+            m_text_levelname.setPosition({0,0});
             // Draw elements
             window.draw(hexa);
-            window.draw(m_text);
-            window.draw(m_text_name);
+            window.draw(m_text_levelheight);
+            window.draw(m_text_levelname);
 
             // If the robot is on the current cell, we draw it according to if its jumping or not
             if(robot_is_there){

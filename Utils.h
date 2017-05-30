@@ -24,9 +24,9 @@ public:
     enum class TypeProg {MAIN, P1, P2};
 
     // Repertories
-    static const std::string FONT_PATH ;//= "resources/fonts/";
-    static const std::string IMG_PATH ;//= "resources/images/";
-    static const std::string LEVELS_PATH ;//= "levels/";
+    static const std::string FONT_PATH ;
+    static const std::string IMG_PATH ;
+    static const std::string LEVELS_PATH ;
 
     // Splits a string into a container
     static std::vector<std::string> split(const std::string& str, const std::string& delim);

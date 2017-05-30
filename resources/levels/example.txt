@@ -1,0 +1,20 @@
+FILE NAME WHATEVER YOU WANT (no space)
+robot_pos_x;robot_pos_y;robot_orientation
+pos_x;pos_y;height(0 to x);light(0=false,1=true)
+
+## Notes:
+0.txt --> level selection
+example.txt --> this
+
+XY.txt --> level corresponding to the level selection
+	-> The cell selected has a x and y pos, this is
+	-> the id of the level
+
+robot_orientation:
+0: ..
+1: ..
+2: ..
+3: ..
+4: ..
+5: ..
+6: ..

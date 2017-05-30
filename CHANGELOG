@@ -128,40 +128,7 @@ $ Memomry (deleting buttons - check issues)
 * Plein de petits fix
 * Améliorations de l'algo d'execution
 
-## Version 24 : ../../.. ##
+## Version 24 : 30/05/17 ##
 + Level validity checker
++ Level name display
 
-
-
-#TODO:
-(code ready in grid.cpp)
-* If the file loads properly, check if the values are okay:
-- correct fields (4 fields with 1 in the header..)
-- pos x & y not too big
-- light >1 show warning in console
-- height >=0
-* Method in interface that is called only on changing game state ( inits things -> remove m_frist_loop)
-* Catch / exceptions handler when a line of a level is fuckedup
-* FR TO ENGLISH IN APPLICATION;H
-+ gestion win / lose (level selector)
-+ COmmentaires
-+ const type & variable où il faut
-* clean code (trucs en commentaires, nombres magiques, ..)
-+ description méthode au dessus de celle ci
-+ ajouter niveaux
-+ virer les todo
-+ chaneg sprites 
-+ renommer projet en interface en lightnbot
-+ faire crédtis
-+ remove editeur
-+ programbox qui change de couleur en fonction du dernier element mis dedans
-+ button change de couelur -> reset par défault fait des fois mais inutile
-
-
-* AU lieu d'avoir plusieurs images vue de dessus, on en prend une et on
-change la rotation
-+ Ajouter gestion des appels récursifs à l'infini!! (cpt max ..)
-+ Gestion lose / win
-+ afficher le nom du niveau en haut du niveau
-
-THROW EXCEPTION LVEL NAME WITH SPACE
