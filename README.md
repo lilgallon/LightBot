@@ -24,6 +24,7 @@ The changelog is available [here](CHANGELOG.md).
 
 ### 2.2 Authors
 - **N3ROO** - *Initial work* - [Github](https://github.com/N3ROO) [Website](https://n3roo.github.io/)
+- **T. Renaudon** - *Initial work*
 
 ### 2.3 License
 This project is licensed under the GPL-3.0 license - see the [LICENSE](LICENSE.md) file for details
