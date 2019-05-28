@@ -3,7 +3,7 @@
 ![opissues](https://img.shields.io/github/issues/N3ROO/Lightbot.svg) 
 ![clissues](https://img.shields.io/github/issues-closed/N3ROO/Lightbot.svg)
 
-Lightbot is an educational video game to learn software programming concepts. Made for the Introduction to OOP & OOP design course at the Bordeaux Intitude of Technology (grade: 16/20).
+Lightbot is an educational video game to learn software programming concepts. Made for the Introduction to OOP & OOP design course at the Bordeaux Intitute of Technology (grade: 16/20).
 
 ![preview](.github/screenshot.png)
 
