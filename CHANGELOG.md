@@ -70,7 +70,7 @@ $ Memomry (deleting buttons - check issues)
 + Rectangle moving
 + Added programbox
 
-# Version 14 : 16/05/17 ##
+## Version 14 : 16/05/17 ##
 + Implementation des programboxes (non fini)
 
 ## Version 15: 19/05/17 ##
@@ -105,6 +105,7 @@ $ Memomry (deleting buttons - check issues)
 
 ## Version 19 : 23/05/17 ##
 ==== VERSION BUGUEE (normal)
+
 .. Continuation (lol) de l'écran de fin d'execution
 
 ## Version 20 : 28/05/17 ##
